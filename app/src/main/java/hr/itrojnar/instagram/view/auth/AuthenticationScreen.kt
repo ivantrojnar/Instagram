@@ -72,12 +72,12 @@ fun AuthenticationScreen(modifier: Modifier = Modifier) {
             painter = painterResource(id = R.drawable.instagram_logo),
             contentDescription = "Instagram logo",
             contentScale = ContentScale.Fit,
-            modifier = Modifier.padding(90.dp)
+            modifier = Modifier.padding(start = 95.dp, top = 110.dp, end = 95.dp, bottom = 25.dp)
         )
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(20.dp, 0.dp)
                 .background(Color.Transparent),
             shape = RoundedCornerShape(10.dp),
         ) {
@@ -102,7 +102,35 @@ fun AuthenticationScreen(modifier: Modifier = Modifier) {
                     focusedBorderColor = Color.Black, // Color for the border when focused
                 )
             )
-            OutlinedTextField(value = passwordState, onValueChange = {})
+        }
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
+                .background(Color.Transparent),
+            shape = RoundedCornerShape(10.dp),
+        ) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                value = emailState,
+                onValueChange = { emailState = it },
+                label = { Text(text = stringResource(R.string.password)) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions (
+                    onDone = { focusManager.clearFocus() }
+                ),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
+                    unfocusedBorderColor = Color.Gray, // Color for the border when not focused
+                    focusedLabelColor = Color.Black, // Color for the hint text when focused
+                    focusedBorderColor = Color.Black, // Color for the border when focused
+                )
+            )
         }
     }
 }
