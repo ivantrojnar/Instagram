@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.R
 
 
@@ -164,7 +165,10 @@ fun AuthenticationScreen(modifier: Modifier = Modifier) {
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Text("Log in", color = Color.White)
+                Text(
+                    stringResource(R.string.log_in),
+                    fontSize = 16.sp,
+                    color = Color.White)
             }
             Row(
                 modifier = modifier
@@ -221,6 +225,28 @@ fun AuthenticationScreen(modifier: Modifier = Modifier) {
                         .weight(1f)
                         .height(1.dp)
                         .background(Color.Black.copy(alpha = 0.2f)))
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+
+                Text(
+                    text = stringResource(R.string.don_t_have_an_account),
+                    style = TextStyle(fontSize = 16.sp),
+                    color = Color.Black.copy(alpha = 0.4f))
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                ClickableText(
+                    text = AnnotatedString(stringResource(R.string.sign_up)),
+                    style = TextStyle(
+                        color = Color(0xFF3797EF),
+                        fontSize = 16.sp
+                    ),
+                    onClick = {})
             }
         }
     }
