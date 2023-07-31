@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Instagram</string>
     <string name="email">Email</string>
-    <string name="password">Password\n</string>
+    <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="google_icon">Google Icon</string>
+    <string name="log_in_with_google">Log in with Google</string>
+    <string name="log_in_with_github">Log in with GitHub</string>
+    <string name="github_icon">GitHub Icon</string>
+    <string name="or">OR</string>
 </resources>

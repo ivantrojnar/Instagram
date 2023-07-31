@@ -1,16 +1,21 @@
 package hr.itrojnar.instagram.view.auth
 
+import android.widget.Space
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -157,9 +162,65 @@ fun AuthenticationScreen(modifier: Modifier = Modifier) {
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text("Log in", color = Color.White)
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 35.dp)
+                    .clickable { },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.google_icon),
+                    contentDescription = stringResource(R.string.google_icon),
+                    modifier = modifier.size(20.dp))
+                Spacer(modifier = modifier.width(8.dp))
+                Text(text = stringResource(R.string.log_in_with_google))
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+                    .clickable { },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.github_icon),
+                    contentDescription = stringResource(R.string.github_icon),
+                    modifier = modifier.size(20.dp))
+                Spacer(modifier = modifier.width(8.dp))
+                Text(text = stringResource(R.string.log_in_with_github))
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 25.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+
+                Spacer(
+                    modifier = modifier
+                        .weight(1f)
+                        .height(1.dp)
+                        .background(Color.Black.copy(alpha = 0.2f)))
+
+                Spacer(modifier = modifier.width(8.dp))
+
+                Text(
+                    modifier = modifier.padding(horizontal = 8.dp),
+                    text = stringResource(R.string.or),
+                    color = Color.Black.copy(alpha = 0.4f))
+
+                Spacer(modifier = modifier.width(8.dp))
+
+                Spacer(
+                    modifier = modifier
+                        .weight(1f)
+                        .height(1.dp)
+                        .background(Color.Black.copy(alpha = 0.2f)))
             }
         }
     }
