@@ -45,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -203,7 +204,7 @@ fun LogInScreen(modifier: Modifier = Modifier, onSignUpClick: () -> Unit, onForg
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(5.dp)
             ) {
                 Text(
                     stringResource(R.string.log_in),
@@ -344,12 +345,34 @@ fun ForgotPasswordScreen(modifier: Modifier, onLogInClick: () -> Unit) {
         modifier = modifier
             .fillMaxSize()
             .background(Color.Transparent)) {
-        LottieAnimationLoop(resId = R.raw.forgot_password_animation, modifier.fillMaxWidth().padding(horizontal = 80.dp).height(200.dp))
+
+        LottieAnimationLoop(resId = R.raw.forgot_password_animation,
+            modifier
+                .fillMaxWidth()
+                .height(250.dp))
+
+        Text(
+            text = "Trouble logging in?",
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        )
+
+        Text(
+            text = stringResource(R.string.enter_your_email_and_we_ll_send_you_a_link_to_get_back_into_your_account),
+            textAlign = TextAlign.Center,
+            fontSize = 14.sp,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        )
 
         OutlinedTextField(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                .padding(horizontal = 20.dp, vertical = 10.dp),
             value = forgotPasswordEmailState,
             onValueChange = { forgotPasswordEmailState = it },
             label = { Text(text = stringResource(R.string.email)) },
@@ -367,11 +390,34 @@ fun ForgotPasswordScreen(modifier: Modifier, onLogInClick: () -> Unit) {
                 focusedBorderColor = Color.Black, // Color for the border when focused
             )
         )
-
         Button(
-            onClick = onLogInClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+            shape = RoundedCornerShape(5.dp)
         ) {
-            Text(text = "Back to Log In")
+            Text(
+                stringResource(R.string.next),
+                fontSize = 16.sp,
+                color = Color.White)
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            ClickableText(
+                text = AnnotatedString(stringResource(R.string.back_to_log_in)),
+                onClick = { onLogInClick() },
+                style = TextStyle(
+                    color = Color(0xFF3797EF),
+                    fontSize = 16.sp
+                )
+            )
         }
     }
 }
