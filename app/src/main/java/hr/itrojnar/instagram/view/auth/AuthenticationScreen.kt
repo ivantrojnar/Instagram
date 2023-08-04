@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,13 @@ import androidx.compose.ui.unit.dp
 import hr.itrojnar.instagram.R
 
 @Composable
-fun AuthenticationScreen(modifier: Modifier = Modifier) {
+fun AuthenticationScreen(
+    authenticationState: AuthenticationState,
+    onLogin: () -> Unit,
+    onRegister: () -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    modifier: Modifier = Modifier) {
 
     var currentScreen by remember {
         mutableStateOf(AuthenticationScreenState.LogIn)
@@ -43,11 +50,13 @@ fun AuthenticationScreen(modifier: Modifier = Modifier) {
                     AuthenticationScreenState.LogIn -> LogInScreen(
                         modifier = modifier,
                         onSignUpClick = { currentScreen = AuthenticationScreenState.SignUp },
-                        onForgotPasswordClick = { currentScreen = AuthenticationScreenState.ForgotPassword }
+                        onForgotPasswordClick = { currentScreen = AuthenticationScreenState.ForgotPassword },
+                        onLogin = onLogin
                     )
                     AuthenticationScreenState.SignUp -> SignUpScreen(
                         modifier = modifier,
-                        onLogInClick = { currentScreen = AuthenticationScreenState.LogIn }
+                        onLogInClick = { currentScreen = AuthenticationScreenState.LogIn },
+                        onRegister = onRegister
                     )
                     AuthenticationScreenState.ForgotPassword -> ForgotPasswordScreen(
                         modifier = modifier,

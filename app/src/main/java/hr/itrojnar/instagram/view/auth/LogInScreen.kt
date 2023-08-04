@@ -48,7 +48,11 @@ import hr.itrojnar.instagram.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LogInScreen(modifier: Modifier = Modifier, onSignUpClick: () -> Unit, onForgotPasswordClick: () -> Unit) {
+fun LogInScreen(
+    modifier: Modifier = Modifier,
+    onSignUpClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
+    onLogin: () -> Unit) {
     val focusManager = LocalFocusManager.current
 
     // TODO Provjeriti

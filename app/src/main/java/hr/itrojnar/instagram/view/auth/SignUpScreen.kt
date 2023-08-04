@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit) {
+fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () -> Unit) {
     Button(
         onClick = onLogInClick,
     ) {
