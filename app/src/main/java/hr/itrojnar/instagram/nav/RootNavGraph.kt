@@ -5,6 +5,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import hr.itrojnar.instagram.view.MainScreen
 import hr.itrojnar.instagram.viewmodel.AuthenticationViewModel
 
 @Composable
@@ -15,5 +17,9 @@ fun RootNavGraph(navController: NavHostController) {
         navController = navController,
         route = Graph.ROOT,
         startDestination = Graph.AUTH) {
+        authNavGraph(navHostController = navController, authenticationViewModel, context)
+        composable(route = Graph.MAIN) {
+            MainScreen()
+        }
     }
 }

@@ -241,7 +241,7 @@ fun LogInScreen(modifier: Modifier = Modifier, onSignUpClick: () -> Unit, onForg
                         color = Color(0xFF3797EF),
                         fontSize = 16.sp
                     ),
-                    onClick = {})
+                    onClick = { onSignUpClick() })
             }
             Column(
                 modifier = Modifier
