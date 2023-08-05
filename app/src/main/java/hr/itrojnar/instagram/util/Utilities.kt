@@ -1,5 +1,8 @@
 package hr.itrojnar.instagram.util
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.annotation.RawRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,3 +36,14 @@ fun String.isValidPassword() =
             "(?=\\S+$)" +           //no white spaces
             ".{8,}" +               //at least 8 characters
             "$").matcher(this).matches()
+
+fun Context.findActivity(): Activity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is Activity) {
+            return currentContext
+        }
+        currentContext = currentContext.baseContext
+    }
+    return null
+}
