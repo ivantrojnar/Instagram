@@ -26,6 +26,7 @@ fun NavGraphBuilder.authNavGraph(
                 authenticationState = authenticationViewModel.authenticationState.value,
                 onLogin = { Toast.makeText(context, "Log in click", Toast.LENGTH_SHORT).show() },
                 onRegister = { Toast.makeText(context, "Sign up click", Toast.LENGTH_SHORT).show() },
+                onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },
                 onEmailChanged = { authenticationViewModel.onEmailChanged(it) },
                 onPasswordChanged = { authenticationViewModel.onPasswordChanged(it) })
         }

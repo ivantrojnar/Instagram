@@ -27,6 +27,7 @@ fun AuthenticationScreen(
     authenticationState: AuthenticationState,
     onLogin: () -> Unit,
     onRegister: () -> Unit,
+    onRequestEmailForForgottenPassword: () -> Unit,
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     modifier: Modifier = Modifier) {
@@ -60,7 +61,8 @@ fun AuthenticationScreen(
                     )
                     AuthenticationScreenState.ForgotPassword -> ForgotPasswordScreen(
                         modifier = modifier,
-                        onLogInClick = { currentScreen = AuthenticationScreenState.LogIn }
+                        onLogInClick = { currentScreen = AuthenticationScreenState.LogIn },
+                        onRequestEmailForForgottenPassword = onRequestEmailForForgottenPassword
                     )
                 }
             }

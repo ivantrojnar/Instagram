@@ -61,6 +61,7 @@ fun LogInScreen(
             targetState = true
         }
     }
+
     // TODO Privremeno
     var emailState by remember {
         mutableStateOf("")
@@ -154,7 +155,7 @@ fun LogInScreen(
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
-                onClick = { },
+                onClick = onLogin,
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
                 shape = RoundedCornerShape(5.dp)
             ) {

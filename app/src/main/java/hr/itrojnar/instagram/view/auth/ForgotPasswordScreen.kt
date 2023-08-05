@@ -40,7 +40,10 @@ import hr.itrojnar.instagram.util.LottieAnimationLoop
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotPasswordScreen(modifier: Modifier, onLogInClick: () -> Unit) {
+fun ForgotPasswordScreen(
+    modifier: Modifier,
+    onLogInClick: () -> Unit,
+    onRequestEmailForForgottenPassword: () -> Unit) {
 
     val focusManager = LocalFocusManager.current
 
@@ -102,7 +105,7 @@ fun ForgotPasswordScreen(modifier: Modifier, onLogInClick: () -> Unit) {
                 .fillMaxWidth()
                 .height(60.dp)
                 .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-            onClick = {},
+            onClick = onRequestEmailForForgottenPassword,
             colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
             shape = RoundedCornerShape(5.dp)
         ) {
