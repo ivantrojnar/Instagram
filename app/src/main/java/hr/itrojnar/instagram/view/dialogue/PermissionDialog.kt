@@ -67,6 +67,18 @@ interface PermissionTextProvider {
     fun getDescription(isPermanentlyDeclined: Boolean): String
 }
 
+class MediaImagesPermissionTextProvider: PermissionTextProvider {
+    override fun getDescription(isPermanentlyDeclined: Boolean): String {
+        return if(isPermanentlyDeclined) {
+            "It seems you permanently declined permission to access images and videos. " +
+                    "You can go to the app settings to grant it."
+        } else {
+            "This app needs access to your gallery so that you can take choose pictures to upload while using the app."
+        }
+    }
+
+}
+
 class CameraPermissionTextProvider: PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
