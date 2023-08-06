@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.util.LogoImage
 import hr.itrojnar.instagram.util.LottieAnimationLoop
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +56,8 @@ fun ForgotPasswordScreen(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Transparent)) {
+
+        LogoImage(topPadding = 110, 25)
 
         LottieAnimationLoop(resId = R.raw.forgot_password_animation,
             modifier

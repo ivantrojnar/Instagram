@@ -15,6 +15,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.util.LogoImage
+import hr.itrojnar.instagram.util.LottieAnimationLoop
 import hr.itrojnar.instagram.util.findActivity
 import hr.itrojnar.instagram.view.dialogue.CameraPermissionTextProvider
 import hr.itrojnar.instagram.view.dialogue.MediaImagesPermissionTextProvider
@@ -101,16 +104,52 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 .fillMaxSize()
                 .background(Color.Transparent)
         ) {
+            LogoImage(topPadding = 30, 10)
+
+            LottieAnimationLoop(resId = R.raw.sign_up_animation,
+                modifier
+                    .fillMaxWidth()
+                    .height(180.dp))
             Text(
                 text = stringResource(R.string.sign_up),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 21.sp,
                     textAlign = TextAlign.Center
                 ),
                 modifier = modifier
                     .fillMaxWidth()
+                    .padding(bottom = 10.dp)
             )
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
+                    .background(Color.Transparent),
+                shape = RoundedCornerShape(10.dp),
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                    value = "",
+                    onValueChange = {},
+                    label = { Text(text = stringResource(R.string.full_name)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions (
+                        onDone = { focusManager.clearFocus() }
+                    ),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
+                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
+                        focusedLabelColor = Color.Black, // Color for the hint text when focused
+                        focusedBorderColor = Color.Black, // Color for the border when focused
+                    )
+                )
+            }
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,6 +166,35 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     label = { Text(text = stringResource(R.string.email)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions (
+                        onDone = { focusManager.clearFocus() }
+                    ),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
+                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
+                        focusedLabelColor = Color.Black, // Color for the hint text when focused
+                        focusedBorderColor = Color.Black, // Color for the border when focused
+                    )
+                )
+            }
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
+                    .background(Color.Transparent),
+                shape = RoundedCornerShape(10.dp),
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                    value = "",
+                    onValueChange = {},
+                    label = { Text(text = stringResource(R.string.password)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions (
