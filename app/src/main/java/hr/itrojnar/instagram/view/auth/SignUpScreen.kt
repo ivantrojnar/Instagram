@@ -33,6 +33,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -101,6 +103,12 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
     var showImagePickerDialog by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
+    var selectedTier by remember { mutableStateOf<String?>(null) }
+
+    fun onSelectedChanged(tier: String) {
+        selectedTier = tier
+    }
+
     val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         (listOf(Manifest.permission.READ_MEDIA_IMAGES) + commonPermissions).toTypedArray()
     } else {
@@ -117,7 +125,8 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 }
             })
 
-    AnimatedVisibility(visible = currentScreen == "SignUp",
+    AnimatedVisibility(
+        visible = currentScreen == "SignUp",
         enter = if (currentScreen == "SignUp") slideInHorizontally(initialOffsetX = { -it }) else slideInHorizontally(
             initialOffsetX = { it }),
         exit = if (currentScreen == "SignUp") slideOutHorizontally(targetOffsetX = { it }) else slideOutHorizontally(
@@ -130,10 +139,12 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
         ) {
             LogoImage(topPadding = 10, 0)
 
-            LottieAnimationLoop(resId = R.raw.sign_up_animation,
+            LottieAnimationLoop(
+                resId = R.raw.sign_up_animation,
                 modifier
                     .fillMaxWidth()
-                    .height(170.dp))
+                    .height(170.dp)
+            )
             Text(
                 text = stringResource(R.string.sign_up),
                 style = TextStyle(
@@ -166,7 +177,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
-                    keyboardActions = KeyboardActions (
+                    keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -195,7 +206,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Done
                     ),
-                    keyboardActions = KeyboardActions (
+                    keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -224,7 +235,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
-                    keyboardActions = KeyboardActions (
+                    keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -247,7 +258,8 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 Text(
                     stringResource(R.string.next),
                     fontSize = 16.sp,
-                    color = Color.White)
+                    color = Color.White
+                )
             }
 //            Button(
 //                onClick = onLogInClick,
@@ -323,6 +335,35 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
         exit = if (currentScreen == "Subscription") slideOutHorizontally(targetOffsetX = { -it }) else slideOutHorizontally(
             targetOffsetX = { it })
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)
+        ) {
+            SubscriptionCard(
+                title = "Diamond Tier",
+                description = "This is the Diamond tier subscription",
+                gradient = listOf(Color.LightGray, Color.DarkGray),
+                onClick = { onSelectedChanged("Diamond") },
+                isSelected = selectedTier == "Diamond"
+            )
+
+            SubscriptionCard(
+                title = "Gold Tier",
+                description = "This is the Gold tier subscription",
+                gradient = listOf(Color.Yellow, Color.DarkGray),
+                onClick = { onSelectedChanged("Gold") },
+                isSelected = selectedTier == "Gold"
+            )
+
+            SubscriptionCard(
+                title = "Silver Tier",
+                description = "This is the Silver tier subscription",
+                gradient = listOf(Color.LightGray, Color.Gray),
+                onClick = { onSelectedChanged("Silver") },
+                isSelected = selectedTier == "Silver"
+            )
+        }
         Button(
             modifier = modifier.fillMaxWidth(),
             onClick = { currentScreen = "SignUp" },
@@ -355,7 +396,9 @@ fun SubscriptionCard(
             .clickable(onClick = onClick),
         border = border,
         shape = RoundedCornerShape(15.dp),
-        //elevation = CardElevation(defaultElevation = 10.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        )
     ) {
         Box(
             modifier = Modifier
@@ -387,14 +430,25 @@ fun SubscriptionCard(
 }
 
 @Composable
+fun SubscriptionScreen(
+    // TODO place in viewmodel
+    selectedTier: String,
+    onSelectedChanged: (String) -> Unit
+) {
+
+}
+
+@Composable
 fun ProfileImage(imageUri: Uri?, onImageClick: () -> Unit) {
     val image: Painter = imageUri?.let {
         rememberImagePainter(data = it)
     } ?: painterResource(id = R.drawable.default_profile_picture) // Replace with your default image
 
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(120.dp), horizontalArrangement = Arrangement.Center) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp), horizontalArrangement = Arrangement.Center
+    ) {
         Box(modifier = Modifier
             .size(120.dp)
             .clip(CircleShape)
