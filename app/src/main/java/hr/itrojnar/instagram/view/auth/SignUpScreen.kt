@@ -3,8 +3,10 @@ package hr.itrojnar.instagram.view.auth
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -74,7 +76,9 @@ import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.LogoImage
 import hr.itrojnar.instagram.util.LottieAnimationLoop
 import hr.itrojnar.instagram.util.findActivity
+import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
 import hr.itrojnar.instagram.viewmodel.MainViewModel
+import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,6 +117,25 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
         (listOf(Manifest.permission.READ_EXTERNAL_STORAGE) + commonPermissions).toTypedArray()
     }
 
+    val takePictureLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
+            // Convert the bitmap to a URI if needed and then assign it to imageUri
+            bitmap?.let {
+                val bytes = ByteArrayOutputStream()
+                it.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                val path = MediaStore.Images.Media.insertImage(
+                    context.contentResolver, it, "Title", null
+                )
+                imageUri = Uri.parse(path)
+            }
+        }
+
+    val pickImageLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            // Assign the chosen image URI to imageUri
+            imageUri = uri
+        }
+
     val multiplePermissionResultLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions(),
             onResult = { permissions ->
@@ -122,6 +145,25 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     )
                 }
             })
+
+    // DIALOG FOR IMAGE SELECTION
+    if (showImagePickerDialog) {
+        ImagePickerDialog(
+            onTakePhoto = {
+                // Code to take a photo using camera
+                // Update imageUri
+                takePictureLauncher.launch(null)
+                showImagePickerDialog = false
+            },
+            onSelectFromGallery = {
+                // Code to select an image from the gallery
+                // Update imageUri
+                pickImageLauncher.launch("image/*")
+                showImagePickerDialog = false
+            },
+            onDismissRequest = { showImagePickerDialog = false }
+        )
+    }
 
     AnimatedVisibility(
         visible = currentScreen == "SignUp",
@@ -259,11 +301,6 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     color = Color.White
                 )
             }
-//            Button(
-//                onClick = onLogInClick,
-//            ) {
-//                Text(text = "Switch to Log In")
-//            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -383,7 +420,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(start = 10.dp, end = 10.dp),
-                onClick = {  },
+                onClick = { },
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
                 shape = RoundedCornerShape(5.dp)
             ) {
@@ -486,13 +523,25 @@ fun SubscriptionCard(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge.copy(shadow = Shadow(Color.Black, offset = Offset(1f, 1f), blurRadius = 2f)), // assuming titleMedium is not a default style, switching to h6
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        shadow = Shadow(
+                            Color.Black,
+                            offset = Offset(1f, 1f),
+                            blurRadius = 2f
+                        )
+                    ), // assuming titleMedium is not a default style, switching to h6
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = description,
-                    style = MaterialTheme.typography.bodyLarge.copy(shadow = Shadow(Color.Black, offset = Offset(1f, 1f), blurRadius = 2f)), // assuming bodyLarge is not a default style, switching to body1
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        shadow = Shadow(
+                            Color.Black,
+                            offset = Offset(1f, 1f),
+                            blurRadius = 2f
+                        )
+                    ), // assuming bodyLarge is not a default style, switching to body1
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
