@@ -62,7 +62,7 @@ fun ForgotPasswordScreen(
                 .height(250.dp))
 
         Text(
-            text = "Trouble logging in?",
+            text = stringResource(R.string.trouble_logging_in),
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = modifier

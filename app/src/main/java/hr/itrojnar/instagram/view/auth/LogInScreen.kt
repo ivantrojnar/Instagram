@@ -241,7 +241,7 @@ fun LogInScreen(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 ClickableText(
-                    text = AnnotatedString(stringResource(R.string.sign_up)),
+                    text = AnnotatedString(stringResource(R.string.sign_up) + "."),
                     style = TextStyle(
                         color = Color(0xFF3797EF),
                         fontSize = 16.sp
