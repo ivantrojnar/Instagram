@@ -76,7 +76,12 @@ import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.LogoImage
 import hr.itrojnar.instagram.util.LottieAnimationLoop
 import hr.itrojnar.instagram.util.findActivity
+import hr.itrojnar.instagram.view.dialog.CameraPermissionTextProvider
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
+import hr.itrojnar.instagram.view.dialog.MediaImagesPermissionTextProvider
+import hr.itrojnar.instagram.view.dialog.PermissionDialog
+import hr.itrojnar.instagram.view.dialog.PhoneCallPermissionTextProvider
+import hr.itrojnar.instagram.view.dialog.RecordAudioPermissionTextProvider
 import hr.itrojnar.instagram.viewmodel.MainViewModel
 import java.io.ByteArrayOutputStream
 
@@ -150,14 +155,10 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
     if (showImagePickerDialog) {
         ImagePickerDialog(
             onTakePhoto = {
-                // Code to take a photo using camera
-                // Update imageUri
                 takePictureLauncher.launch(null)
                 showImagePickerDialog = false
             },
             onSelectFromGallery = {
-                // Code to select an image from the gallery
-                // Update imageUri
                 pickImageLauncher.launch("image/*")
                 showImagePickerDialog = false
             },
@@ -197,6 +198,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     .padding(bottom = 10.dp)
             )
             ProfileImage(imageUri = imageUri) {
+                multiplePermissionResultLauncher.launch(permissionsToRequest)
                 showImagePickerDialog = true
             }
             Surface(
@@ -326,40 +328,34 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
 //            ) {
 //                Text(text = "Request permissions")
 //            }
-//            dialogQueue.reversed().forEach { permission ->
-//                PermissionDialog(permissionTextProvider = when (permission) {
-//                    Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE -> {
-//                        MediaImagesPermissionTextProvider()
-//                    }
-//
-//                    Manifest.permission.CAMERA -> {
-//                        CameraPermissionTextProvider()
-//                    }
-//
-//                    Manifest.permission.RECORD_AUDIO -> {
-//                        RecordAudioPermissionTextProvider()
-//                    }
-//
-//                    Manifest.permission.CALL_PHONE -> {
-//                        PhoneCallPermissionTextProvider()
-//                    }
-//
-//                    else -> return@forEach
-//                }, isPermanentlyDeclined = !activity!!.shouldShowRequestPermissionRationale(
-//                    permission
-//                ), onDismiss = viewModel::dismissDialog, onOkClick = {
-//                    viewModel.dismissDialog()
-//                    multiplePermissionResultLauncher.launch(
-//                        arrayOf(permission)
-//                    )
-//                }, onGoToAppSettingsClick = { openAppSettings(activity = activity) })
-//            }
-//            Button(
-//                modifier = modifier.padding(top = 15.dp),
-//                onClick = { currentScreen = "Subscription" },
-//            ) {
-//                Text(text = "Subscription")
-//            }
+            dialogQueue.reversed().forEach { permission ->
+                PermissionDialog(permissionTextProvider = when (permission) {
+                    Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE -> {
+                        MediaImagesPermissionTextProvider()
+                    }
+
+                    Manifest.permission.CAMERA -> {
+                        CameraPermissionTextProvider()
+                    }
+
+                    Manifest.permission.RECORD_AUDIO -> {
+                        RecordAudioPermissionTextProvider()
+                    }
+
+                    Manifest.permission.CALL_PHONE -> {
+                        PhoneCallPermissionTextProvider()
+                    }
+
+                    else -> return@forEach
+                }, isPermanentlyDeclined = !activity!!.shouldShowRequestPermissionRationale(
+                    permission
+                ), onDismiss = viewModel::dismissDialog, onOkClick = {
+                    viewModel.dismissDialog()
+                    multiplePermissionResultLauncher.launch(
+                        arrayOf(permission)
+                    )
+                }, onGoToAppSettingsClick = { openAppSettings(activity = activity) })
+            }
         }
     }
 
@@ -441,55 +437,6 @@ fun openAppSettings(activity: Activity) {
         Uri.fromParts("package", activity.packageName, null)
     ).also { activity.startActivity(it) }
 }
-
-//@Composable
-//fun SubscriptionCard(
-//    title: String,
-//    description: String,
-//    gradient: List<Color>,
-//    onClick: () -> Unit,
-//    isSelected: Boolean
-//) {
-//    val border = if (isSelected) BorderStroke(2.dp, Color.White) else null
-//
-//    Card(
-//        modifier = Modifier
-//            .padding(10.dp)
-//            .clickable(onClick = onClick),
-//        border = border,
-//        shape = RoundedCornerShape(15.dp),
-//        elevation = CardDefaults.cardElevation(
-//            defaultElevation = 10.dp
-//        )
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .requiredHeight(200.dp)
-//                .background(Brush.horizontalGradient(gradient))
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .align(Alignment.Center)
-//                    .padding(10.dp),
-//                verticalArrangement = Arrangement.SpaceEvenly
-//            ) {
-//                Text(
-//                    text = title,
-//                    style = MaterialTheme.typography.titleMedium,
-//                    color = Color.White,
-//                    modifier = Modifier.align(Alignment.CenterHorizontally)
-//                )
-//                Text(
-//                    text = description,
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    color = Color.White,
-//                    modifier = Modifier.align(Alignment.CenterHorizontally)
-//                )
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun SubscriptionCard(
