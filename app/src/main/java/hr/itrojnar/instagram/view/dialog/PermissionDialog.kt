@@ -1,4 +1,4 @@
-package hr.itrojnar.instagram.view.dialogue
+package hr.itrojnar.instagram.view.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
