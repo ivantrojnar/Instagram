@@ -19,12 +19,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -36,6 +39,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -49,8 +53,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -338,37 +344,64 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp)
+                .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp)
         ) {
-            SubscriptionCard(
-                title = "Diamond Tier",
-                description = "This is the Diamond tier subscription",
-                gradient = listOf(Color.LightGray, Color.DarkGray),
-                onClick = { onSelectedChanged("Diamond") },
-                isSelected = selectedTier == "Diamond"
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_back),
+                contentDescription = "Back arrow",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(24.dp)
+                    .clickable { currentScreen = "SignUp" }
+            )
+            Text(
+                text = if (selectedTier != null) "Current selection: $selectedTier" else "No subscription selected",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(horizontal = 10.dp)
             )
 
             SubscriptionCard(
-                title = "Gold Tier",
-                description = "This is the Gold tier subscription",
-                gradient = listOf(Color.Yellow, Color.DarkGray),
-                onClick = { onSelectedChanged("Gold") },
-                isSelected = selectedTier == "Gold"
-            )
-
-            SubscriptionCard(
-                title = "Silver Tier",
-                description = "This is the Silver tier subscription",
+                title = "FREE",
+                description = "Upload limit: 1GB/day. Max spend: 10 photos.",
                 gradient = listOf(Color.LightGray, Color.Gray),
-                onClick = { onSelectedChanged("Silver") },
-                isSelected = selectedTier == "Silver"
+                onClick = { onSelectedChanged("FREE") },
+                isSelected = selectedTier == "FREE"
             )
-        }
-        Button(
-            modifier = modifier.fillMaxWidth(),
-            onClick = { currentScreen = "SignUp" },
-        ) {
-            Text(text = "Back")
+
+            SubscriptionCard(
+                title = "PRO",
+                description = "Upload limit: 10GB/day. Max spend: 50 photos. Price: $9.99/month",
+                gradient = listOf(Color.Blue, Color(0xFF00008B)),
+                onClick = { onSelectedChanged("PRO") },
+                isSelected = selectedTier == "PRO"
+            )
+
+            SubscriptionCard(
+                title = "GOLD",
+                description = "Upload limit: Unlimited. Max spend: Unlimited. Price: $24.99/month",
+                gradient = listOf(Color.Yellow, Color(0xFFFFD700)),
+                onClick = { onSelectedChanged("GOLD") },
+                isSelected = selectedTier == "GOLD"
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(start = 10.dp, end = 10.dp),
+                onClick = {  },
+                colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+                shape = RoundedCornerShape(5.dp)
+            ) {
+                Text(
+                    stringResource(R.string.finish),
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(top = 5.dp)
+                )
+            }
         }
     }
 }
@@ -380,6 +413,55 @@ fun openAppSettings(activity: Activity) {
     ).also { activity.startActivity(it) }
 }
 
+//@Composable
+//fun SubscriptionCard(
+//    title: String,
+//    description: String,
+//    gradient: List<Color>,
+//    onClick: () -> Unit,
+//    isSelected: Boolean
+//) {
+//    val border = if (isSelected) BorderStroke(2.dp, Color.White) else null
+//
+//    Card(
+//        modifier = Modifier
+//            .padding(10.dp)
+//            .clickable(onClick = onClick),
+//        border = border,
+//        shape = RoundedCornerShape(15.dp),
+//        elevation = CardDefaults.cardElevation(
+//            defaultElevation = 10.dp
+//        )
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .requiredHeight(200.dp)
+//                .background(Brush.horizontalGradient(gradient))
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .align(Alignment.Center)
+//                    .padding(10.dp),
+//                verticalArrangement = Arrangement.SpaceEvenly
+//            ) {
+//                Text(
+//                    text = title,
+//                    style = MaterialTheme.typography.titleMedium,
+//                    color = Color.White,
+//                    modifier = Modifier.align(Alignment.CenterHorizontally)
+//                )
+//                Text(
+//                    text = description,
+//                    style = MaterialTheme.typography.bodyLarge,
+//                    color = Color.White,
+//                    modifier = Modifier.align(Alignment.CenterHorizontally)
+//                )
+//            }
+//        }
+//    }
+//}
+
 @Composable
 fun SubscriptionCard(
     title: String,
@@ -388,17 +470,15 @@ fun SubscriptionCard(
     onClick: () -> Unit,
     isSelected: Boolean
 ) {
-    val border = if (isSelected) BorderStroke(2.dp, Color.White) else null
+    val border = if (isSelected) BorderStroke(4.dp, Color.Black) else null
 
     Card(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
             .clickable(onClick = onClick),
         border = border,
         shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
     ) {
         Box(
             modifier = Modifier
@@ -414,28 +494,19 @@ fun SubscriptionCard(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge.copy(shadow = Shadow(Color.Black, offset = Offset(1f, 1f), blurRadius = 2f)), // assuming titleMedium is not a default style, switching to h6
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = description,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(shadow = Shadow(Color.Black, offset = Offset(1f, 1f), blurRadius = 2f)), // assuming bodyLarge is not a default style, switching to body1
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
         }
     }
-}
-
-@Composable
-fun SubscriptionScreen(
-    // TODO place in viewmodel
-    selectedTier: String,
-    onSelectedChanged: (String) -> Unit
-) {
-
 }
 
 @Composable
