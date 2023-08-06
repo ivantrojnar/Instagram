@@ -11,17 +11,30 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,11 +44,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -44,6 +64,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.LogoImage
 import hr.itrojnar.instagram.util.LottieAnimationLoop
@@ -77,6 +98,9 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
+    var showImagePickerDialog by remember { mutableStateOf(false) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
     val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         (listOf(Manifest.permission.READ_MEDIA_IMAGES) + commonPermissions).toTypedArray()
     } else {
@@ -104,12 +128,12 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 .fillMaxSize()
                 .background(Color.Transparent)
         ) {
-            LogoImage(topPadding = 30, 10)
+            LogoImage(topPadding = 10, 0)
 
             LottieAnimationLoop(resId = R.raw.sign_up_animation,
                 modifier
                     .fillMaxWidth()
-                    .height(180.dp))
+                    .height(170.dp))
             Text(
                 text = stringResource(R.string.sign_up),
                 style = TextStyle(
@@ -121,6 +145,9 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     .fillMaxWidth()
                     .padding(bottom = 10.dp)
             )
+            ProfileImage(imageUri = imageUri) {
+                showImagePickerDialog = true
+            }
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -131,7 +158,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                        .padding(vertical = 4.dp),
                     value = "",
                     onValueChange = {},
                     label = { Text(text = stringResource(R.string.full_name)) },
@@ -160,7 +187,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                        .padding(vertical = 4.dp),
                     value = "",
                     onValueChange = { },
                     label = { Text(text = stringResource(R.string.email)) },
@@ -182,14 +209,14 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
+                    .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 10.dp)
                     .background(Color.Transparent),
                 shape = RoundedCornerShape(10.dp),
             ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                        .padding(vertical = 4.dp),
                     value = "",
                     onValueChange = {},
                     label = { Text(text = stringResource(R.string.password)) },
@@ -209,54 +236,83 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 )
             }
             Button(
-                onClick = onLogInClick,
-            ) {
-                Text(text = "Switch to Log In")
-            }
-            Button(
-                modifier = modifier
-                    .padding(top = 60.dp)
-                    .fillMaxWidth(),
-                onClick = {
-                    multiplePermissionResultLauncher.launch(permissionsToRequest)
-                },
-            ) {
-                Text(text = "Request permissions")
-            }
-            dialogQueue.reversed().forEach { permission ->
-                PermissionDialog(permissionTextProvider = when (permission) {
-                    Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE -> {
-                        MediaImagesPermissionTextProvider()
-                    }
-
-                    Manifest.permission.CAMERA -> {
-                        CameraPermissionTextProvider()
-                    }
-
-                    Manifest.permission.RECORD_AUDIO -> {
-                        RecordAudioPermissionTextProvider()
-                    }
-
-                    Manifest.permission.CALL_PHONE -> {
-                        PhoneCallPermissionTextProvider()
-                    }
-
-                    else -> return@forEach
-                }, isPermanentlyDeclined = !activity!!.shouldShowRequestPermissionRationale(
-                    permission
-                ), onDismiss = viewModel::dismissDialog, onOkClick = {
-                    viewModel.dismissDialog()
-                    multiplePermissionResultLauncher.launch(
-                        arrayOf(permission)
-                    )
-                }, onGoToAppSettingsClick = { openAppSettings(activity = activity) })
-            }
-            Button(
-                modifier = modifier.padding(top = 150.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(start = 20.dp, end = 20.dp),
                 onClick = { currentScreen = "Subscription" },
+                colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+                shape = RoundedCornerShape(5.dp)
             ) {
-                Text(text = "Subscription")
+                Text(
+                    stringResource(R.string.next),
+                    fontSize = 16.sp,
+                    color = Color.White)
             }
+//            Button(
+//                onClick = onLogInClick,
+//            ) {
+//                Text(text = "Switch to Log In")
+//            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ClickableText(
+                    text = AnnotatedString(stringResource(R.string.back_to_log_in)),
+                    onClick = { onLogInClick() },
+                    style = TextStyle(
+                        color = Color(0xFF3797EF),
+                        fontSize = 16.sp
+                    )
+                )
+            }
+//            Button(
+//                modifier = modifier
+//                    .padding(top = 60.dp)
+//                    .fillMaxWidth(),
+//                onClick = {
+//                    multiplePermissionResultLauncher.launch(permissionsToRequest)
+//                },
+//            ) {
+//                Text(text = "Request permissions")
+//            }
+//            dialogQueue.reversed().forEach { permission ->
+//                PermissionDialog(permissionTextProvider = when (permission) {
+//                    Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE -> {
+//                        MediaImagesPermissionTextProvider()
+//                    }
+//
+//                    Manifest.permission.CAMERA -> {
+//                        CameraPermissionTextProvider()
+//                    }
+//
+//                    Manifest.permission.RECORD_AUDIO -> {
+//                        RecordAudioPermissionTextProvider()
+//                    }
+//
+//                    Manifest.permission.CALL_PHONE -> {
+//                        PhoneCallPermissionTextProvider()
+//                    }
+//
+//                    else -> return@forEach
+//                }, isPermanentlyDeclined = !activity!!.shouldShowRequestPermissionRationale(
+//                    permission
+//                ), onDismiss = viewModel::dismissDialog, onOkClick = {
+//                    viewModel.dismissDialog()
+//                    multiplePermissionResultLauncher.launch(
+//                        arrayOf(permission)
+//                    )
+//                }, onGoToAppSettingsClick = { openAppSettings(activity = activity) })
+//            }
+//            Button(
+//                modifier = modifier.padding(top = 15.dp),
+//                onClick = { currentScreen = "Subscription" },
+//            ) {
+//                Text(text = "Subscription")
+//            }
         }
     }
 
@@ -281,4 +337,76 @@ fun openAppSettings(activity: Activity) {
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
         Uri.fromParts("package", activity.packageName, null)
     ).also { activity.startActivity(it) }
+}
+
+@Composable
+fun SubscriptionCard(
+    title: String,
+    description: String,
+    gradient: List<Color>,
+    onClick: () -> Unit,
+    isSelected: Boolean
+) {
+    val border = if (isSelected) BorderStroke(2.dp, Color.White) else null
+
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .clickable(onClick = onClick),
+        border = border,
+        shape = RoundedCornerShape(15.dp),
+        //elevation = CardElevation(defaultElevation = 10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .requiredHeight(200.dp)
+                .background(Brush.horizontalGradient(gradient))
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileImage(imageUri: Uri?, onImageClick: () -> Unit) {
+    val image: Painter = imageUri?.let {
+        rememberImagePainter(data = it)
+    } ?: painterResource(id = R.drawable.default_profile_picture) // Replace with your default image
+
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(120.dp), horizontalArrangement = Arrangement.Center) {
+        Box(modifier = Modifier
+            .size(120.dp)
+            .clip(CircleShape)
+            .clickable { onImageClick() }) {
+            Image(
+                painter = image,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center)
+            )
+        }
+    }
 }
