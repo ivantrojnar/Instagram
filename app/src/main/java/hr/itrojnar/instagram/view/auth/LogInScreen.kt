@@ -1,5 +1,7 @@
 package hr.itrojnar.instagram.view.auth
 
+import android.text.style.ClickableSpan
+import android.widget.Toast
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +29,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,21 +53,30 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.sign_in.SignInState
 import hr.itrojnar.instagram.util.LogoImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogInScreen(
+    state: SignInState,
+    onSignInClick: () -> Unit,
     modifier: Modifier = Modifier,
     onSignUpClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onLogin: () -> Unit) {
+    onLogin: () -> Unit
+) {
+
     val focusManager = LocalFocusManager.current
 
-    // TODO Provjeriti
-    val state = remember {
-        MutableTransitionState(false).apply {
-            targetState = true
+    val context = LocalContext.current
+    LaunchedEffect(key1 = state.signInError) {
+        state.signInError?.let { error ->
+            Toast.makeText(
+                context,
+                error,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -75,14 +88,16 @@ fun LogInScreen(
         mutableStateOf("")
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Transparent),
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Transparent),
     ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Transparent)) {
+                .background(Color.Transparent)
+        ) {
             LogoImage(topPadding = 110, 25)
             Surface(
                 modifier = Modifier
@@ -102,7 +117,7 @@ fun LogInScreen(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = KeyboardActions (
+                    keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -131,7 +146,7 @@ fun LogInScreen(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
-                    keyboardActions = KeyboardActions (
+                    keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -161,14 +176,18 @@ fun LogInScreen(
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
-                onClick = { Firebase.analytics.logEvent("log_button_click", null) },
+                onClick = {
+                    Firebase.analytics.logEvent("log_button_click", null)
+                    onSignInClick()
+                },
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
                 shape = RoundedCornerShape(5.dp)
             ) {
                 Text(
                     stringResource(R.string.log_in),
                     fontSize = 16.sp,
-                    color = Color.White)
+                    color = Color.White
+                )
             }
             Row(
                 modifier = modifier
@@ -176,12 +195,14 @@ fun LogInScreen(
                     .padding(top = 40.dp)
                     .clickable { },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
+                horizontalArrangement = Arrangement.Center
+            ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.google_icon),
                     contentDescription = stringResource(R.string.google_icon),
-                    modifier = modifier.size(20.dp))
+                    modifier = modifier.size(20.dp)
+                )
 
                 Spacer(modifier = modifier.width(8.dp))
 
@@ -193,12 +214,14 @@ fun LogInScreen(
                     .padding(top = 10.dp)
                     .clickable { },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
+                horizontalArrangement = Arrangement.Center
+            ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.github_icon),
                     contentDescription = stringResource(R.string.github_icon),
-                    modifier = modifier.size(20.dp))
+                    modifier = modifier.size(20.dp)
+                )
 
                 Spacer(modifier = modifier.width(8.dp))
 
@@ -209,20 +232,23 @@ fun LogInScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 30.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 Spacer(
                     modifier = modifier
                         .weight(1f)
                         .height(1.dp)
-                        .background(Color.Black.copy(alpha = 0.2f)))
+                        .background(Color.Black.copy(alpha = 0.2f))
+                )
 
                 Spacer(modifier = modifier.width(8.dp))
 
                 Text(
                     modifier = modifier.padding(horizontal = 8.dp),
                     text = stringResource(R.string.or),
-                    color = Color.Black.copy(alpha = 0.4f))
+                    color = Color.Black.copy(alpha = 0.4f)
+                )
 
                 Spacer(modifier = modifier.width(8.dp))
 
@@ -230,19 +256,22 @@ fun LogInScreen(
                     modifier = modifier
                         .weight(1f)
                         .height(1.dp)
-                        .background(Color.Black.copy(alpha = 0.2f)))
+                        .background(Color.Black.copy(alpha = 0.2f))
+                )
             }
             Row(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 Text(
                     text = stringResource(R.string.don_t_have_an_account),
                     style = TextStyle(fontSize = 16.sp),
-                    color = Color.Black.copy(alpha = 0.4f))
+                    color = Color.Black.copy(alpha = 0.4f)
+                )
 
                 Spacer(modifier = Modifier.width(4.dp))
 

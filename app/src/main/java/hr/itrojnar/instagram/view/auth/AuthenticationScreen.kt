@@ -19,9 +19,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.sign_in.SignInState
 
 @Composable
 fun AuthenticationScreen(
+    state: SignInState,
+    onSignInClick: () -> Unit,
     authenticationState: AuthenticationState,
     onLogin: () -> Unit,
     onRegister: () -> Unit,
@@ -40,6 +43,8 @@ fun AuthenticationScreen(
             Crossfade(targetState = currentScreen) { screen ->
                 when (screen) {
                     AuthenticationScreenState.LogIn -> LogInScreen(
+                        state = state,
+                        onSignInClick = onSignInClick,
                         modifier = modifier,
                         onSignUpClick = { currentScreen = AuthenticationScreenState.SignUp },
                         onForgotPasswordClick = { currentScreen = AuthenticationScreenState.ForgotPassword },
