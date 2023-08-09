@@ -84,6 +84,7 @@ import hr.itrojnar.instagram.view.dialog.PhoneCallPermissionTextProvider
 import hr.itrojnar.instagram.view.dialog.RecordAudioPermissionTextProvider
 import hr.itrojnar.instagram.viewmodel.MainViewModel
 import java.io.ByteArrayOutputStream
+import hr.itrojnar.instagram.enum.Subscription
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -385,29 +386,43 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 modifier = Modifier.padding(horizontal = 10.dp)
             )
 
-            SubscriptionCard(
-                title = "FREE",
-                description = "Upload limit: 1GB/day. Max spend: 10 photos.",
-                gradient = listOf(Color.LightGray, Color.Gray),
-                onClick = { onSelectedChanged("FREE") },
-                isSelected = selectedTier == "FREE"
-            )
+            Subscription.values().forEach { subscription ->
+                SubscriptionCard(
+                    title = subscription.title,
+                    description = subscription.description,
+                    gradient = when(subscription) {
+                        Subscription.FREE -> listOf(Color.LightGray, Color.Gray)
+                        Subscription.PRO -> listOf(Color.Blue, Color(0xFF00008B))
+                        Subscription.GOLD -> listOf(Color.Yellow, Color(0xFFFFD700))
+                    },
+                    onClick = { onSelectedChanged(subscription.title) },
+                    isSelected = selectedTier == subscription.title
+                )
+            }
 
-            SubscriptionCard(
-                title = "PRO",
-                description = "Upload limit: 10GB/day. Max spend: 50 photos. Price: $9.99/month",
-                gradient = listOf(Color.Blue, Color(0xFF00008B)),
-                onClick = { onSelectedChanged("PRO") },
-                isSelected = selectedTier == "PRO"
-            )
-
-            SubscriptionCard(
-                title = "GOLD",
-                description = "Upload limit: Unlimited. Max spend: Unlimited. Price: $24.99/month",
-                gradient = listOf(Color.Yellow, Color(0xFFFFD700)),
-                onClick = { onSelectedChanged("GOLD") },
-                isSelected = selectedTier == "GOLD"
-            )
+//            SubscriptionCard(
+//                title = "FREE",
+//                description = "Upload limit: 1GB/day. Max spend: 10 photos.",
+//                gradient = listOf(Color.LightGray, Color.Gray),
+//                onClick = { onSelectedChanged("FREE") },
+//                isSelected = selectedTier == "FREE"
+//            )
+//
+//            SubscriptionCard(
+//                title = "PRO",
+//                description = "Upload limit: 10GB/day. Max spend: 50 photos. Price: $9.99/month",
+//                gradient = listOf(Color.Blue, Color(0xFF00008B)),
+//                onClick = { onSelectedChanged("PRO") },
+//                isSelected = selectedTier == "PRO"
+//            )
+//
+//            SubscriptionCard(
+//                title = "GOLD",
+//                description = "Upload limit: Unlimited. Max spend: Unlimited. Price: $24.99/month",
+//                gradient = listOf(Color.Yellow, Color(0xFFFFD700)),
+//                onClick = { onSelectedChanged("GOLD") },
+//                isSelected = selectedTier == "GOLD"
+//            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
