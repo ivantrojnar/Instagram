@@ -167,9 +167,7 @@ fun LogInScreen(
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
-                onClick = {
-                    //TODO implement log in with email and password
-                },
+                onClick = onLogin,
                 enabled = logInState.isEmailValid && logInState.isPasswordValid,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),

@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.Identity
+import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleAuthUiClient
 import hr.itrojnar.instagram.view.AuthScreen
 import hr.itrojnar.instagram.view.auth.AuthenticationScreen
@@ -70,8 +71,16 @@ fun NavGraphBuilder.authNavGraph(
                         )
                     }
                 },
-                logInState = authenticationViewModel.logInState.value,
-                onLogin = { Toast.makeText(context, "Log in click", Toast.LENGTH_SHORT).show() },
+                logInState = authenticationViewModel.authenticationState.value,
+                onLogin = { authenticationViewModel.logIn(
+                    onSuccess = {
+                        navHostController.popBackStack()
+                        navHostController.navigate(Graph.MAIN)
+                    },
+                    onFail = {
+                        Toast.makeText(context, context.getString(R.string.unable_to_log_in), Toast.LENGTH_SHORT).show()
+                    }
+                ) },
                 onRegister = { Toast.makeText(context, "Sign up click", Toast.LENGTH_SHORT).show() },
                 onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },
                 onEmailChanged = { authenticationViewModel.onEmailChanged(it) },
