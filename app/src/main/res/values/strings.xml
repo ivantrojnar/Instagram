@@ -22,4 +22,5 @@
     <string name="web_client_id">893185908089-s31084semslet4cd71461mj3kkmk0vp1.apps.googleusercontent.com</string>
     <string name="unable_to_log_in">Unable to log in</string>
     <string name="successful_log_in">Successful log in</string>
+    <string name="unable_to_register">Unable to register</string>
 </resources>

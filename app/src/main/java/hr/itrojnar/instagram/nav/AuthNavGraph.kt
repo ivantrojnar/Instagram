@@ -84,7 +84,17 @@ fun NavGraphBuilder.authNavGraph(
                     }
                 ) },
                 signUpState = signUpViewModel.signUpstate.value,
-                onSignUp = {  },
+                onSignUp = {
+                           signUpViewModel.register(
+                               onSuccess = {
+                                   navHostController.popBackStack()
+                                   navHostController.navigate(Graph.MAIN)
+                               },
+                               onFail = {
+                                   Toast.makeText(context, context.getString(R.string.unable_to_register), Toast.LENGTH_SHORT).show()
+                               }
+                           )
+                },
                 onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },
                 onLoginEmailChanged = { authenticationViewModel.onEmailChanged(it) },
                 onLoginPasswordChanged = { authenticationViewModel.onPasswordChanged(it) },

@@ -311,7 +311,10 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
-                onClick = { currentScreen = "Subscription" },
+                onClick = {
+                    //currentScreen = "Subscription"
+                    onSignUp()
+                },
                 enabled = signUpState.isImageSelected && signUpState.isFullNameValid && signUpState.isEmailValid && signUpState.isPasswordValid,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
