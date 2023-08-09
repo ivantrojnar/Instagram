@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -67,6 +68,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,7 +90,17 @@ import hr.itrojnar.instagram.enum.Subscription
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () -> Unit) {
+fun SignUpScreen(
+    modifier: Modifier,
+    onSignUpEmailChanged: (String) -> Unit,
+    onSignUpPasswordChanged: (String) -> Unit,
+    onFullNameChanged: (String) -> Unit,
+    onImageUriChanged: (Uri) -> Unit,
+    signUpState: SignUpState,
+    onLogInClick: () -> Unit,
+    onSignUp: () -> Unit,
+    resetSignUpState: () -> Unit,
+) {
 
     var currentScreen by remember { mutableStateOf("SignUp") }
 
@@ -133,6 +145,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     context.contentResolver, it, "Title", null
                 )
                 imageUri = Uri.parse(path)
+                imageUri?.let(onImageUriChanged)
             }
         }
 
@@ -140,6 +153,9 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             // Assign the chosen image URI to imageUri
             imageUri = uri
+            uri?.let {
+                onImageUriChanged(it)
+            }
         }
 
     val multiplePermissionResultLauncher =
@@ -213,15 +229,15 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    value = "",
-                    onValueChange = {},
+                    value = signUpState.fullName,
+                    onValueChange = onFullNameChanged,
                     label = { Text(text = stringResource(R.string.full_name)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
@@ -242,15 +258,15 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    value = "",
-                    onValueChange = { },
+                    value = signUpState.email,
+                    onValueChange = onSignUpEmailChanged,
                     label = { Text(text = stringResource(R.string.email)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
@@ -271,8 +287,8 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    value = "",
-                    onValueChange = {},
+                    value = signUpState.password,
+                    onValueChange = onSignUpPasswordChanged,
                     label = { Text(text = stringResource(R.string.password)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
@@ -286,7 +302,8 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                         unfocusedBorderColor = Color.Gray, // Color for the border when not focused
                         focusedLabelColor = Color.Black, // Color for the hint text when focused
                         focusedBorderColor = Color.Black, // Color for the border when focused
-                    )
+                    ),
+                    visualTransformation = PasswordVisualTransformation()
                 )
             }
             Button(
@@ -295,7 +312,11 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = { currentScreen = "Subscription" },
-                colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+                enabled = signUpState.isImageSelected && signUpState.isFullNameValid && signUpState.isEmailValid && signUpState.isPasswordValid,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+                    containerColor = Color(0xFF3797EF)
+                ),
                 shape = RoundedCornerShape(5.dp)
             ) {
                 Text(
@@ -312,7 +333,10 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
             ) {
                 ClickableText(
                     text = AnnotatedString(stringResource(R.string.back_to_log_in)),
-                    onClick = { onLogInClick() },
+                    onClick = {
+                        onLogInClick()
+                        resetSignUpState()
+                    },
                     style = TextStyle(
                         color = Color(0xFF3797EF),
                         fontSize = 16.sp
@@ -390,7 +414,7 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                 SubscriptionCard(
                     title = subscription.title,
                     description = subscription.description,
-                    gradient = when(subscription) {
+                    gradient = when (subscription) {
                         Subscription.FREE -> listOf(Color.LightGray, Color.Gray)
                         Subscription.PRO -> listOf(Color.Blue, Color(0xFF00008B))
                         Subscription.GOLD -> listOf(Color.Yellow, Color(0xFFFFD700))
@@ -399,30 +423,6 @@ fun SignUpScreen(modifier: Modifier, onLogInClick: () -> Unit, onRegister: () ->
                     isSelected = selectedTier == subscription.title
                 )
             }
-
-//            SubscriptionCard(
-//                title = "FREE",
-//                description = "Upload limit: 1GB/day. Max spend: 10 photos.",
-//                gradient = listOf(Color.LightGray, Color.Gray),
-//                onClick = { onSelectedChanged("FREE") },
-//                isSelected = selectedTier == "FREE"
-//            )
-//
-//            SubscriptionCard(
-//                title = "PRO",
-//                description = "Upload limit: 10GB/day. Max spend: 50 photos. Price: $9.99/month",
-//                gradient = listOf(Color.Blue, Color(0xFF00008B)),
-//                onClick = { onSelectedChanged("PRO") },
-//                isSelected = selectedTier == "PRO"
-//            )
-//
-//            SubscriptionCard(
-//                title = "GOLD",
-//                description = "Upload limit: Unlimited. Max spend: Unlimited. Price: $24.99/month",
-//                gradient = listOf(Color.Yellow, Color(0xFFFFD700)),
-//                onClick = { onSelectedChanged("GOLD") },
-//                isSelected = selectedTier == "GOLD"
-//            )
 
             Spacer(modifier = Modifier.height(20.dp))
 

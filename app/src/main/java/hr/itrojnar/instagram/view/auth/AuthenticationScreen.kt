@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram.view.auth
 
+import android.net.Uri
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,10 +21,16 @@ fun AuthenticationScreen(
     onSignInClick: () -> Unit,
     logInState: LogInState,
     onLogin: () -> Unit,
-    onRegister: () -> Unit,
+    signUpState: SignUpState,
+    onSignUp: () -> Unit,
     onRequestEmailForForgottenPassword: () -> Unit,
-    onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
+    onLoginEmailChanged: (String) -> Unit,
+    onLoginPasswordChanged: (String) -> Unit,
+    onSignUpEmailChanged: (String) -> Unit,
+    onSignUpPasswordChanged: (String) -> Unit,
+    onFullNameChanged: (String) -> Unit,
+    onImageUriChanged: (Uri) -> Unit,
+    resetSignUpState: () -> Unit,
     modifier: Modifier = Modifier) {
 
     var currentScreen by remember {
@@ -38,8 +45,8 @@ fun AuthenticationScreen(
                 when (screen) {
                     AuthenticationScreenState.LogIn -> LogInScreen(
                         logInState = logInState,
-                        onEmailChanged = onEmailChanged,
-                        onPasswordChanged = onPasswordChanged,
+                        onEmailChanged = onLoginEmailChanged,
+                        onPasswordChanged = onLoginPasswordChanged,
                         googleSignInState = googleSignInState,
                         onSignInClick = onSignInClick,
                         modifier = modifier,
@@ -49,8 +56,14 @@ fun AuthenticationScreen(
                     )
                     AuthenticationScreenState.SignUp -> SignUpScreen(
                         modifier = modifier,
+                        onSignUpEmailChanged = onSignUpEmailChanged,
+                        onSignUpPasswordChanged = onSignUpPasswordChanged,
+                        onFullNameChanged = onFullNameChanged,
+                        onImageUriChanged = onImageUriChanged,
+                        signUpState = signUpState,
                         onLogInClick = { currentScreen = AuthenticationScreenState.LogIn },
-                        onRegister = onRegister
+                        resetSignUpState = resetSignUpState,
+                        onSignUp = onSignUp
                     )
                     AuthenticationScreenState.ForgotPassword -> ForgotPasswordScreen(
                         modifier = modifier,

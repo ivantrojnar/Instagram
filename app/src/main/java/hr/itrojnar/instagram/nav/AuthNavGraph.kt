@@ -21,11 +21,13 @@ import hr.itrojnar.instagram.view.AuthScreen
 import hr.itrojnar.instagram.view.auth.AuthenticationScreen
 import hr.itrojnar.instagram.viewmodel.AuthenticationViewModel
 import hr.itrojnar.instagram.viewmodel.SignInViewModel
+import hr.itrojnar.instagram.viewmodel.SignUpViewModel
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.authNavGraph(
     navHostController: NavHostController,
     authenticationViewModel: AuthenticationViewModel,
+    signUpViewModel: SignUpViewModel,
     context: Context
 ) {
     navigation(
@@ -44,7 +46,7 @@ fun NavGraphBuilder.authNavGraph(
                     oneTapClient = Identity.getSignInClient(context)
                 )
             }
-            
+
             val launcher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                 onResult = { result ->
@@ -81,10 +83,16 @@ fun NavGraphBuilder.authNavGraph(
                         Toast.makeText(context, context.getString(R.string.unable_to_log_in), Toast.LENGTH_SHORT).show()
                     }
                 ) },
-                onRegister = { Toast.makeText(context, "Sign up click", Toast.LENGTH_SHORT).show() },
+                signUpState = signUpViewModel.signUpstate.value,
+                onSignUp = {  },
                 onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },
-                onEmailChanged = { authenticationViewModel.onEmailChanged(it) },
-                onPasswordChanged = { authenticationViewModel.onPasswordChanged(it) })
+                onLoginEmailChanged = { authenticationViewModel.onEmailChanged(it) },
+                onLoginPasswordChanged = { authenticationViewModel.onPasswordChanged(it) },
+                onSignUpEmailChanged = { signUpViewModel.onEmailChanged(it) },
+                onSignUpPasswordChanged = { signUpViewModel.onPasswordChanged(it) },
+                onFullNameChanged = { signUpViewModel.onFullNameChanged(it) },
+                onImageUriChanged = { signUpViewModel.onImageUriChanged(it)},
+                resetSignUpState = { signUpViewModel.resetSignUpState()})
         }
     }
 }

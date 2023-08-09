@@ -28,4 +28,21 @@ object AuthenticationRepository {
             }
 
     }
+
+    fun register(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFail: () -> Unit,
+    ) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener{
+                if(it.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onFail()
+                    Log.e("REGISTER", "Unable to register")
+                }
+            }
+    }
 }

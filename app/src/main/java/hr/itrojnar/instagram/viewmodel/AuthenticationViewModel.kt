@@ -23,6 +23,7 @@ class AuthenticationViewModel : ViewModel() {
             isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
         )
     }
+
     fun onPasswordChanged(password: String) {
         _authenticationState.value = _authenticationState.value.copy(
             password = password,
@@ -38,12 +39,4 @@ class AuthenticationViewModel : ViewModel() {
             onFail = onFail
         )
     }
-//    fun register(onSuccess: () -> Unit, onFail: () -> Unit) {
-//        AuthenticationRepository.register(
-//            _authenticationState.value.email,
-//            _authenticationState.value.password,
-//            onSuccess = onSuccess,
-//            onFail = onFail
-//        )
-//    }
 }
