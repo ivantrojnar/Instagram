@@ -1,6 +1,7 @@
 package hr.itrojnar.instagram.view.auth
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.google.firebase.auth.FirebaseAuth
+import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 
 @Composable
@@ -36,6 +40,8 @@ fun AuthenticationScreen(
     var currentScreen by remember {
         mutableStateOf(AuthenticationScreenState.LogIn)
     }
+
+    val context = LocalContext.current
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = modifier
@@ -68,7 +74,17 @@ fun AuthenticationScreen(
                     AuthenticationScreenState.ForgotPassword -> ForgotPasswordScreen(
                         modifier = modifier,
                         onLogInClick = { currentScreen = AuthenticationScreenState.LogIn },
-                        onRequestEmailForForgottenPassword = onRequestEmailForForgottenPassword
+                        onRequestEmailForForgottenPassword = { email, onSuccess, onFailure ->
+                            val auth = FirebaseAuth.getInstance()
+                            auth.sendPasswordResetEmail(email)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Toast.makeText(context, context.getString(R.string.unable_to_log_in), Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        task.exception?.let { onFailure(it) }
+                                    }
+                                }
+                        }
                     )
                 }
             }
