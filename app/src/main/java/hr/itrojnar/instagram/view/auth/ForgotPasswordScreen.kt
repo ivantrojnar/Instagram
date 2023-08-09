@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram.view.auth
 
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,8 @@ fun ForgotPasswordScreen(
         mutableStateOf("")
     }
 
+    var isEmailValid by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -87,11 +90,14 @@ fun ForgotPasswordScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 10.dp),
             value = forgotPasswordEmailState,
-            onValueChange = { forgotPasswordEmailState = it },
+            onValueChange = { value ->
+                forgotPasswordEmailState = value
+                isEmailValid = Patterns.EMAIL_ADDRESS.matcher(value).matches()
+            },
             label = { Text(text = stringResource(R.string.email)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions (
                 onDone = { focusManager.clearFocus() }
@@ -114,12 +120,14 @@ fun ForgotPasswordScreen(
                           {
 
                           },
-                          { exception ->
-
-                          }
+                          {}
                       )
             },
-            colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+            enabled = isEmailValid,
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+                containerColor = Color(0xFF3797EF)
+            ),
             shape = RoundedCornerShape(5.dp)
         ) {
             Text(

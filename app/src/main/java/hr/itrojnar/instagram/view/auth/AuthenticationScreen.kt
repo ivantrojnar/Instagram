@@ -81,7 +81,7 @@ fun AuthenticationScreen(
                                     if (task.isSuccessful) {
                                         Toast.makeText(context, context.getString(R.string.unable_to_log_in), Toast.LENGTH_SHORT).show()
                                     } else {
-                                        task.exception?.let { onFailure(it) }
+                                        Toast.makeText(context, context.getString(R.string.unable_to_send_email_to_reset_password), Toast.LENGTH_SHORT).show()
                                     }
                                 }
                         }
