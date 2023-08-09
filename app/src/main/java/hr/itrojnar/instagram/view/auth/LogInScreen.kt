@@ -1,8 +1,6 @@
 package hr.itrojnar.instagram.view.auth
 
-import android.text.style.ClickableSpan
 import android.widget.Toast
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -46,20 +43,21 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
-import hr.itrojnar.instagram.sign_in.SignInState
+import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogInScreen(
-    state: SignInState,
+    logInState: LogInState,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    googleSignInState: GoogleSignInState,
     onSignInClick: () -> Unit,
     modifier: Modifier = Modifier,
     onSignUpClick: () -> Unit,
@@ -70,22 +68,14 @@ fun LogInScreen(
     val focusManager = LocalFocusManager.current
 
     val context = LocalContext.current
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let { error ->
+    LaunchedEffect(key1 = googleSignInState.signInError) {
+        googleSignInState.signInError?.let { error ->
             Toast.makeText(
                 context,
                 error,
                 Toast.LENGTH_LONG
             ).show()
         }
-    }
-
-    // TODO Privremeno
-    var emailState by remember {
-        mutableStateOf("")
-    }
-    var passwordState by remember {
-        mutableStateOf("")
     }
 
     Box(
@@ -110,8 +100,8 @@ fun LogInScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 0.dp, 0.dp, 5.dp),
-                    value = emailState,
-                    onValueChange = { emailState = it },
+                    value = logInState.email,
+                    onValueChange = onEmailChanged,
                     label = { Text(text = stringResource(R.string.email)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
@@ -139,8 +129,8 @@ fun LogInScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 5.dp, 0.dp, 5.dp),
-                    value = emailState,
-                    onValueChange = { emailState = it },
+                    value = logInState.password,
+                    onValueChange = onPasswordChanged,
                     label = { Text(text = stringResource(R.string.password)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
@@ -154,7 +144,8 @@ fun LogInScreen(
                         unfocusedBorderColor = Color.Gray, // Color for the border when not focused
                         focusedLabelColor = Color.Black, // Color for the hint text when focused
                         focusedBorderColor = Color.Black, // Color for the border when focused
-                    )
+                    ),
+                    visualTransformation = PasswordVisualTransformation()
                 )
             }
             Row(
@@ -177,9 +168,13 @@ fun LogInScreen(
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = {
-
+                    //TODO implement log in with email and password
                 },
-                colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+                enabled = logInState.isEmailValid && logInState.isPasswordValid,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+                    containerColor = Color(0xFF3797EF)
+                ),
                 shape = RoundedCornerShape(5.dp)
             ) {
                 Text(

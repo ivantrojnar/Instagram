@@ -2,14 +2,14 @@ package hr.itrojnar.instagram.viewmodel
 
 import androidx.lifecycle.ViewModel
 import hr.itrojnar.instagram.sign_in.SignInResult
-import hr.itrojnar.instagram.sign_in.SignInState
+import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class SignInViewModel: ViewModel() {
 
-    private val _state = MutableStateFlow(SignInState())
+    private val _state = MutableStateFlow(GoogleSignInState())
     val state = _state.asStateFlow()
 
     fun onSignInResult(result: SignInResult) {
@@ -20,6 +20,6 @@ class SignInViewModel: ViewModel() {
     }
 
     fun resetState() {
-        _state.update { SignInState() }
+        _state.update { GoogleSignInState() }
     }
 }

@@ -59,7 +59,7 @@ fun NavGraphBuilder.authNavGraph(
             )
 
             AuthenticationScreen(
-                state = state,
+                googleSignInState = state,
                 onSignInClick = {
                     coroutineScope.launch {
                         val signInIntentSender = googleAuthUiClient.signIn()

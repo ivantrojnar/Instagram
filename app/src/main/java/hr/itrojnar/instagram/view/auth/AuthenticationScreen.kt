@@ -12,11 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import hr.itrojnar.instagram.sign_in.SignInState
+import hr.itrojnar.instagram.sign_in.GoogleSignInState
 
 @Composable
 fun AuthenticationScreen(
-    state: SignInState,
+    googleSignInState: GoogleSignInState,
     onSignInClick: () -> Unit,
     logInState: LogInState,
     onLogin: () -> Unit,
@@ -29,6 +29,7 @@ fun AuthenticationScreen(
     var currentScreen by remember {
         mutableStateOf(AuthenticationScreenState.LogIn)
     }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = modifier
             .fillMaxSize()
@@ -36,7 +37,10 @@ fun AuthenticationScreen(
             Crossfade(targetState = currentScreen) { screen ->
                 when (screen) {
                     AuthenticationScreenState.LogIn -> LogInScreen(
-                        state = state,
+                        logInState = logInState,
+                        onEmailChanged = onEmailChanged,
+                        onPasswordChanged = onPasswordChanged,
+                        googleSignInState = googleSignInState,
                         onSignInClick = onSignInClick,
                         modifier = modifier,
                         onSignUpClick = { currentScreen = AuthenticationScreenState.SignUp },
