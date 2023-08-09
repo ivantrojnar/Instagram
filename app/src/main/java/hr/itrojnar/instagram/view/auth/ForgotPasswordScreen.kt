@@ -128,22 +128,21 @@ fun ForgotPasswordScreen(
                 .height(60.dp)
                 .padding(start = 20.dp, end = 20.dp, top = 10.dp),
             onClick = {
-                showDialog = true
-//                      onRequestEmailForForgottenPassword(
-//                          forgotPasswordEmailState,
-//                          {
-//                              val bundle = Bundle().apply {
-//                                  putString("email", forgotPasswordEmailState)
-//                              }
-//
-//                              Firebase.analytics.logEvent("request_email_for_password_reset", bundle)
-//
-//                              showDialog = true
-//                          },
-//                          {}
-//                      )
+                      onRequestEmailForForgottenPassword(
+                          forgotPasswordEmailState,
+                          {
+                              val bundle = Bundle().apply {
+                                  putString("email", forgotPasswordEmailState)
+                              }
+
+                              Firebase.analytics.logEvent("request_email_for_password_reset", bundle)
+
+                              showDialog = true
+                          },
+                          {}
+                      )
             },
-            enabled = !isEmailValid,
+            enabled = isEmailValid,
             colors = ButtonDefaults.buttonColors(
                 disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
                 containerColor = Color(0xFF3797EF)
