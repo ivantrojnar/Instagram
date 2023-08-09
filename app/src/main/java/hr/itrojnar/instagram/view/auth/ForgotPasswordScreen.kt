@@ -1,14 +1,18 @@
 package hr.itrojnar.instagram.view.auth
 
+import android.os.Bundle
 import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -24,8 +28,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -36,8 +42,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.LogoImage
+import hr.itrojnar.instagram.util.LottieAnimation
 import hr.itrojnar.instagram.util.LottieAnimationLoop
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +65,8 @@ fun ForgotPasswordScreen(
     }
 
     var isEmailValid by remember { mutableStateOf(false) }
+
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -115,15 +128,22 @@ fun ForgotPasswordScreen(
                 .height(60.dp)
                 .padding(start = 20.dp, end = 20.dp, top = 10.dp),
             onClick = {
-                      onRequestEmailForForgottenPassword(
-                          forgotPasswordEmailState,
-                          {
-
-                          },
-                          {}
-                      )
+                showDialog = true
+//                      onRequestEmailForForgottenPassword(
+//                          forgotPasswordEmailState,
+//                          {
+//                              val bundle = Bundle().apply {
+//                                  putString("email", forgotPasswordEmailState)
+//                              }
+//
+//                              Firebase.analytics.logEvent("request_email_for_password_reset", bundle)
+//
+//                              showDialog = true
+//                          },
+//                          {}
+//                      )
             },
-            enabled = isEmailValid,
+            enabled = !isEmailValid,
             colors = ButtonDefaults.buttonColors(
                 disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
                 containerColor = Color(0xFF3797EF)
@@ -149,6 +169,54 @@ fun ForgotPasswordScreen(
                     fontSize = 16.sp
                 )
             )
+        }
+        if (showDialog) {
+            Dialog(onDismissRequest = { showDialog = false }) {
+                // Outer Box with gray background to act as the border
+                Box(
+                    modifier = Modifier
+                        .background(Color(0xFF3797EF), RoundedCornerShape(8.dp)) // Gray border
+                        .padding(2.dp) // Determines the thickness of the border
+                        .size(350.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Inner Box with white background
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White, RoundedCornerShape(6.dp)) // White background
+                            .padding(10.dp)
+                            .fillMaxSize(0.98f), // Take up 95% of the parent to ensure the gray border is visible
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            LottieAnimationLoop(
+                                resId = R.raw.email_password_success_animation,
+                                Modifier.width(280.dp).height(200.dp)
+                            )
+
+                            Text(
+                                text = "Instructions sent to your email!",
+                                textAlign = TextAlign.Center,
+                                style = TextStyle(fontSize = 16.sp)
+                            )
+
+                            Button(
+                                onClick = { showDialog = false },
+                                modifier = Modifier.width(100.dp).height(40.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF3797EF)
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            ) {
+                                Text("Ok")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

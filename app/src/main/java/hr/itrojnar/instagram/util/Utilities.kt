@@ -33,6 +33,18 @@ fun LottieAnimationLoop(@RawRes resId: Int, modifier: Modifier) {
     )
 }
 
+@Composable
+fun LottieAnimation(@RawRes resId: Int, modifier: Modifier) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(resId))
+    val progress by animateLottieCompositionAsState(composition)
+
+    LottieAnimation(
+        composition,
+        progress = progress,
+        modifier = modifier
+    )
+}
+
 fun String.isValidPassword() =
     Pattern.compile("^" +
             "(?=.*[0-9])" +         //at least 1 digit
