@@ -6,6 +6,7 @@ import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,6 +41,9 @@ class GoogleAuthUiClient(
             val authResult = auth.signInWithCredential(googleCredentials).await()
             val user = authResult.user
             val isNewUser = authResult.additionalUserInfo?.isNewUser
+
+            Firebase.analytics.setUserId(user?.uid)
+            Firebase.analytics.logEvent("login_with_google", null)
 
             SignInResult(
                 data = user?.run {

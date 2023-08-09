@@ -177,8 +177,7 @@ fun LogInScreen(
                     .height(50.dp)
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = {
-                    Firebase.analytics.logEvent("log_button_click", null)
-                    onSignInClick()
+
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
                 shape = RoundedCornerShape(5.dp)
@@ -193,7 +192,9 @@ fun LogInScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 40.dp)
-                    .clickable { },
+                    .clickable {
+                        onSignInClick()
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {

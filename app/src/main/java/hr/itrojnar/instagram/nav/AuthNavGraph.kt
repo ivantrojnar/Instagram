@@ -70,7 +70,7 @@ fun NavGraphBuilder.authNavGraph(
                         )
                     }
                 },
-                authenticationState = authenticationViewModel.authenticationState.value,
+                logInState = authenticationViewModel.logInState.value,
                 onLogin = { Toast.makeText(context, "Log in click", Toast.LENGTH_SHORT).show() },
                 onRegister = { Toast.makeText(context, "Sign up click", Toast.LENGTH_SHORT).show() },
                 onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },

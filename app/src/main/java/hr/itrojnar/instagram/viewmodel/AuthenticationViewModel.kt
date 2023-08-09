@@ -5,25 +5,25 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import hr.itrojnar.instagram.util.isValidPassword
-import hr.itrojnar.instagram.view.auth.AuthenticationState
+import hr.itrojnar.instagram.view.auth.LogInState
 
 class AuthenticationViewModel : ViewModel() {
 
-    private val _authenticationState = mutableStateOf(
-        AuthenticationState()
+    private val _logInState = mutableStateOf(
+        LogInState()
     )
 
-    val authenticationState: State<AuthenticationState>
-        get() = _authenticationState
+    val logInState: State<LogInState>
+        get() = _logInState
 
     fun onEmailChanged(email: String) {
-        _authenticationState.value = _authenticationState.value.copy(
+        _logInState.value = _logInState.value.copy(
             email = email,
             isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
         )
     }
     fun onPasswordChanged(password: String) {
-        _authenticationState.value = _authenticationState.value.copy(
+        _logInState.value = _logInState.value.copy(
             password = password,
             isPasswordValid = password.isValidPassword()
         )
