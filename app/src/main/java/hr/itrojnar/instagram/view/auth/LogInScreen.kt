@@ -119,29 +119,6 @@ fun LogInScreen(
         signInLauncher.launch(signInIntent)
     }
 
-    // For handling GitHub sign-in click
-//    fun handleGithubSignIn() {
-//        val provider = OAuthProvider.newBuilder("github.com")
-//        val pendingResultTask = auth.pendingAuthResult
-//        if (pendingResultTask != null) {
-//            pendingResultTask
-//                .addOnSuccessListener {
-//                    // Use user data or navigate to a different screen
-//                }
-//                .addOnFailureListener {
-//                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
-//                }
-//        } else {
-//            auth.startActivityForSignInWithProvider(context as Activity, provider.build())
-//                .addOnSuccessListener {
-//                    // Use user data or navigate to a different screen
-//                }
-//                .addOnFailureListener {
-//                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
-//                }
-//        }
-//    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
