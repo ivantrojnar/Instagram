@@ -1,6 +1,9 @@
 package hr.itrojnar.instagram.view.auth
 
+import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +50,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
@@ -68,6 +75,7 @@ fun LogInScreen(
     val focusManager = LocalFocusManager.current
 
     val context = LocalContext.current
+
     LaunchedEffect(key1 = googleSignInState.signInError) {
         googleSignInState.signInError?.let { error ->
             Toast.makeText(
@@ -75,6 +83,43 @@ fun LogInScreen(
                 error,
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    val auth = FirebaseAuth.getInstance()
+
+    // For handling the result of the sign-in intent
+    val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Successfully signed in
+            val user = auth.currentUser
+            // Use user data or navigate to a different screen
+        } else {
+            // Sign in failed. You can show an error to the user.
+            Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // For handling GitHub sign-in click
+    fun handleGithubSignIn() {
+        val provider = OAuthProvider.newBuilder("github.com")
+        val pendingResultTask = auth.pendingAuthResult
+        if (pendingResultTask != null) {
+            pendingResultTask
+                .addOnSuccessListener {
+                    // Use user data or navigate to a different screen
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+                }
+        } else {
+            auth.startActivityForSignInWithProvider(context as Activity, provider.build())
+                .addOnSuccessListener {
+                    // Use user data or navigate to a different screen
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+                }
         }
     }
 
@@ -206,7 +251,9 @@ fun LogInScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
-                    .clickable { },
+                    .clickable {
+                        handleGithubSignIn()
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
