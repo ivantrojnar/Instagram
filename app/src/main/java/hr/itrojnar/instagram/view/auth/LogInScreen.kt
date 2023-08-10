@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -93,35 +94,53 @@ fun LogInScreen(
         if (result.resultCode == Activity.RESULT_OK) {
             // Successfully signed in
             val user = auth.currentUser
-            // Use user data or navigate to a different screen
+
+            val displayName = user?.displayName
+            val email = user?.email
+            val photoUrl = user?.photoUrl
+
+            Toast.makeText(context, "Logged in as: $displayName", Toast.LENGTH_LONG).show()
         } else {
             // Sign in failed. You can show an error to the user.
             Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
         }
     }
 
-    // For handling GitHub sign-in click
     fun handleGithubSignIn() {
-        val provider = OAuthProvider.newBuilder("github.com")
-        val pendingResultTask = auth.pendingAuthResult
-        if (pendingResultTask != null) {
-            pendingResultTask
-                .addOnSuccessListener {
-                    // Use user data or navigate to a different screen
-                }
-                .addOnFailureListener {
-                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
-                }
-        } else {
-            auth.startActivityForSignInWithProvider(context as Activity, provider.build())
-                .addOnSuccessListener {
-                    // Use user data or navigate to a different screen
-                }
-                .addOnFailureListener {
-                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
-                }
-        }
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.GitHubBuilder().build()
+        )
+
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+
+        signInLauncher.launch(signInIntent)
     }
+
+    // For handling GitHub sign-in click
+//    fun handleGithubSignIn() {
+//        val provider = OAuthProvider.newBuilder("github.com")
+//        val pendingResultTask = auth.pendingAuthResult
+//        if (pendingResultTask != null) {
+//            pendingResultTask
+//                .addOnSuccessListener {
+//                    // Use user data or navigate to a different screen
+//                }
+//                .addOnFailureListener {
+//                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+//                }
+//        } else {
+//            auth.startActivityForSignInWithProvider(context as Activity, provider.build())
+//                .addOnSuccessListener {
+//                    // Use user data or navigate to a different screen
+//                }
+//                .addOnFailureListener {
+//                    Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+//                }
+//        }
+//    }
 
     Box(
         modifier = Modifier
