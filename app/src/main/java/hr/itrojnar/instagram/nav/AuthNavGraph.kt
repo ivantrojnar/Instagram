@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,11 +19,13 @@ import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.Identity
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleAuthUiClient
+import hr.itrojnar.instagram.util.ShowSuccessDialog
 import hr.itrojnar.instagram.view.AuthScreen
 import hr.itrojnar.instagram.view.auth.AuthenticationScreen
 import hr.itrojnar.instagram.viewmodel.AuthenticationViewModel
 import hr.itrojnar.instagram.viewmodel.SignInViewModel
 import hr.itrojnar.instagram.viewmodel.SignUpViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.authNavGraph(
@@ -61,6 +65,10 @@ fun NavGraphBuilder.authNavGraph(
                 }
             )
 
+            val showDialog = remember { mutableStateOf(false) }
+
+            ShowSuccessDialog(showDialog = showDialog)
+
             AuthenticationScreen(
                 googleSignInState = state,
                 onSignInClick = {
@@ -87,8 +95,13 @@ fun NavGraphBuilder.authNavGraph(
                 onSignUp = {
                            signUpViewModel.register(
                                onSuccess = {
-                                   navHostController.popBackStack()
-                                   navHostController.navigate(Graph.MAIN)
+                                   showDialog.value = true
+                                   coroutineScope.launch {
+                                       delay(3500)
+                                       showDialog.value = false
+                                       navHostController.popBackStack()
+                                       navHostController.navigate(Graph.MAIN)
+                                   }
                                },
                                onFail = {
                                    Toast.makeText(context, context.getString(R.string.unable_to_register), Toast.LENGTH_SHORT).show()

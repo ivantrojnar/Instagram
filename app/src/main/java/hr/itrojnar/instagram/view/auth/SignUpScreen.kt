@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -72,6 +73,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import hr.itrojnar.instagram.R
@@ -147,7 +149,9 @@ fun SignUpScreen(
                     context.contentResolver, it, "Title", null
                 )
                 imageUri = Uri.parse(path)
-                imageUri?.let(onImageUriChanged)
+                imageUri?.let {uri ->
+                    onImageUriChanged(uri)
+                }
             }
         }
 
@@ -169,6 +173,8 @@ fun SignUpScreen(
                     )
                 }
             })
+
+    var showDialog by remember { mutableStateOf(false) }
 
     // DIALOG FOR IMAGE SELECTION
     if (showImagePickerDialog) {
@@ -300,10 +306,10 @@ fun SignUpScreen(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                        focusedLabelColor = Color.Black, // Color for the hint text when focused
-                        focusedBorderColor = Color.Black, // Color for the border when focused
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedLabelColor = Color.Black,
+                        focusedBorderColor = Color.Black,
                     ),
                     visualTransformation = PasswordVisualTransformation()
                 )
@@ -315,7 +321,6 @@ fun SignUpScreen(
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = {
                     currentScreen = "Subscription"
-                    //onSignUp()
                 },
                 enabled = signUpState.isImageSelected && signUpState.isFullNameValid && signUpState.isEmailValid && signUpState.isPasswordValid,
                 colors = ButtonDefaults.buttonColors(
@@ -452,6 +457,48 @@ fun SignUpScreen(
                     color = Color.White,
                     modifier = Modifier.padding(top = 5.dp)
                 )
+            }
+        }
+        if (showDialog) {
+            Dialog(onDismissRequest = { showDialog = false }) {
+                // Outer Box with gray background to act as the border
+                Box(
+                    modifier = Modifier
+                        .background(Color(0xFF3797EF), RoundedCornerShape(8.dp)) // Gray border
+                        .padding(2.dp) // Determines the thickness of the border
+                        .size(350.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Inner Box with white background
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White, RoundedCornerShape(6.dp)) // White background
+                            .padding(10.dp)
+                            .fillMaxSize(0.98f), // Take up 95% of the parent to ensure the gray border is visible
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            LottieAnimationLoop(
+                                resId = R.raw.email_password_success_animation,
+                                Modifier.width(280.dp).height(200.dp)
+                            )
+
+                            Button(
+                                onClick = { showDialog = false },
+                                modifier = Modifier.width(100.dp).height(40.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF3797EF)
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            ) {
+                                Text("Ok")
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -24,4 +24,5 @@
     <string name="successful_log_in">Successful log in</string>
     <string name="unable_to_register">Unable to register</string>
     <string name="unable_to_send_email_to_reset_password">Unable to send email to reset password</string>
+    <string name="ok">Ok</string>
 </resources>

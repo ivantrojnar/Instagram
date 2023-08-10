@@ -58,6 +58,7 @@ import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
+import hr.itrojnar.instagram.util.ShowSuccessDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
