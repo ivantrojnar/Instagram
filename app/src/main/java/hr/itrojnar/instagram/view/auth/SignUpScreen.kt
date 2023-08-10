@@ -124,8 +124,10 @@ fun SignUpScreen(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     var selectedTier by remember { mutableStateOf<String?>(null) }
+    var selectedTierId by remember { mutableStateOf<Int?>(null) }
 
-    fun onSelectedChanged(tier: String) {
+    fun onSelectedChanged(tierId: Int, tier: String) {
+        selectedTierId = tierId
         selectedTier = tier
     }
 
@@ -422,7 +424,7 @@ fun SignUpScreen(
                         Subscription.PRO -> listOf(Color.Blue, Color(0xFF00008B))
                         Subscription.GOLD -> listOf(Color.Yellow, Color(0xFFFFD700))
                     },
-                    onClick = { onSelectedChanged(subscription.title) },
+                    onClick = { onSelectedChanged(subscription.id, subscription.title) },
                     isSelected = selectedTier == subscription.title
                 )
             }
@@ -434,12 +436,18 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(start = 10.dp, end = 10.dp),
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+                onClick = {
+                    onSignUp()
+                },
+                enabled = selectedTierId != null,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+                    containerColor = Color(0xFF3797EF)
+                ),
                 shape = RoundedCornerShape(5.dp)
             ) {
                 Text(
-                    stringResource(R.string.finish),
+                    stringResource(R.string.sign_up),
                     fontSize = 16.sp,
                     color = Color.White,
                     modifier = Modifier.padding(top = 5.dp)
