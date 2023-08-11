@@ -93,20 +93,13 @@ fun NavGraphBuilder.authNavGraph(
                 ) },
                 signUpState = signUpViewModel.signUpstate.value,
                 onSignUp = {
-                           signUpViewModel.register(
-                               onSuccess = {
-                                   showDialog.value = true
-                                   coroutineScope.launch {
-                                       delay(3500)
-                                       showDialog.value = false
-                                       navHostController.popBackStack()
-                                       navHostController.navigate(Graph.MAIN)
-                                   }
-                               },
-                               onFail = {
-                                   Toast.makeText(context, context.getString(R.string.unable_to_register), Toast.LENGTH_SHORT).show()
-                               }
-                           )
+                    showDialog.value = true
+                    coroutineScope.launch {
+                        delay(3500)
+                        showDialog.value = false
+                        navHostController.popBackStack()
+                        navHostController.navigate(Graph.MAIN)
+                    }
                 },
                 onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },
                 onLoginEmailChanged = { authenticationViewModel.onEmailChanged(it) },

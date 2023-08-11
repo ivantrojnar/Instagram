@@ -3,6 +3,7 @@ package hr.itrojnar.instagram.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.net.Uri
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +35,14 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import hr.itrojnar.instagram.R
+import java.time.LocalDate
+import java.util.UUID
 import java.util.regex.Pattern
 
 @Composable
@@ -129,6 +137,66 @@ fun ShowSuccessDialog(showDialog: MutableState<Boolean>) {
                                 .height(250.dp)
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+fun createUserWithImage(
+    email: String,
+    password: String,
+    fullName: String,
+    imageUri: Uri,
+    subscriptionId: Int,
+    onSuccess: () -> Unit,
+    onFailure: (Exception) -> Unit
+    ) {
+
+    val auth = Firebase.auth
+
+    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val firebaseUser = auth.currentUser
+
+            val storage = FirebaseStorage.getInstance()
+            val storageRef = storage.reference
+            val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}.jpg")
+
+            val uploadTask = imageRef.putFile(imageUri)
+            uploadTask.continueWithTask { uploadTask ->
+                if (!uploadTask.isSuccessful) {
+                    uploadTask.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }.addOnCompleteListener { downloadTask ->
+                if (downloadTask.isSuccessful) {
+                    val downloadUrl = downloadTask.result
+
+                    val today = LocalDate.now()
+                    val user = hashMapOf(
+                        "firebaseUserId" to firebaseUser?.uid,
+                        "fullName" to fullName,
+                        "email" to email,
+                        "profilePictureUrl" to downloadUrl.toString(),
+                        "subscriptionId" to subscriptionId,
+                        "lastSignInDate" to today.toString(),
+                        "mbUsedToday" to 0,
+                        "numOfPicsUploadedToday" to 0
+                    )
+
+                    val db = Firebase.firestore
+                    firebaseUser?.let {
+                        db.collection("users").document(it.uid).set(user).addOnSuccessListener {
+                            onSuccess()
+                        }.addOnFailureListener { e ->
+                            onFailure(e)
+                        }
+                    }
+                } else {
+                    onFailure(downloadTask.exception!!)
                 }
             }
         }

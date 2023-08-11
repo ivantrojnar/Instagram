@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -89,6 +90,7 @@ import hr.itrojnar.instagram.view.dialog.RecordAudioPermissionTextProvider
 import hr.itrojnar.instagram.viewmodel.MainViewModel
 import java.io.ByteArrayOutputStream
 import hr.itrojnar.instagram.enum.Subscription
+import hr.itrojnar.instagram.util.createUserWithImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,12 +127,12 @@ fun SignUpScreen(
     var showImagePickerDialog by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    var selectedTier by remember { mutableStateOf<String?>(null) }
-    var selectedTierId by remember { mutableStateOf<Int?>(null) }
+    var selectedSubscription by remember { mutableStateOf<String?>(null) }
+    var selectedSubscriptionId by remember { mutableStateOf<Int?>(null) }
 
-    fun onSelectedChanged(tierId: Int, tier: String) {
-        selectedTierId = tierId
-        selectedTier = tier
+    fun onSelectedChanged(subscriptionId: Int, subscription: String) {
+        selectedSubscriptionId = subscriptionId
+        selectedSubscription = subscription
     }
 
     val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -141,7 +143,6 @@ fun SignUpScreen(
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
-            // Convert the bitmap to a URI if needed and then assign it to imageUri
             bitmap?.let {
                 val bytes = ByteArrayOutputStream()
                 it.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
@@ -157,7 +158,6 @@ fun SignUpScreen(
 
     val pickImageLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            // Assign the chosen image URI to imageUri
             imageUri = uri
             uri?.let {
                 onImageUriChanged(it)
@@ -415,7 +415,7 @@ fun SignUpScreen(
                     .clickable { currentScreen = "SignUp" }
             )
             Text(
-                text = if (selectedTier != null) "Current selection: $selectedTier" else "No subscription selected",
+                text = if (selectedSubscription != null) "Current selection: $selectedSubscription" else "No subscription selected",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = 10.dp)
             )
@@ -430,7 +430,7 @@ fun SignUpScreen(
                         Subscription.GOLD -> listOf(Color.Yellow, Color(0xFFFFD700))
                     },
                     onClick = { onSelectedChanged(subscription.id, subscription.title) },
-                    isSelected = selectedTier == subscription.title
+                    isSelected = selectedSubscription == subscription.title
                 )
             }
 
@@ -442,9 +442,21 @@ fun SignUpScreen(
                     .height(50.dp)
                     .padding(start = 10.dp, end = 10.dp),
                 onClick = {
-                    onSignUp()
+                    createUserWithImage(
+                        email = signUpState.email,
+                        fullName = signUpState.fullName,
+                        password = signUpState.password,
+                        imageUri = imageUri!!,
+                        subscriptionId = selectedSubscriptionId!!,
+                        onSuccess = {
+                            onSignUp()
+                        },
+                        onFailure = {
+                            Toast.makeText(context, context.getString(R.string.unable_to_register), Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 },
-                enabled = selectedTierId != null,
+                enabled = selectedSubscriptionId != null,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
                     containerColor = Color(0xFF3797EF)
