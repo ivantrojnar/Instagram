@@ -3,6 +3,7 @@ package hr.itrojnar.instagram.sign_in
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
@@ -44,7 +45,6 @@ class GithubAuthClient(
             //val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
             val existingUser = Firebase.firestore.collection("users").document(user?.uid ?: "").get().await()
             val isNewUser = !existingUser.exists()
-            Log.w("CUSTOM TAG", isNewUser.toString())
 
             if (isNewUser) {
                 var imageUrl: String? = user?.photoUrl?.toString()
@@ -63,8 +63,10 @@ class GithubAuthClient(
                 )
             }
 
+            val bundle = Bundle()
+            bundle.putString("user_id", user?.uid)
             Firebase.analytics.setUserId(user?.uid)
-            Firebase.analytics.logEvent("login_with_github", null)
+            Firebase.analytics.logEvent("login_with_github", bundle)
 
             SignInResult(
                 data = user?.run {
