@@ -51,15 +51,32 @@ fun NavGraphBuilder.authNavGraph(
                 )
             }
 
+//            val launcher = rememberLauncherForActivityResult(
+//                contract = ActivityResultContracts.StartIntentSenderForResult(),
+//                onResult = { result ->
+//                    if (result.resultCode == RESULT_OK) {
+//                        coroutineScope.launch {
+//                            val signInResult = googleAuthUiClient.signInWithIntent(
+//                                intent = result.data ?: return@launch
+//                            )
+//                            viewModel.onSignInResult(signInResult)
+//                        }
+//                    }
+//                }
+//            )
             val launcher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                 onResult = { result ->
                     if (result.resultCode == RESULT_OK) {
                         coroutineScope.launch {
-                            val signInResult = googleAuthUiClient.signInWithIntent(
-                                intent = result.data ?: return@launch
-                            )
+                            val signInResult = googleAuthUiClient.signInWithIntent(result.data ?: return@launch)
                             viewModel.onSignInResult(signInResult)
+                            if (signInResult.data != null) {
+                                navHostController.popBackStack()
+                                navHostController.navigate(Graph.MAIN)
+                            } else {
+                                // Handle unsuccessful sign-in, show error or something similar
+                            }
                         }
                     }
                 }
