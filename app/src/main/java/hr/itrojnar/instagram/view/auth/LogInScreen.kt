@@ -68,6 +68,7 @@ fun LogInScreen(
     onPasswordChanged: (String) -> Unit,
     googleSignInState: GoogleSignInState,
     onSignInClick: () -> Unit,
+    onGithubSignIn: () -> Unit,
     modifier: Modifier = Modifier,
     onSignUpClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
@@ -91,21 +92,22 @@ fun LogInScreen(
     val auth = FirebaseAuth.getInstance()
 
     // For handling the result of the sign-in intent
-    val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Successfully signed in
-            val user = auth.currentUser
+    val signInLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Successfully signed in
+                val user = auth.currentUser
 
-            val displayName = user?.displayName
-            val email = user?.email
-            val photoUrl = user?.photoUrl
+                val displayName = user?.displayName
+                val email = user?.email
+                val photoUrl = user?.photoUrl
 
-            Toast.makeText(context, "Logged in as: $displayName", Toast.LENGTH_LONG).show()
-        } else {
-            // Sign in failed. You can show an error to the user.
-            Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Logged in as: $displayName", Toast.LENGTH_LONG).show()
+            } else {
+                // Sign in failed. You can show an error to the user.
+                Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
+            }
         }
-    }
 
     fun handleGithubSignIn() {
         val providers = arrayListOf(
@@ -249,7 +251,8 @@ fun LogInScreen(
                     .fillMaxWidth()
                     .padding(top = 10.dp)
                     .clickable {
-                        handleGithubSignIn()
+                        //handleGithubSignIn()
+                        onGithubSignIn()
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center

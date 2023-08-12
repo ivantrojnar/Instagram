@@ -3,6 +3,7 @@ package hr.itrojnar.instagram.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.net.Uri
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
@@ -35,12 +36,15 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.firebase.ui.auth.IdpResponse
+import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.sign_in.SignInResult
 import java.time.LocalDate
 import java.util.UUID
 import java.util.regex.Pattern

@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram.nav
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.widget.Toast
@@ -16,8 +17,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.FirebaseAuth
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.sign_in.GithubAuthClient
 import hr.itrojnar.instagram.sign_in.GoogleAuthUiClient
 import hr.itrojnar.instagram.util.ShowSuccessDialog
 import hr.itrojnar.instagram.view.AuthScreen
@@ -50,6 +54,7 @@ fun NavGraphBuilder.authNavGraph(
                     oneTapClient = Identity.getSignInClient(context)
                 )
             }
+            val githubAuthClient = GithubAuthClient(context = context)
 
 //            val launcher = rememberLauncherForActivityResult(
 //                contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -81,6 +86,32 @@ fun NavGraphBuilder.authNavGraph(
                     }
                 }
             )
+
+            val githubSignInLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val response = IdpResponse.fromResultIntent(result.data)
+                    if (response == null) {
+                        // The user cancelled the sign-in, handle accordingly
+                        return@rememberLauncherForActivityResult
+                    }
+                    if (response.error != null) {
+                        // Handle the error
+                        return@rememberLauncherForActivityResult
+                    }
+
+                    coroutineScope.launch {
+                        val signInResult = githubAuthClient.signInWithIntent(response)
+                        if (signInResult.data != null) {
+                            navHostController.popBackStack()
+                            navHostController.navigate(Graph.MAIN)
+                        } else {
+                            // Handle unsuccessful sign-in, show error or something similar
+                        }
+                    }
+                }
+            }
 
             val showDialog = remember { mutableStateOf(false) }
 
@@ -117,6 +148,10 @@ fun NavGraphBuilder.authNavGraph(
                         navHostController.popBackStack()
                         navHostController.navigate(Graph.MAIN)
                     }
+                },
+                onGithubSignIn = {
+                    val githubSignInIntent = githubAuthClient.startGithubSignIn()
+                    githubSignInLauncher.launch(githubSignInIntent)
                 },
                 onRequestEmailForForgottenPassword = { Toast.makeText(context, "Request email", Toast.LENGTH_SHORT).show() },
                 onLoginEmailChanged = { authenticationViewModel.onEmailChanged(it) },

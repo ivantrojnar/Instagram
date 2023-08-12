@@ -2,22 +2,18 @@ package hr.itrojnar.instagram.sign_in
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
 import android.net.Uri
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
-import com.google.android.gms.auth.api.identity.SignInClient
+import android.util.Log
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import hr.itrojnar.instagram.R
-import hr.itrojnar.instagram.viewmodel.SignInViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -26,36 +22,29 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDate
 import java.util.UUID
-import java.util.concurrent.CancellationException
 
-class GoogleAuthUiClient(
-    private val context: Context,
-    private val oneTapClient: SignInClient
+class GithubAuthClient(
+    private val context: Context
 ) {
-    private val auth = Firebase.auth
+    private val auth = FirebaseAuth.getInstance()
     private val storage = FirebaseStorage.getInstance()
 
-    suspend fun signIn(): IntentSender? {
-        val result = try {
-            oneTapClient.beginSignIn(
-                buildSignInRequest()
-            ).await()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            if (e is CancellationException) throw e
-            null
-        }
-        return result?.pendingIntent?.intentSender
-    }
+    suspend fun signInWithIntent(intentData: IdpResponse): SignInResult {
+        Log.w("CUSTOM TAG", "ENTER the function")
+        val githubToken = intentData.idpToken ?: return SignInResult(
+            data = null,
+            errorMessage = "Github token is null."
+        )
+        Log.w("CUSTOM TAG", "YEEEEEEEEEEEEEEEEES")
+        val githubCredentials = GithubAuthProvider.getCredential(githubToken)
 
-    suspend fun signInWithIntent(intent: Intent): SignInResult {
-        val credential = oneTapClient.getSignInCredentialFromIntent(intent)
-        val googleIdToken = credential.googleIdToken
-        val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try {
-            val authResult = auth.signInWithCredential(googleCredentials).await()
+            val authResult = auth.signInWithCredential(githubCredentials).await()
             val user = authResult.user
-            val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
+            //val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
+            val existingUser = Firebase.firestore.collection("users").document(user?.uid ?: "").get().await()
+            val isNewUser = !existingUser.exists()
+            Log.w("CUSTOM TAG", isNewUser.toString())
 
             if (isNewUser) {
                 var imageUrl: String? = user?.photoUrl?.toString()
@@ -70,12 +59,12 @@ class GoogleAuthUiClient(
                     firebaseUserId = user?.uid,
                     fullName = user?.displayName,
                     email = user?.email,
-                    profilePictureUrl = imageUrl ?: ""
+                    profilePictureUrl = user?.photoUrl?.toString() ?: ""
                 )
             }
 
             Firebase.analytics.setUserId(user?.uid)
-            Firebase.analytics.logEvent("login_with_google", null)
+            Firebase.analytics.logEvent("login_with_github", null)
 
             SignInResult(
                 data = user?.run {
@@ -89,7 +78,6 @@ class GoogleAuthUiClient(
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            if (e is CancellationException) throw e
             SignInResult(
                 data = null,
                 errorMessage = e.message
@@ -97,34 +85,14 @@ class GoogleAuthUiClient(
         }
     }
 
-    suspend fun signOut() {
-        try {
-            oneTapClient.signOut().await()
-            auth.signOut()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            if (e is CancellationException) throw e
-        }
-    }
-
-    fun getSignedInUser(): UserData? = auth.currentUser?.run {
-        UserData(
-            userId = uid,
-            userName = displayName,
-            profilePictureUrl = photoUrl?.toString()
+    fun startGithubSignIn(): Intent {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.GitHubBuilder().build()
         )
-    }
 
-    private fun buildSignInRequest(): BeginSignInRequest {
-        return BeginSignInRequest.Builder()
-            .setGoogleIdTokenRequestOptions(
-                GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(context.getString(R.string.web_client_id))
-                    .build()
-            )
-            .setAutoSelectEnabled(true)
+        return AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
             .build()
     }
 
@@ -137,8 +105,8 @@ class GoogleAuthUiClient(
                 connection.connect()
                 val input = connection.inputStream
 
-                val directory = context.cacheDir // Assuming 'context' is available here
-                val outputFileName = "tempProfileImage" // You might want to make this unique
+                val directory = context.cacheDir
+                val outputFileName = "tempProfileImage"
                 val file = File(directory, outputFileName)
 
                 val fos = FileOutputStream(file)
