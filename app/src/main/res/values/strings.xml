@@ -25,4 +25,7 @@
     <string name="unable_to_register">Unable to register</string>
     <string name="unable_to_send_email_to_reset_password">Unable to send email to reset password</string>
     <string name="ok">Ok</string>
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="profile">Profile</string>
 </resources>
