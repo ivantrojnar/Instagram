@@ -3,21 +3,49 @@ package hr.itrojnar.instagram.view
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Divider
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.IconButton
+import androidx.compose.material.ModalDrawer
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -25,17 +53,82 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.nav.BottomNavGraph
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
+//    ModalDrawer(
+//        drawerState = drawerState,
+//        gesturesEnabled = true,
+//        drawerContent = {
+//            DrawerContent(navController, drawerState)
+//        }) {
+//
+//    }
+//    Scaffold(
+//        bottomBar = { BottomBar(navController = navController) }
+//    ) {
+//        BottomNavGraph(navController = navController)
+//    }
     Scaffold(
+        topBar = {
+            TopAppBarWithBorder(
+                backgroundColor = colorResource(id = R.color.very_light_gray),
+                contentColor = Color.Black,
+                bottomBorderColor = Color(0xFFCCCCCC )
+            ) {
+                IconButton(onClick = {
+                    scope.launch {
+                        if (drawerState.isClosed) {
+                            drawerState.open()
+                        } else {
+                            drawerState.close()
+                        }
+                    }
+                }) {
+                    Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Instagram", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+            }
+        },
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        BottomNavGraph(navController = navController)
+        ModalDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = true,
+            drawerContent = {
+                DrawerContent(navController, drawerState)
+            }) {
+            BottomNavGraph(navController = navController)
+        }
+    }
+}
+
+@Composable
+fun TopAppBarWithBorder(
+    backgroundColor: Color,
+    contentColor: Color,
+    bottomBorderColor: Color,
+    content: @Composable RowScope.() -> Unit
+) {
+    Box {
+        TopAppBar(
+            backgroundColor = backgroundColor,
+            contentColor = contentColor
+        ) {
+            content()
+        }
+        Divider(
+            color = bottomBorderColor,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -93,4 +186,79 @@ fun RowScope.AddItem(
                 launchSingleTop = true
             }
         })
+}
+
+@Composable
+fun DrawerContent(
+    navController: NavHostController,
+    drawerState: DrawerState
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Drawer Header",
+            style = TextStyle(fontSize = 24.sp),
+            modifier = Modifier.padding(16.dp)
+        )
+        Divider()
+
+        ListOfDrawerItems(navController, drawerState)
+    }
+}
+
+@Composable
+fun ListOfDrawerItems(
+    navController: NavHostController,
+    drawerState: DrawerState
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val closeDrawerAction = {
+        if (drawerState.isOpen) {
+            coroutineScope.launch {
+                drawerState.close()
+            }
+        }
+    }
+
+    ListItem(
+        text = "Home",
+        icon = Icons.Default.Home,
+        action = {
+            navController.navigate("home")
+            closeDrawerAction()
+        }
+    )
+
+    ListItem(
+        text = "Profile",
+        icon = Icons.Default.Person,
+        action = {
+            navController.navigate("profile")
+            closeDrawerAction()
+        }
+    )
+}
+
+@Composable
+fun ListItem(
+    text: String,
+    icon: ImageVector,
+    action: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = action)
+            .padding(16.dp)
+    ) {
+        Icon(imageVector = icon, contentDescription = null)
+        Spacer(Modifier.width(16.dp))
+        Text(text = text, style = TextStyle(fontSize = 16.sp))
+    }
 }
