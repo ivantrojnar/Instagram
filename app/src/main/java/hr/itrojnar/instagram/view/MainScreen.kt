@@ -25,9 +25,17 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.Camera
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.CameraFront
+import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material.icons.rounded.Camera
+import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -95,7 +104,6 @@ fun MainScreen() {
                     Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Text("Instagram", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
             }
         },
         bottomBar = { BottomBar(navController = navController) }
@@ -124,6 +132,22 @@ fun TopAppBarWithBorder(
             contentColor = contentColor
         ) {
             content()
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            val painter = painterResource(id = R.drawable.instagram_logo)
+            Icon(painter = painter, contentDescription = "Instagram Logo", modifier = Modifier.size(125.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row {
+                IconButton(onClick = { /* Handle camera click */ }) {
+                    Icon(Icons.Outlined.CameraAlt, contentDescription = "Open Camera")
+                }
+                IconButton(onClick = { /* Handle send/paper plane click */ }) {
+                    Icon(Icons.Outlined.Send, contentDescription = "Direct Messages")
+                }
+            }
         }
         Divider(
             color = bottomBorderColor,
@@ -131,6 +155,7 @@ fun TopAppBarWithBorder(
         )
     }
 }
+
 
 @Composable
 fun BottomBar(navController: NavHostController) {
