@@ -139,16 +139,22 @@ fun BottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomNavigation(
-        backgroundColor = colorResource(id = R.color.very_light_gray)
-    ) {
-        BottomNavScreen::class.sealedSubclasses.forEach {
-            AddItem(
-                screen = it.objectInstance!!,
-                currentDestination = currentDestination,
-                navController = navController
-            )
+    Box {
+        BottomNavigation(
+            backgroundColor = colorResource(id = R.color.very_light_gray)
+        ) {
+            BottomNavScreen::class.sealedSubclasses.forEach {
+                AddItem(
+                    screen = it.objectInstance!!,
+                    currentDestination = currentDestination,
+                    navController = navController
+                )
+            }
         }
+        Divider(
+            color = Color(0xFFCCCCCC),
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
