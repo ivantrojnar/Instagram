@@ -25,17 +25,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.outlined.Camera
 import androidx.compose.material.icons.outlined.CameraAlt
-import androidx.compose.material.icons.outlined.CameraFront
 import androidx.compose.material.icons.outlined.Send
-import androidx.compose.material.icons.rounded.Camera
-import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,7 +46,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
@@ -72,52 +65,41 @@ fun MainScreen() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-//    ModalDrawer(
-//        drawerState = drawerState,
-//        gesturesEnabled = true,
-//        drawerContent = {
-//            DrawerContent(navController, drawerState)
-//        }) {
-//
-//    }
-//    Scaffold(
-//        bottomBar = { BottomBar(navController = navController) }
-//    ) {
-//        BottomNavGraph(navController = navController)
-//    }
-    Scaffold(
-        topBar = {
-            TopAppBarWithBorder(
-                backgroundColor = colorResource(id = R.color.very_light_gray),
-                contentColor = Color.Black,
-                bottomBorderColor = Color(0xFFCCCCCC )
-            ) {
-                IconButton(onClick = {
-                    scope.launch {
-                        if (drawerState.isClosed) {
-                            drawerState.open()
-                        } else {
-                            drawerState.close()
+    ModalDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = true,
+        drawerContent = {
+            DrawerContent(navController, drawerState)
+        }) {
+
+        Scaffold(
+            topBar = {
+                TopAppBarWithBorder(
+                    backgroundColor = colorResource(id = R.color.very_light_gray),
+                    contentColor = Color.Black,
+                    bottomBorderColor = Color(0xFFCCCCCC)
+                ) {
+                    IconButton(onClick = {
+                        scope.launch {
+                            if (drawerState.isClosed) {
+                                drawerState.open()
+                            } else {
+                                drawerState.close()
+                            }
                         }
+                    }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
                     }
-                }) {
-                    Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
+                    Spacer(modifier = Modifier.weight(1f))
                 }
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        },
-        bottomBar = { BottomBar(navController = navController) }
-    ) {
-        ModalDrawer(
-            drawerState = drawerState,
-            gesturesEnabled = true,
-            drawerContent = {
-                DrawerContent(navController, drawerState)
-            }) {
+            },
+            bottomBar = { BottomBar(navController = navController) }
+        ) {
             BottomNavGraph(navController = navController)
         }
     }
 }
+
 
 @Composable
 fun TopAppBarWithBorder(
