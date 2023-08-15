@@ -8,7 +8,7 @@ data class User(
     val email: String,
     val profilePictureUrl: String?,
     val subscriptionId: Int,
-    val lastSignInDate: LocalDate,  // timestamp representation
+    val lastSignInDate: LocalDate,
     val mbUsedToday: Int,
     val numOfPicsUploadedToday: Int
 )

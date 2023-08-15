@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,18 +23,28 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.graphics.drawable.toBitmap
+import coil.ImageLoader
+import coil.compose.ImagePainter
+import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -212,4 +224,28 @@ fun createUserWithImage(
 @Composable
 fun vectorResource(id: Int): ImageVector {
     return ImageVector.vectorResource(id)
+}
+
+@Composable
+fun loadPicture(url: String, @DrawableRes defaultImage: Int): State<Bitmap?> {
+    val imageState: MutableState<Bitmap?> = remember { mutableStateOf(null) }
+    val context = LocalContext.current
+
+    val imageLoader = ImageLoader(context)
+    val request = ImageRequest.Builder(context)
+        .data(url)
+        .target { drawable ->
+            imageState.value = drawable.toBitmap()
+        }
+        .error(defaultImage)
+        .build()
+
+    DisposableEffect(url) {
+        val disposable = imageLoader.enqueue(request)
+        onDispose {
+            disposable.dispose()
+        }
+    }
+
+    return imageState
 }
