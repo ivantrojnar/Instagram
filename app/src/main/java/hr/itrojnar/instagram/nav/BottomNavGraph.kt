@@ -14,9 +14,13 @@ fun BottomNavGraph(navController: NavHostController) {
     ) {
         composable(route = BottomNavScreen.Home.route) {
         }
+        composable(route = BottomNavScreen.Search.route) {
+        }
         composable(route = BottomNavScreen.Map.route) {
         }
         composable(route = BottomNavScreen.Profile.route) {
+        }
+        composable(route = BottomNavScreen.Settings.route) {
         }
     }
 }

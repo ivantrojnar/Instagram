@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,8 +28,11 @@ import androidx.compose.material.ModalDrawer
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material.rememberDrawerState
@@ -39,7 +41,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionErrors
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -161,9 +162,9 @@ fun BottomBar(navController: NavHostController) {
         BottomNavigation(
             backgroundColor = colorResource(id = R.color.very_light_gray)
         ) {
-            BottomNavScreen::class.sealedSubclasses.forEach {
+            BottomNavScreen.items.forEach {
                 AddItem(
-                    screen = it.objectInstance!!,
+                    screen = it,
                     currentDestination = currentDestination,
                     navController = navController
                 )
@@ -229,7 +230,10 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, us
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
+            .background(Color.Transparent),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -241,19 +245,33 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, us
             closeDrawer()
         }
 
+        DrawerItem(icon = Icons.Default.Search, label = "Search", isSelected = currentDestination?.route == "search") {
+            navController.navigate("search")
+            closeDrawer()
+        }
+
+        DrawerItem(icon = Icons.Default.Map, label = "Map", isSelected = currentDestination?.route == "map") {
+            navController.navigate("map")
+            closeDrawer()
+        }
+
         DrawerItem(icon = Icons.Default.Person, label = "Profile", isSelected = currentDestination?.route == "profile") {
             navController.navigate("profile")
+            closeDrawer()
+        }
+
+        DrawerItem(icon = Icons.Default.Settings, label = "Settings", isSelected = currentDestination?.route == "settings") {
+            navController.navigate("settings")
             closeDrawer()
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         DrawerFooter {
-            // Implement your logout action here
+            // TODO IMPLEMENT LOG OUT LOGIC
         }
     }
 }
-
 @Composable
 fun ListOfDrawerItems(
     navController: NavHostController,
