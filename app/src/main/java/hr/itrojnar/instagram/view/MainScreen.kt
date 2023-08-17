@@ -78,6 +78,11 @@ fun MainScreen() {
 
     val user = DummyData.dummyUser
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination?.route
+
+    //val isHomeScreen = currentDestination?.route == "home"
+
     ModalDrawer(
         drawerState = drawerState,
         gesturesEnabled = true,
@@ -87,26 +92,33 @@ fun MainScreen() {
 
         Scaffold(
             topBar = {
-                TopAppBarWithBorder(
-                    backgroundColor = colorResource(id = R.color.very_light_gray),
-                    contentColor = Color.Black,
-                    bottomBorderColor = Color(0xFFCCCCCC)
-                ) {
-                    IconButton(onClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) {
-                                drawerState.open()
-                            } else {
-                                drawerState.close()
+                if (currentDestination == "home") {
+                    TopAppBarWithBorder(
+                        navController = navController,
+                        backgroundColor = colorResource(id = R.color.very_light_gray),
+                        contentColor = Color.Black,
+                        bottomBorderColor = Color(0xFFCCCCCC)
+                    ) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                if (drawerState.isClosed) {
+                                    drawerState.open()
+                                } else {
+                                    drawerState.close()
+                                }
                             }
+                        }) {
+                            Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
                         }
-                    }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
+                        Spacer(modifier = Modifier.weight(1f))
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                 }
             },
-            bottomBar = { BottomBar(navController = navController) }
+            bottomBar = {
+                if (currentDestination != "camera") {
+                    BottomBar(navController = navController)
+                }
+            }
         ) {
             BottomNavGraph(navController = navController)
         }
@@ -116,6 +128,7 @@ fun MainScreen() {
 
 @Composable
 fun TopAppBarWithBorder(
+    navController: NavHostController,
     backgroundColor: Color,
     contentColor: Color,
     bottomBorderColor: Color,
@@ -136,7 +149,7 @@ fun TopAppBarWithBorder(
             Spacer(modifier = Modifier.weight(1f))
 
             Row {
-                IconButton(onClick = { /* Handle camera click */ }) {
+                IconButton(onClick = { navController.navigate("camera") }) {
                     Icon(Icons.Outlined.CameraAlt, contentDescription = "Open Camera")
                 }
                 IconButton(onClick = { /* Handle send/paper plane click */ }) {

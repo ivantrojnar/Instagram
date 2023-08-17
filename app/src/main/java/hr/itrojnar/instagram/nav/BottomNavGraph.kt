@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import hr.itrojnar.instagram.view.BottomNavScreen
+import hr.itrojnar.instagram.view.Screen
 
 @Composable
 fun BottomNavGraph(navController: NavHostController) {
@@ -21,6 +22,9 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(route = BottomNavScreen.Profile.route) {
         }
         composable(route = BottomNavScreen.Settings.route) {
+        }
+        composable(route = Screen.Camera) {
+            // Camera Screen Composable Here
         }
     }
 }
