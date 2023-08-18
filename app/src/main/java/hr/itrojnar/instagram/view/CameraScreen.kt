@@ -8,8 +8,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,16 +33,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.findActivity
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
@@ -90,15 +95,34 @@ fun CameraScreen(navController: NavHostController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_back),
-            contentDescription = "Go back",
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .size(24.dp)
-                .clickable { navController.popBackStack() }
-                .align(Alignment.TopStart)
-        )
+                .fillMaxWidth()
+                .padding(16.dp),
+            contentAlignment = Alignment.TopStart
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_back),
+                contentDescription = "Go back",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { navController.popBackStack() }
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Text(
+                text = "Create new post",
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -128,12 +152,11 @@ fun CameraScreen(navController: NavHostController) {
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(16.dp)
-                        .size(24.dp)
                 ) {
                     if (imageUri != null) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit")
+                        Icon(Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(36.dp))
                     } else {
-                        Icon(Icons.Default.CameraAlt, contentDescription = "Camera")
+                        Icon(Icons.Default.CameraAlt, contentDescription = "Camera", modifier = Modifier.size(36.dp))
                     }
                 }
             }
