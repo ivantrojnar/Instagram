@@ -353,16 +353,7 @@ fun SignUpScreen(
                     )
                 )
             }
-//            Button(
-//                modifier = modifier
-//                    .padding(top = 60.dp)
-//                    .fillMaxWidth(),
-//                onClick = {
-//                    multiplePermissionResultLauncher.launch(permissionsToRequest)
-//                },
-//            ) {
-//                Text(text = "Request permissions")
-//            }
+
             dialogQueue.reversed().forEach { permission ->
                 PermissionDialog(permissionTextProvider = when (permission) {
                     Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE -> {
