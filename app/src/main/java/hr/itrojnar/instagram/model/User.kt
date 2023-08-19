@@ -1,4 +1,4 @@
-package hr.itrojnar.instagram
+package hr.itrojnar.instagram.model
 
 import java.time.LocalDate
 

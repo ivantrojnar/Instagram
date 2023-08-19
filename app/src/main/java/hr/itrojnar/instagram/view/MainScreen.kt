@@ -59,9 +59,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import hr.itrojnar.instagram.DummyData
+import hr.itrojnar.instagram.model.DummyData
 import hr.itrojnar.instagram.R
-import hr.itrojnar.instagram.User
+import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.nav.BottomNavGraph
 import hr.itrojnar.instagram.view.drawer.DrawerFooter
 import hr.itrojnar.instagram.view.drawer.DrawerHeader

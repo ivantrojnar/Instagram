@@ -9,12 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import hr.itrojnar.instagram.User
-import kotlinx.coroutines.launch
+import hr.itrojnar.instagram.model.User
 
 @Composable
 fun DrawerContent(navController: NavHostController, drawerState: DrawerState, user: User) {
