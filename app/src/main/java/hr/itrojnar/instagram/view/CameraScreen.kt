@@ -93,6 +93,9 @@ fun CameraScreen(navController: NavHostController) {
                     context.contentResolver, it, "Title", null
                 )
                 imageUri = Uri.parse(path)
+                imageUri?.let { uri ->
+                    viewModel.setImageUri(uri)
+                }
             }
         }
 
@@ -194,10 +197,10 @@ fun CameraScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Add the LocationInput composable here
-            LocationInput(navController = navController)
+            LocationInput(cameraViewModel = viewModel)
 
             Text(
-                text = "Description:",
+                text = stringResource(R.string.description) + ":",
                 modifier = Modifier.padding(horizontal = 16.dp),
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
             )
@@ -214,9 +217,9 @@ fun CameraScreen(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text(text = stringResource(R.string.full_name)) },
+                    value = viewModel.description.value,
+                    onValueChange = { newValue -> viewModel.setDescription(newValue) },
+                    label = { Text(text = stringResource(R.string.description)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
@@ -232,13 +235,34 @@ fun CameraScreen(navController: NavHostController) {
                     )
                 )
             }
+            
+            Spacer(modifier = Modifier.size(10.dp))
+            
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(horizontal = 16.dp),
+                onClick = { },
+                enabled = viewModel.isReadyToPost,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+                    containerColor = Color(0xFF3797EF)
+                ),
+                shape = RoundedCornerShape(5.dp)
+            ) {
+                Text(
+                    stringResource(R.string.upload_post),
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocationInput(navController: NavHostController) {
+fun LocationInput(cameraViewModel: CameraViewModel) {
     val context = LocalContext.current
     var locationText by remember { mutableStateOf("No location selected") }
 
@@ -248,6 +272,7 @@ fun LocationInput(navController: NavHostController) {
         if (result.resultCode == Activity.RESULT_OK) {
             val place = Autocomplete.getPlaceFromIntent(result.data!!)
             locationText = place.address ?: "Unknown location"
+            cameraViewModel.setLocation(place)
         }
     }
 

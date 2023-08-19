@@ -33,4 +33,6 @@
     <string name="settings">Settings</string>
     <string name="create_new_post">Create new post</string>
     <string name="select_location">Select Location</string>
+    <string name="description">Description</string>
+    <string name="upload_post">Upload post</string>
 </resources>
