@@ -4,11 +4,11 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,16 +20,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -198,13 +199,27 @@ fun LocationInput(navController: NavHostController) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        TextField(
-            value = locationText,
-            onValueChange = { },
-            readOnly = true,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Location") }
+        Text(
+            text = "Selected location:",
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                //.padding(12.dp)
+                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                .padding(12.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Text(
+                text = locationText,
+                style = TextStyle(fontSize = 16.sp),
+                color = Color.Black
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -216,9 +231,11 @@ fun LocationInput(navController: NavHostController) {
                 ).build(context)
                 activityResultLauncher.launch(intent)
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.align(Alignment.Start),
+            colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Select Location")
+            Text(stringResource(R.string.select_location))
         }
     }
 }
