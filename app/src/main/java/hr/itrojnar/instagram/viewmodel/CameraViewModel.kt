@@ -1,17 +1,47 @@
 package hr.itrojnar.instagram.viewmodel
 
-import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.places.api.model.Place
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.itrojnar.instagram.api.FirebasePostRepository
+import hr.itrojnar.instagram.model.NewPost
+import hr.itrojnar.instagram.model.User
+import hr.itrojnar.instagram.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
-class CameraViewModel : ViewModel() {
+
+@HiltViewModel
+class CameraViewModel @Inject constructor(
+    //private val userRepository: UserRepository,
+    private val postRepository: FirebasePostRepository
+) : ViewModel() {
+
+    private val storageReference = FirebaseStorage.getInstance().reference
+
+    private var _userDetails = MutableLiveData<User?>()
+    val userDetails: LiveData<User?> get() = _userDetails
+
+    /*init {
+        fetchUserDetails()
+    }*/
+
+    private fun fetchUserDetails() {
+        viewModelScope.launch {
+            //_userDetails.value = userRepository.getCurrentUserDetail()
+        }
+    }
 
     // MutableState to track the imageUri
     var imageUri = mutableStateOf<Uri?>(null)
@@ -27,13 +57,50 @@ class CameraViewModel : ViewModel() {
         get() = imageUri.value != null && location.value != null && description.value.isNotBlank()
 
     fun createPost() {
-        // TODO: Trigger the upload action here.
-        // You might want to call a use case or a repository function here that
-        // handles the upload of the image, location, and description to your server or database.
         if (isReadyToPost) {
-            // All the fields are filled, so perform the post creation.
-            // For example, you can use the following properties:
-            // imageUri.value, location.value, and description.value to create the post.
+
+            val postId = System.currentTimeMillis().toString()
+
+            val imageRef = storageReference.child("posts/$postId.jpg")
+            val uploadTask = imageUri.value?.let { imageRef.putFile(it) }
+
+            uploadTask?.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val postImageUrl = task.result.toString()
+                    val postDescription = description.value
+                    val postAddress = location.value?.address ?: ""
+                    val postLatitude = location.value?.latLng?.latitude ?: 0.0
+                    val postLongitude = location.value?.latLng?.longitude ?: 0.0
+
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+                    val newPost = NewPost(
+                        postId,
+                        userDetails.value!!.firebaseUserId,
+                        userDetails.value!!.fullName,
+                        userDetails.value!!.profilePictureUrl!!,
+                        postImageUrl,
+                        postAddress,
+                        postLatitude,
+                        postLongitude,
+                        postDescription,
+                        dateFormat.format(Date())
+                    )
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val result = postRepository.addNewPost(newPost)
+                    }
+                } else {
+                    Log.e("ERROR", "Error while creating new post")
+                }
+            }
         }
     }
 

@@ -58,6 +58,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -79,7 +80,7 @@ fun CameraScreen(navController: NavHostController) {
     var showImagePickerDialog by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    val viewModel: CameraViewModel = viewModel()
+    val viewModel: CameraViewModel = hiltViewModel()
     var description by remember {
         mutableStateOf("")
     }
@@ -243,7 +244,7 @@ fun CameraScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(horizontal = 16.dp),
-                onClick = { },
+                onClick = { viewModel.createPost() },
                 enabled = viewModel.isReadyToPost,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
