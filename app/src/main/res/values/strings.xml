@@ -35,4 +35,5 @@
     <string name="select_location">Select location</string>
     <string name="description">Description</string>
     <string name="upload_post">Upload post</string>
+    <string name="the_post_was_created_successfully">The post was created successfully!</string>
 </resources>

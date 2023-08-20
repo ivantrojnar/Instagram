@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -69,6 +70,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.findActivity
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
+import hr.itrojnar.instagram.view.dialog.LoadingDialog
 import hr.itrojnar.instagram.viewmodel.CameraViewModel
 import java.io.ByteArrayOutputStream
 
@@ -82,6 +84,8 @@ fun CameraScreen(navController: NavHostController) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val viewModel: CameraViewModel = hiltViewModel()
+
+    val isUploadSuccessful by remember { viewModel.isUploadedSuccessful }
 
     val focusManager = LocalFocusManager.current
 
@@ -118,6 +122,15 @@ fun CameraScreen(navController: NavHostController) {
             },
             onDismissRequest = { showImagePickerDialog = false }
         )
+    }
+
+    if (viewModel.isLoading.value) {
+        LoadingDialog()
+    }
+
+    if (isUploadSuccessful) {
+        Toast.makeText(context, stringResource(R.string.the_post_was_created_successfully), Toast.LENGTH_SHORT).show()
+        navController.popBackStack()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

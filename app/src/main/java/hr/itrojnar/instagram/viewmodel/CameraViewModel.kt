@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
-
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val userRepository: UserRepository,
@@ -31,6 +30,9 @@ class CameraViewModel @Inject constructor(
     private val storageReference = FirebaseStorage.getInstance().reference
 
     private var _userDetails = MutableLiveData<User?>()
+
+    var isLoading = mutableStateOf(false)
+    var isUploadedSuccessful = mutableStateOf(false)
     val userDetails: LiveData<User?> get() = _userDetails
 
     init {
@@ -58,6 +60,8 @@ class CameraViewModel @Inject constructor(
 
     fun createPost() {
         if (isReadyToPost) {
+
+            isLoading.value = true
 
             val postId = System.currentTimeMillis().toString()
 
@@ -97,7 +101,10 @@ class CameraViewModel @Inject constructor(
                     CoroutineScope(Dispatchers.IO).launch {
                         val result = postRepository.addNewPost(newPost)
                     }
+                    isLoading.value = false
+                    isUploadedSuccessful.value = true
                 } else {
+                    isLoading.value = false
                     Log.e("ERROR", "Error while creating new post")
                 }
             }
