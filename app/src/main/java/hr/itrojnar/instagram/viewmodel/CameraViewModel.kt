@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    //private val userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val postRepository: FirebasePostRepository
 ) : ViewModel() {
 
@@ -33,13 +33,13 @@ class CameraViewModel @Inject constructor(
     private var _userDetails = MutableLiveData<User?>()
     val userDetails: LiveData<User?> get() = _userDetails
 
-    /*init {
+    init {
         fetchUserDetails()
-    }*/
+    }
 
     private fun fetchUserDetails() {
         viewModelScope.launch {
-            //_userDetails.value = userRepository.getCurrentUserDetail()
+            _userDetails.value = userRepository.getCurrentUserDetail()
         }
     }
 
@@ -106,13 +106,16 @@ class CameraViewModel @Inject constructor(
 
     fun setImageUri(uri: Uri?) {
         imageUri.value = uri
+        Log.d("CameraViewModel", "Image URI: $uri")
     }
 
     fun setLocation(place: Place?) {
+        Log.d("CameraViewModel", "Location: ${place?.name}")
         location.value = place
     }
 
     fun setDescription(desc: String) {
+        Log.d("CameraViewModel", "Description: $desc")
         description.value = desc
     }
 }

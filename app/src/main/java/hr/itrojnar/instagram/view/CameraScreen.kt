@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -81,9 +82,8 @@ fun CameraScreen(navController: NavHostController) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val viewModel: CameraViewModel = hiltViewModel()
-    var description by remember {
-        mutableStateOf("")
-    }
+
+    val focusManager = LocalFocusManager.current
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
@@ -103,6 +103,7 @@ fun CameraScreen(navController: NavHostController) {
     val pickImageLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             imageUri = uri
+            viewModel.setImageUri(uri)
         }
 
     if (showImagePickerDialog) {
@@ -223,10 +224,10 @@ fun CameraScreen(navController: NavHostController) {
                     label = { Text(text = stringResource(R.string.description)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
-                        //onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
