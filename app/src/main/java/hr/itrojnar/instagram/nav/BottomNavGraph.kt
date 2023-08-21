@@ -1,14 +1,20 @@
 package hr.itrojnar.instagram.nav
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.paging.ExperimentalPagingApi
 import hr.itrojnar.instagram.view.BottomNavScreen
 import hr.itrojnar.instagram.view.CameraScreen
 import hr.itrojnar.instagram.view.Screen
+import hr.itrojnar.instagram.view.main.PostsScreen
+import hr.itrojnar.instagram.view.main.PostsState
 import hr.itrojnar.instagram.viewmodel.CameraViewModel
+import hr.itrojnar.instagram.viewmodel.PostsViewModel
 
+@ExperimentalPagingApi
 @Composable
 fun BottomNavGraph(navController: NavHostController) {
     NavHost(
@@ -16,6 +22,9 @@ fun BottomNavGraph(navController: NavHostController) {
         startDestination = BottomNavScreen.Home.route
     ) {
         composable(route = BottomNavScreen.Home.route) {
+            val postsViewModel = hiltViewModel<PostsViewModel>()
+            val postsState = PostsState(postsViewModel)
+            PostsScreen(postsState = postsState)
         }
         composable(route = BottomNavScreen.Search.route) {
         }

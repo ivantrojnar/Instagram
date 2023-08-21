@@ -1,6 +1,11 @@
 package hr.itrojnar.instagram.model
 
-data class NewPost(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "posts_table")
+data class Post(
+    @PrimaryKey()
     val postId: String,
     val userId: String,
     val userName: String,
@@ -10,18 +15,20 @@ data class NewPost(
     val postLatitude: Double,
     val postLongitude: Double,
     val postDescription: String,
-    val postDate: String
+    val postDate: String,
+    val page: Int
 )
 
-data class SavedPost(
-    val postId: String,
-    val userId: String,
-    val userName: String,
-    val userProfileImageUrl: String,
-    val postImageUrl: String,
-    val postAddress: String,
-    val postLatitude: Double,
-    val postLongitude: Double,
-    val postDescription: String,
-    val postDate: String
-)
+//data class SavedPost(
+//    val postId: String,
+//    val userId: String,
+//    val userName: String,
+//    val userProfileImageUrl: String,
+//    val postImageUrl: String,
+//    val postAddress: String,
+//    val postLatitude: Double,
+//    val postLongitude: Double,
+//    val postDescription: String,
+//    val postDate: String,
+//    val page: Int
+//)

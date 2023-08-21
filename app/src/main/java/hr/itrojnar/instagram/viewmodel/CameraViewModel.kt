@@ -7,11 +7,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.itrojnar.instagram.api.FirebasePostRepository
-import hr.itrojnar.instagram.model.NewPost
+import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val userRepository: UserRepository,
@@ -85,7 +87,7 @@ class CameraViewModel @Inject constructor(
 
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-                    val newPost = NewPost(
+                    val post = Post(
                         postId,
                         userDetails.value!!.firebaseUserId,
                         userDetails.value!!.fullName,
@@ -95,11 +97,12 @@ class CameraViewModel @Inject constructor(
                         postLatitude,
                         postLongitude,
                         postDescription,
-                        dateFormat.format(Date())
+                        dateFormat.format(Date()),
+                        1
                     )
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        val result = postRepository.addNewPost(newPost)
+                        val result = postRepository.addNewPost(post)
                     }
                     isLoading.value = false
                     isUploadedSuccessful.value = true
