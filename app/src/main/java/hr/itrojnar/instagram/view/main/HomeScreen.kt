@@ -5,10 +5,12 @@ package hr.itrojnar.instagram.view.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -142,14 +144,19 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Post Image
-        Image(
-            painter = rememberImagePainter(data = post.postImageUrl),
-            contentDescription = "Post image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-        )
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = rememberImagePainter(data = post.postImageUrl),
+                contentDescription = "Post image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)  // This will ensure a square shape
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
