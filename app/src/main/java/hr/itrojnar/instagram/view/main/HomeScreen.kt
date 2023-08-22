@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.rememberImagePainter
+import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.util.formatDate
 import java.text.SimpleDateFormat
@@ -99,7 +101,7 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier = Modifier.weight(1f), // This ensures it takes as much space as possible without pushing other items
+                modifier = Modifier.weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -113,14 +115,24 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                 )
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth() // Ensures column takes full available width
-                        .padding(end = 8.dp)  // Provides space for the three-dot icon
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) {
-                    Text(text = post.userName, fontWeight = FontWeight.Bold)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(text = post.userName, fontWeight = FontWeight.Bold)
+                        Image(
+                            painter = painterResource(id = R.drawable.instagram_verified),
+                            contentDescription = "Verified Icon",
+                            modifier = Modifier.size(16.dp)  // Adjust the size as needed
+                        )
+                    }
                     Text(
                         text = post.postAddress,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis // Will add "..." if the text overflows
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
