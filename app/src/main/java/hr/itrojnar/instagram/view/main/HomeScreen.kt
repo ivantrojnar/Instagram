@@ -4,6 +4,8 @@ package hr.itrojnar.instagram.view.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,18 +32,34 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -53,6 +71,7 @@ import hr.itrojnar.instagram.util.formatDate
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalPagingApi::class)
 @Composable
@@ -94,6 +113,20 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val postDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.postDate) ?: Date()
     val formattedDate = formatDate(postDate, currentYear)
+
+    // State for DropdownMenu
+    var showMenu by remember { mutableStateOf(false) }
+    val iconPosition = remember { mutableStateOf(IntOffset(0, 0)) }
+    val iconSize = remember { mutableStateOf(IntSize(0, 0)) }
+
+    val instagramGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFFC13584),
+            Color(0xFFD1913C),
+            Color(0xFFE95950),
+            Color(0xFF89216B)
+        )
+    )
 
     Column(
         modifier = modifier
@@ -144,10 +177,72 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                     )
                 }
             }
-            Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = "Options icon")
+
+            Box(
+                modifier = Modifier
+                    .clickable { showMenu = !showMenu }
+                    .onGloballyPositioned { coordinates ->
+                        iconPosition.value = IntOffset(
+                            coordinates.positionInParent().x.roundToInt(),
+                            coordinates.positionInParent().y.roundToInt()
+                        )
+                        iconSize.value = coordinates.size
+                    }
+            ) {
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options icon")
+            }
+
+            val xOffset = with(LocalDensity.current) { iconPosition.value.x.toDp() }
+            val yOffset = with(LocalDensity.current) { (iconPosition.value.y - 50).toDp() }
+
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false },
+                offset = DpOffset(xOffset, yOffset),
+                modifier = Modifier
+                    .border(
+                        width = 3.dp,
+                        brush = instagramGradient,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(2.dp)
+            ) {
+                DropdownMenuItem(onClick = {
+                    // Handle item click
+                    showMenu = false
+                }, text = {
+                    Text(text = "Show profile")
+                })
+                DropdownMenuItem(onClick = {
+                    // Handle item click
+                    showMenu = false
+                }, text = {
+                    Text(text = "Cancel")
+                })
+            }
+
+//            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Options icon", modifier = Modifier.clickable { showMenu = !showMenu })
+//
+//            DropdownMenu(
+//                expanded = showMenu,
+//                onDismissRequest = { showMenu = false },
+//                offset = DpOffset(0.dp, 10.dp)  // offset to position it right below the three-dot icon
+//            ) {
+//                DropdownMenuItem(onClick = {
+//                    // Handle item click
+//                    showMenu = false
+//                },
+//                    text = {
+//                        Text(text = "Option 1")
+//                    })
+//            }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Post Image
         Box(
