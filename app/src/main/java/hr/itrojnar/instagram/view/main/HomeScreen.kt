@@ -23,6 +23,12 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.ChatBubble
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -167,9 +173,9 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                 .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Like icon")
-            Icon(imageVector = Icons.Default.ChatBubbleOutline, contentDescription = "Comment icon")
-            Icon(imageVector = Icons.Default.Send, contentDescription = "Direct message icon")
+            Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Like icon", modifier = Modifier.size(30.dp))
+            Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = "Comment icon", modifier = Modifier.size(28.dp))
+            Icon(imageVector = Icons.Outlined.Send, contentDescription = "Direct message icon", modifier = Modifier.size(28.dp))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
