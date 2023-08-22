@@ -53,4 +53,14 @@ class PostsRemoteMediator(
             MediatorResult.Error(e)
         }
     }
+
+    private suspend fun fetchPostsFromFirestore(): List<Post> {
+        val posts = mutableListOf<Post>()
+        val querySnapshot = firebaseCollection.get().await()
+        for (document in querySnapshot.documents) {
+            val post = document.toObject(Post::class.java)
+            post?.let { posts.add(it) }
+        }
+        return posts
+    }
 }

@@ -9,7 +9,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 @HiltViewModel
 class PostsViewModel @Inject constructor(
-    private val postRepository: FirebasePostRepository
+    postRepository: FirebasePostRepository
 ) : ViewModel() {
 
     val posts = postRepository.getPosts()

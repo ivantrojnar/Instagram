@@ -68,6 +68,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.api.PostRepository
 import hr.itrojnar.instagram.util.findActivity
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
 import hr.itrojnar.instagram.view.dialog.LoadingDialog

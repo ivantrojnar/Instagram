@@ -55,6 +55,10 @@ class FirebasePostRepository @Inject constructor(
         }
     }
 
+    override fun invalidatePosts() {
+        postDatabase.postDao().deletePosts()
+    }
+
 //    suspend fun getAllPosts(): List<Post> {
 //        val posts = mutableListOf<Post>()
 //        val querySnapshot = postsCollection.get().await()

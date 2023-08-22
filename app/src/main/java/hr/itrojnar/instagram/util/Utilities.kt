@@ -59,8 +59,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.SignInResult
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Date
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 @Composable
@@ -248,4 +251,15 @@ fun loadPicture(url: String, @DrawableRes defaultImage: Int): State<Bitmap?> {
     }
 
     return imageState
+}
+
+fun formatDate(date: Date, currentYear: Int): String {
+    val now = Date()
+    val hoursDiff = TimeUnit.MILLISECONDS.toHours(now.time - date.time)
+
+    return when {
+        hoursDiff < 24 -> "$hoursDiff hours ago"
+        SimpleDateFormat("yyyy").format(date).toInt() == currentYear -> SimpleDateFormat("d MMMM").format(date)
+        else -> SimpleDateFormat("d MMMM yyyy").format(date)
+    }
 }

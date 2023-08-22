@@ -9,9 +9,8 @@ import androidx.paging.ExperimentalPagingApi
 import hr.itrojnar.instagram.view.BottomNavScreen
 import hr.itrojnar.instagram.view.CameraScreen
 import hr.itrojnar.instagram.view.Screen
-import hr.itrojnar.instagram.view.main.PostsScreen
+import hr.itrojnar.instagram.view.main.HomeScreen
 import hr.itrojnar.instagram.view.main.PostsState
-import hr.itrojnar.instagram.viewmodel.CameraViewModel
 import hr.itrojnar.instagram.viewmodel.PostsViewModel
 
 @ExperimentalPagingApi
@@ -24,7 +23,7 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(route = BottomNavScreen.Home.route) {
             val postsViewModel = hiltViewModel<PostsViewModel>()
             val postsState = PostsState(postsViewModel)
-            PostsScreen(postsState = postsState)
+            HomeScreen(postsState = postsState)
         }
         composable(route = BottomNavScreen.Search.route) {
         }
