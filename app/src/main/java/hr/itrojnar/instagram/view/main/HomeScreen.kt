@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.ChatBubble
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
@@ -262,15 +264,50 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Icons row (like, comment, send)
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 8.dp),
+//            horizontalArrangement = Arrangement.spacedBy(16.dp)
+//        ) {
+//            Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Like icon", modifier = Modifier.size(30.dp))
+//            Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = "Comment icon", modifier = Modifier.size(28.dp))
+//            Icon(imageVector = Icons.Outlined.Send, contentDescription = "Direct message icon", modifier = Modifier.size(28.dp))
+//        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Like icon", modifier = Modifier.size(30.dp))
-            Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = "Comment icon", modifier = Modifier.size(28.dp))
-            Icon(imageVector = Icons.Outlined.Send, contentDescription = "Direct message icon", modifier = Modifier.size(28.dp))
+            // Left icons
+            Row(
+                modifier = Modifier.weight(1f), // assign equal weight
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Like icon", modifier = Modifier.size(30.dp))
+                Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = "Comment icon", modifier = Modifier.size(28.dp))
+                Icon(imageVector = Icons.Outlined.Send, contentDescription = "Direct message icon", modifier = Modifier.size(28.dp))
+            }
+
+            // Centered blue dot (also with equal weight, so it stays in the middle)
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(Color(0xFF45B8F0), shape = CircleShape)
+                        .align(Alignment.CenterStart)
+                )
+            }
+
+            // Right bookmark icon
+            Icon(imageVector = Icons.Outlined.BookmarkBorder, contentDescription = "Bookmark icon", modifier = Modifier.size(28.dp))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -278,7 +315,7 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
         // Post description
         Text(text = post.postDescription, modifier = Modifier.padding(horizontal = 8.dp))
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = post.postDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp))
+        Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp))
     }
 }
 
