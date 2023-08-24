@@ -79,6 +79,7 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalPagingApi::class)
 @Composable
 fun HomeScreen(postsState: PostsState) {
+
     val posts = postsState.posts.collectAsLazyPagingItems()
 
     LazyColumn(
@@ -87,9 +88,6 @@ fun HomeScreen(postsState: PostsState) {
             .padding(top = 40.dp),
         contentPadding = PaddingValues(0.dp)
     ) {
-        item {
-
-        }
         items(
             count = posts.itemCount,
             key = posts.itemKey { it.postId }
@@ -99,15 +97,6 @@ fun HomeScreen(postsState: PostsState) {
                 PostItem(post = post)
             }
         }
-    }
-}
-
-@Composable
-fun PostItem1(modifier: Modifier = Modifier, post: Post, /* Other parameters or callbacks */) {
-    // Define the UI representation of a single post item here
-    Card(modifier = modifier.padding(8.dp)) {
-        Text(text = post.postDescription)  // Example of displaying the post title
-        // Add other post details as required
     }
 }
 

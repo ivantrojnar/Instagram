@@ -9,7 +9,7 @@ import hr.itrojnar.instagram.model.Post
 
 @Dao
 interface PostDao {
-    @Query("SELECT * FROM posts_table")
+    @Query("SELECT * FROM posts_table ORDER BY postDate DESC")
     fun getAllPosts(): PagingSource<Int, Post>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

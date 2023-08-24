@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StyledDescription(userName: String, postDescription: String) {
     val defaultColor = MaterialTheme.colorScheme.onSurface
-    val hashtagColor = Color(0xFF0000FF)  // Blue color
+    val hashtagColor = Color(0xFF45B8F0)  // Blue color
 
     // Create a builder for the AnnotatedString
     val annotatedString = buildAnnotatedString {
