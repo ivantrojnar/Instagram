@@ -11,7 +11,10 @@ import hr.itrojnar.instagram.view.CameraScreen
 import hr.itrojnar.instagram.view.Screen
 import hr.itrojnar.instagram.view.main.HomeScreen
 import hr.itrojnar.instagram.view.main.PostsState
+import hr.itrojnar.instagram.view.main.SearchScreen
 import hr.itrojnar.instagram.viewmodel.PostsViewModel
+import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
+import kotlinx.coroutines.flow.toList
 
 @ExperimentalPagingApi
 @Composable
@@ -26,6 +29,8 @@ fun BottomNavGraph(navController: NavHostController) {
             HomeScreen(postsState = postsState)
         }
         composable(route = BottomNavScreen.Search.route) {
+            val searchPostsViewModel = hiltViewModel<SearchPostsViewModel>()
+            SearchScreen(searchPostsViewModel = searchPostsViewModel)
         }
         composable(route = BottomNavScreen.Map.route) {
         }

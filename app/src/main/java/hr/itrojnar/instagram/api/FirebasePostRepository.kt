@@ -11,6 +11,8 @@ import hr.itrojnar.instagram.db.PostDatabase
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.paging.PostsRemoteMediator
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -59,15 +61,9 @@ class FirebasePostRepository @Inject constructor(
         postDatabase.postDao().deletePosts()
     }
 
-//    suspend fun getAllPosts(): List<Post> {
-//        val posts = mutableListOf<Post>()
-//        val querySnapshot = postsCollection.get().await()
-//        for (document in querySnapshot.documents) {
-//            val post = document.toObject(Post::class.java)
-//            post?.let { posts.add(it) }
-//        }
-//        return posts
-//    }
+    fun getAllPosts(): List<Post> = runBlocking {
+        postDatabase.postDao().getAllPostsListFlow().first()
+    }
 //
 //    suspend fun fetchPostsFromFirestoreAndSaveToDb() {
 //        val posts = getAllPosts()
