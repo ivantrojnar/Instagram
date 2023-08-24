@@ -70,6 +70,7 @@ import coil.compose.rememberImagePainter
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.util.formatDate
+import hr.itrojnar.instagram.view.utility.StyledDescription
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -312,19 +313,8 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Post description
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = post.userName, // Assuming this is how you retrieve the full name
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(end = 4.dp) // Tiny space after full name
-            )
-            Text(text = post.postDescription)
-        }
-        
+        StyledDescription(userName = post.userName, postDescription = post.postDescription)
+
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp))
     }
