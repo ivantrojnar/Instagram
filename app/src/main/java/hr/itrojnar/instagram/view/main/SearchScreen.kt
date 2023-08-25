@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -74,60 +75,85 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
         }
     }
 
+    // Track visibility of the search bar and filter options
+    var searchBarVisible by remember { mutableStateOf(true) }
+
+    // Track the last scroll position
+    var lastScrollOffset by remember { mutableStateOf(0f) }
+
+    // Listen to the scroll state
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemScrollOffset.toFloat() }
+            .collect { scrollOffset ->
+                searchBarVisible = scrollOffset <= lastScrollOffset
+                lastScrollOffset = scrollOffset
+            }
+    }
+
     Column {
-        // Search Bar
-        TextField(
-            value = searchQuery,
-            onValueChange = { value -> searchQuery = value },
-            label = { Text("Search") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp), // This adds padding to the left and right
-            singleLine = true,
-            shape = RoundedCornerShape(30.dp), // This will round the corners of the TextField
-            colors = TextFieldDefaults.textFieldColors( // Customize the colors
-                containerColor = Color(0xFFEDEDED), // Very light gray
-                textColor = Color.Black,
-                cursorColor = Color.Black,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                focusedLabelColor = Color.Black,  // Set your desired color when focused
-                unfocusedLabelColor = Color.Black
-            ),
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Options
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        AnimatedVisibility(
+            visible = searchBarVisible,
+            enter = slideInVertically(initialOffsetY = { -50 }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { -50 }) + fadeOut()
         ) {
-            items(count = optionsList.size) { index ->
-                val option = optionsList[index]
-                FilterOption(
-                    // Add start padding only for the first item
-                    modifier = when (index) {
-                        0 -> Modifier.padding(start = 8.dp)
-                        optionsList.size - 1 -> Modifier.padding(end = 8.dp)
-                        else -> Modifier
-                    },
-                    option,
-                    isSelected = option == selectedOption,
-                    onOptionSelected = {
-                        selectedOption = it
-                    }
+            Column {
+                // Search Bar
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { value -> searchQuery = value },
+                    label = { Text("Search") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp), // This adds padding to the left and right
+                    singleLine = true,
+                    shape = RoundedCornerShape(30.dp), // This will round the corners of the TextField
+                    colors = TextFieldDefaults.textFieldColors( // Customize the colors
+                        containerColor = Color(0xFFEDEDED), // Very light gray
+                        textColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        focusedLabelColor = Color.Black,  // Set your desired color when focused
+                        unfocusedLabelColor = Color.Black
+                    ),
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
                 )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Options
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(count = optionsList.size) { index ->
+                        val option = optionsList[index]
+                        FilterOption(
+                            // Add start padding only for the first item
+                            modifier = when (index) {
+                                0 -> Modifier.padding(start = 8.dp)
+                                optionsList.size - 1 -> Modifier.padding(end = 8.dp)
+                                else -> Modifier
+                            },
+                            option,
+                            isSelected = option == selectedOption,
+                            onOptionSelected = {
+                                selectedOption = it
+                            }
+                        )
+                    }
+                }
             }
         }
+
+
 
         LazyColumn(
             state = lazyListState,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 40.dp),
+                .padding(top = 5.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
             items(
@@ -220,13 +246,14 @@ fun FilterOption(
 
     Text(
         text = option,
-        modifier = modifier.run {
-            if (isSelected) {
-                this.background(brush = gradientBrush, shape = RoundedCornerShape(8.dp))
-            } else {
-                this.background(color = backgroundColor, shape = RoundedCornerShape(8.dp))
+        modifier = modifier
+            .run {
+                if (isSelected) {
+                    this.background(brush = gradientBrush, shape = RoundedCornerShape(8.dp))
+                } else {
+                    this.background(color = backgroundColor, shape = RoundedCornerShape(8.dp))
+                }
             }
-        }
             .padding(horizontal = 8.dp, vertical = 2.dp)
             .clickable { onOptionSelected(option) }
             .padding(8.dp),
