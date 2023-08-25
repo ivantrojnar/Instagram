@@ -257,12 +257,15 @@ fun formatDate(date: Date, currentYear: Int): String {
     val now = Date()
     val minutesDiff = TimeUnit.MILLISECONDS.toMinutes(now.time - date.time)
     val hoursDiff = TimeUnit.MILLISECONDS.toHours(now.time - date.time)
+    val daysDiff = TimeUnit.MILLISECONDS.toDays(now.time - date.time)
 
     return when {
         minutesDiff <= 1 -> "A minute ago"
         minutesDiff in 2..59 -> "$minutesDiff minutes ago"
         hoursDiff == 1L -> "1 hour ago"
         hoursDiff in 2L..23L -> "$hoursDiff hours ago"
+        daysDiff == 1L -> "1 day ago"
+        daysDiff in 2L..6L -> "$daysDiff days ago"
         SimpleDateFormat("yyyy").format(date).toInt() == currentYear -> SimpleDateFormat("d MMMM").format(date)
         else -> SimpleDateFormat("d MMMM yyyy").format(date)
     }

@@ -304,8 +304,9 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
 
         StyledDescription(userName = post.userName, postDescription = post.postDescription)
 
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp))
+        Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp), color = Color.Gray)
+
+        Spacer(modifier = Modifier.height(15.dp))
     }
 }
 
