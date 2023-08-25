@@ -1,5 +1,11 @@
 package hr.itrojnar.instagram.view.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,12 +17,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,6 +56,21 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 
     val optionsList = listOf("All", "User", "Location", "Description", "Date of post")
 
+    val lazyListState = rememberLazyListState()
+
+    // 1. Create a remembered mutable state map for visibility:
+    val postVisibilityMap = remember { mutableStateOf(mutableMapOf<String, Boolean>()) }
+
+    // 2. Update visibility map
+    filteredPosts.forEach { post ->
+        postVisibilityMap.value[post.postId] = true
+    }
+    posts.forEach { post ->
+        if (post !in filteredPosts) {
+            postVisibilityMap.value[post.postId] = false
+        }
+    }
+
     Column {
         // Search Bar
         TextField(
@@ -73,6 +97,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
         }
 
         LazyColumn(
+            state = lazyListState,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
@@ -81,11 +106,21 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             items(
                 count = filteredPosts.count(),
             ) { index ->
-                val post = filteredPosts[index]
-                if (post != null) {
+                val post = posts[index]
+                val isVisible = postVisibilityMap.value[post.postId] ?: false
+                AnimatedVisibility(
+                    visible = isVisible,
+                    enter = fadeIn(animationSpec = tween(500)) + slideInVertically(initialOffsetY = { 50 }),
+                    exit = fadeOut(animationSpec = tween(500)) + slideOutVertically(targetOffsetY = { -50 })
+                ) {
                     PostItem(post = post)
                 }
+                //PostItem(post = post)
             }
+        }
+
+        LaunchedEffect(filteredPosts) {
+            lazyListState.scrollToItem(0)
         }
     }
 }
