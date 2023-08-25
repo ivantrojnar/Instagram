@@ -1,6 +1,8 @@
 package hr.itrojnar.instagram.view.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,28 +21,29 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
+import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.model.Post
+import hr.itrojnar.instagram.util.instagramGradient
 import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -52,7 +55,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
     var selectedOption by remember { mutableStateOf("All") }
 
     val posts = searchPostsViewModel.posts
-    val filteredPosts = FilterPosts(posts, searchQuery, selectedOption)
+    val filteredPosts = filterPosts(posts, searchQuery, selectedOption)
 
     val optionsList = listOf("All", "User", "Location", "Description", "Date of post")
 
@@ -77,8 +80,22 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             value = searchQuery,
             onValueChange = { value -> searchQuery = value },
             label = { Text("Search") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp), // This adds padding to the left and right
+            singleLine = true,
+            shape = RoundedCornerShape(30.dp), // This will round the corners of the TextField
+            colors = TextFieldDefaults.textFieldColors( // Customize the colors
+                containerColor = Color(0xFFEDEDED), // Very light gray
+                textColor = Color.Black,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                focusedLabelColor = Color.Black,  // Set your desired color when focused
+                unfocusedLabelColor = Color.Black
+            ),
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -86,13 +103,23 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
         // Options
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(count = optionsList.size) { index ->
                 val option = optionsList[index]
-                FilterOption(option, isSelected = option == selectedOption) {
-                    selectedOption = it
-                }
+                FilterOption(
+                    // Add start padding only for the first item
+                    modifier = when (index) {
+                        0 -> Modifier.padding(start = 8.dp)
+                        optionsList.size - 1 -> Modifier.padding(end = 8.dp)
+                        else -> Modifier
+                    },
+                    option,
+                    isSelected = option == selectedOption,
+                    onOptionSelected = {
+                        selectedOption = it
+                    }
+                )
             }
         }
 
@@ -126,7 +153,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 }
 
 @Composable
-fun FilterPosts(posts: List<Post>, query: String, option: String): List<Post> {
+fun filterPosts(posts: List<Post>, query: String, option: String): List<Post> {
     val monthMapEnglish = mapOf(
         "january" to 1, "february" to 2, "march" to 3, "april" to 4,
         "may" to 5, "june" to 6, "july" to 7, "august" to 8,
@@ -168,21 +195,45 @@ fun FilterPosts(posts: List<Post>, query: String, option: String): List<Post> {
 
 @Composable
 fun FilterOption(
+    modifier: Modifier = Modifier,
     option: String,
     isSelected: Boolean = false,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
 ) {
+    // Check if instagramGradient has at least 2 colors, or else set a default list
+    val safeInstagramGradient = if (instagramGradient.size >= 2) {
+        instagramGradient
+    } else {
+        listOf(Color.Gray, Color.Gray) // Default to a single-color gradient for safety
+    }
+
+    val gradientBrush = Brush.horizontalGradient(safeInstagramGradient)
+
+    // These animate*AsState functions allow properties to smoothly animate between their values
+    val backgroundColor by animateColorAsState(
+        if (isSelected) Color.Gray else Color(0xFFF0F0F0)
+    )
+
+    val textColor by animateColorAsState(
+        if (isSelected) Color.White else Color.DarkGray
+    )
+
     Text(
         text = option,
-        modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .background(
-                if (isSelected) Color.Gray else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
-            )
+        modifier = modifier.run {
+            if (isSelected) {
+                this.background(brush = gradientBrush, shape = RoundedCornerShape(8.dp))
+            } else {
+                this.background(color = backgroundColor, shape = RoundedCornerShape(8.dp))
+            }
+        }
+            .padding(horizontal = 8.dp, vertical = 2.dp)
             .clickable { onOptionSelected(option) }
             .padding(8.dp),
-        color = if (isSelected) Color.White else Color.Gray,
-        style = TextStyle(fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+        style = TextStyle(
+            color = textColor,
+            fontSize = 14.sp, // Single font size
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+        )
     )
 }

@@ -267,3 +267,10 @@ fun formatDate(date: Date, currentYear: Int): String {
         else -> SimpleDateFormat("d MMMM yyyy").format(date)
     }
 }
+
+val instagramGradient = listOf(
+    Color(0xFFF58529), // Orange
+    Color(0xFFDD2A7B), // Pinkish
+    Color(0xFF8134AF), // Purple
+    Color(0xFF515BD4)  // Blue
+)
