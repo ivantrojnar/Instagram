@@ -352,19 +352,27 @@ fun StoriesSection() {
             ) {
                 Box(
                     modifier = Modifier
-                        .size(90.dp)
+                        .size(96.dp) // Increased the size to accommodate the spacing
                         .border(3.dp, Brush.horizontalGradient(instagramGradient), CircleShape)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                 ) {
-                    Image(
-                        painter = rememberImagePainter(data = story.second),
-                        contentDescription = "${story.first}'s story",
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                            .matchParentSize()
+                            .padding(6.dp) // This is the spacing
+                            .clip(CircleShape)
+                            .background(Color.White) // This is the white color spacing
+                    ) {
+                        Image(
+                            painter = rememberImagePainter(data = story.second),
+                            contentDescription = "${story.first}'s story",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = story.first, maxLines = 1, overflow = TextOverflow.Ellipsis)
