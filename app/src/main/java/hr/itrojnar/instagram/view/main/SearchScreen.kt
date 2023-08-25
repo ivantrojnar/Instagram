@@ -32,6 +32,8 @@ import androidx.paging.compose.itemKey
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +45,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
     val posts = searchPostsViewModel.posts
     val filteredPosts = FilterPosts(posts, searchQuery, selectedOption)
 
-    val optionsList = listOf("All", "User", "Location", "Description")
+    val optionsList = listOf("All", "User", "Location", "Description", "Date of post")
 
     Column {
         // Search Bar
@@ -90,12 +92,40 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 
 @Composable
 fun FilterPosts(posts: List<Post>, query: String, option: String): List<Post> {
+    val monthMapEnglish = mapOf(
+        "january" to 1, "february" to 2, "march" to 3, "april" to 4,
+        "may" to 5, "june" to 6, "july" to 7, "august" to 8,
+        "september" to 9, "october" to 10, "november" to 11, "december" to 12
+    )
+
+    val monthMapCroatian = mapOf(
+        "siječanj" to 1, "veljača" to 2, "ožujak" to 3, "travanj" to 4,
+        "svibanj" to 5, "lipanj" to 6, "srpanj" to 7, "kolovoz" to 8,
+        "rujan" to 9, "listopad" to 10, "studeni" to 11, "prosinac" to 12
+    )
+
     return posts.filter { post ->
+        val postDateTime = LocalDateTime.parse(post.postDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val postMonth = postDateTime.month.value
+        val postYear = postDateTime.year
+
         when (option) {
-            "All" -> post.userName.contains(query, true) || post.postAddress.contains(query, true) || post.postDescription.contains(query, true)
+            "All" -> {
+                post.userName.contains(query, true) ||
+                        post.postAddress.contains(query, true) ||
+                        post.postDescription.contains(query, true) ||
+                        monthMapEnglish.keys.any { it.startsWith(query, ignoreCase = true) && monthMapEnglish[it] == postMonth } ||
+                        monthMapCroatian.keys.any { it.startsWith(query, ignoreCase = true) && monthMapCroatian[it] == postMonth } ||
+                        query.contains(postYear.toString())
+            }
             "User" -> post.userName.contains(query, true)
             "Location" -> post.postAddress.contains(query, true)
             "Description" -> post.postDescription.contains(query, true)
+            "Date of post" -> {
+                monthMapEnglish.keys.any { it.startsWith(query, ignoreCase = true) && monthMapEnglish[it] == postMonth } ||
+                        monthMapCroatian.keys.any { it.startsWith(query, ignoreCase = true) && monthMapCroatian[it] == postMonth } ||
+                        query.contains(postYear.toString())
+            }
             else -> false
         }
     }
