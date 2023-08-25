@@ -29,18 +29,19 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagingApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 
-    val coroutineScope = rememberCoroutineScope()
     var searchQuery by remember { mutableStateOf("") }
     var selectedOption by remember { mutableStateOf("All") }
 
     val posts = searchPostsViewModel.posts
+    val filteredPosts = FilterPosts(posts, searchQuery, selectedOption)
 
     val optionsList = listOf("All", "User", "Location", "Description")
 
@@ -48,7 +49,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
         // Search Bar
         TextField(
             value = searchQuery,
-            onValueChange = {  },
+            onValueChange = { value -> searchQuery = value },
             label = { Text("Search") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
@@ -76,13 +77,26 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             contentPadding = PaddingValues(0.dp)
         ) {
             items(
-                count = posts.count(),
+                count = filteredPosts.count(),
             ) { index ->
-                val post = posts[index]
+                val post = filteredPosts[index]
                 if (post != null) {
                     PostItem(post = post)
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun FilterPosts(posts: List<Post>, query: String, option: String): List<Post> {
+    return posts.filter { post ->
+        when (option) {
+            "All" -> post.userName.contains(query, true) || post.postAddress.contains(query, true) || post.postDescription.contains(query, true)
+            "User" -> post.userName.contains(query, true)
+            "Location" -> post.postAddress.contains(query, true)
+            "Description" -> post.postDescription.contains(query, true)
+            else -> false
         }
     }
 }
