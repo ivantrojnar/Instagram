@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubbleOutline
@@ -70,6 +72,7 @@ import coil.compose.rememberImagePainter
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.util.formatDate
+import hr.itrojnar.instagram.util.instagramGradient
 import hr.itrojnar.instagram.view.utility.StyledDescription
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -82,19 +85,30 @@ fun HomeScreen(postsState: PostsState) {
 
     val posts = postsState.posts.collectAsLazyPagingItems()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 40.dp),
-        contentPadding = PaddingValues(0.dp)
+    Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        items(
-            count = posts.itemCount,
-            key = posts.itemKey { it.postId }
-        ) { index ->  
-            val post = posts[index]
-            if (post != null) {
-                PostItem(post = post)
+        Spacer(modifier = Modifier.height(60.dp)) // Add some space between stories and posts
+
+        // Stories section
+        StoriesSection()
+
+        Spacer(modifier = Modifier.height(16.dp)) // Add some space between stories and posts
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            items(
+                count = posts.itemCount,
+                key = posts.itemKey { it.postId }
+            ) { index ->
+                val post = posts[index]
+                if (post != null) {
+                    PostItem(post = post)
+                }
             }
         }
     }
@@ -310,6 +324,54 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
     }
 }
 
+
+@Composable
+fun StoriesSection() {
+
+    // Sample data for stories
+    val stories = listOf(
+        Pair("John Doe", "https://www.biowritingservice.com/wp-content/themes/tuborg/images/Executive%20Bio%20Sample%20Photo.png"),
+        Pair("CR7", "https://assets.manutd.com/AssetPicker/images/0/0/10/126/687707/Legends-Profile_Cristiano-Ronaldo1523460877263.jpg"),
+        Pair("Messi", "https://www.reuters.com/resizer/MDGS1iPYUhyrw7J057g9snNYu_Y=/1200x1500/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/KWFB4SNZIVMBZBMO5FCAAIMEOU.jpg"),
+        Pair("BMW M5", "https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/9a743954-daa7-4f3f-9b28-d7c355a0e11d/BMW%20M5%20%289%29.jpg?width=800&fm=jpg&auto=format"),
+        Pair("Audi R8", "https://cdn.motor1.com/images/mgl/vxoJ0Y/s1/4x3/2023-audi-r8-v10-gt-rwd.webp"),
+        Pair("Bugatti Chiron", "https://images.wsj.net/im-325492?width=1280&size=1.77777778")
+        // ... Add more as needed
+    )
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(count = stories.size) { index ->
+            val story = stories[index]
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(90.dp)
+                        .border(3.dp, Brush.horizontalGradient(instagramGradient), CircleShape)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+                ) {
+                    Image(
+                        painter = rememberImagePainter(data = story.second),
+                        contentDescription = "${story.first}'s story",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = story.first, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+}
 
 
 
