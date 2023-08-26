@@ -14,7 +14,7 @@ fun ImagePickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = "Choose Profile Picture") },
+        title = { Text(text = "Choose Picture") },
         text = {
             Column {
                 TextButton(onClick = onTakePhoto) {

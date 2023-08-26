@@ -1,9 +1,15 @@
 package hr.itrojnar.instagram.view
 
 import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.media.Image
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,8 +17,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,18 +46,27 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,18 +78,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
+import coil.ImageLoader
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
+import coil.transform.Transformation
+import com.commit451.coiltransformations.BlurTransformation
+import com.commit451.coiltransformations.gpu.SepiaFilterTransformation
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import hr.itrojnar.instagram.R
-import hr.itrojnar.instagram.api.PostRepository
-import hr.itrojnar.instagram.util.findActivity
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
 import hr.itrojnar.instagram.view.dialog.LoadingDialog
+import hr.itrojnar.instagram.view.utility.NoTransformation
 import hr.itrojnar.instagram.viewmodel.CameraViewModel
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,9 +153,21 @@ fun CameraScreen(navController: NavHostController) {
     }
 
     if (isUploadSuccessful) {
-        Toast.makeText(context, stringResource(R.string.the_post_was_created_successfully), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            context,
+            stringResource(R.string.the_post_was_created_successfully),
+            Toast.LENGTH_SHORT
+        ).show()
         navController.popBackStack()
     }
+
+    var selectedTransformation by remember { mutableStateOf<Transformation?>(null) }
+
+    val layoutCoordinatesState = remember { mutableStateOf<LayoutCoordinates?>(null) }
+
+    val composeView = remember { ComposeView(context) }
+
+    var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -172,22 +207,42 @@ fun CameraScreen(navController: NavHostController) {
                 .verticalScroll(rememberScrollState())
         ) {
 
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .background(Color.LightGray)
+                    .onGloballyPositioned { layoutCoordinates ->
+                        layoutCoordinatesState.value = layoutCoordinates
+                    },
             ) {
                 //val image = viewModel.selectedImage
-                imageUri?.let {
-                    val image: Painter = rememberAsyncImagePainter(model = it)
+//                imageUri?.let {
+//                    Image(
+//                        painter = rememberImagePainter(data = it),
+//                        contentDescription = "Selected preview",
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
+//                }
+                imageUri?.let { uri ->
+                    val painter = rememberImagePainter(
+                        data = uri,
+                        builder = {
+                            selectedTransformation?.let { transformation ->
+                                transformations(transformation)
+                            }
+                        }
+                    )
                     Image(
-                        painter = image,
+                        painter = painter,
                         contentDescription = "Selected preview",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
+
                 IconButton(
                     onClick = { showImagePickerDialog = true },
                     modifier = Modifier
@@ -209,6 +264,42 @@ fun CameraScreen(navController: NavHostController) {
                     }
                 }
             }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = { selectedTransformation = BlurTransformation(context) }) {
+                    Text("Apply Blur")
+                }
+                Button(onClick = { selectedTransformation = CircleCropTransformation() }) {
+                    Text("Apply Circle Crop")
+                }
+                Button(onClick = { selectedTransformation = SepiaFilterTransformation(context) }) {
+                    Text("Sepia")
+                }
+                // Add more buttons for other transformations if needed.
+            }
+
+//            Column(modifier = Modifier.fillMaxWidth()) { // Column to align main image and filter thumbnails vertically
+//                // Display main image with selected filter
+//                FilteredImageView(imageUri = imageUri, filter = selectedFilter)
+//
+//                // Display filter thumbnails
+//                LazyRow {
+//                    items(filters.size) { index ->
+//                        val filter = filters[index]
+//                        FilterThumbnail(
+//                            imageUri = imageUri,
+//                            filter = filter
+//                        ) { transformation ->
+//                            selectedFilter = transformation
+//                        }
+//                    }
+//                }
+//            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -251,15 +342,26 @@ fun CameraScreen(navController: NavHostController) {
                     )
                 )
             }
-            
+
             Spacer(modifier = Modifier.size(10.dp))
-            
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(horizontal = 16.dp),
-                onClick = { viewModel.createPost() },
+                onClick = {
+                    viewModel.viewModelScope.launch {
+                        val transformedBitmap = applyTransformationToBitmap(selectedTransformation, context, imageUri!!)
+                        if (transformedBitmap != null) {
+                            val savedUri = saveBitmapToMediaStore(transformedBitmap, context)
+                            if (savedUri != null) {
+                                viewModel.setImageUri(savedUri)
+                            }
+                        }
+                        viewModel.createPost()
+                    }
+                },
                 enabled = viewModel.isReadyToPost,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
@@ -276,6 +378,7 @@ fun CameraScreen(navController: NavHostController) {
         }
     }
 }
+
 
 @Composable
 fun LocationInput(cameraViewModel: CameraViewModel) {
@@ -341,4 +444,44 @@ fun LocationInput(cameraViewModel: CameraViewModel) {
             Text(stringResource(R.string.select_location))
         }
     }
+}
+
+fun saveBitmapToMediaStore(bitmap: Bitmap, context: Context): Uri? {
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, "Edited_Image_${System.currentTimeMillis()}.jpg")
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+    }
+
+    val contentResolver = context.contentResolver
+    val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+    if (uri != null) {
+        val outputStream = contentResolver.openOutputStream(uri)
+        outputStream?.use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+    }
+
+    return uri
+}
+
+
+fun captureComposeViewToBitmap(view: ComposeView, width: Int, height: Int): Bitmap? {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    view.draw(canvas)
+    return bitmap
+}
+
+private suspend fun applyTransformationToBitmap(transformation: Transformation?, context: Context, imageUri: Uri): Bitmap? {
+    val imageLoader = ImageLoader(context)
+    val request = ImageRequest.Builder(context)
+        .data(imageUri)
+        .transformations(transformation ?: CircleCropTransformation())
+        .build()
+
+    val result = imageLoader.execute(request).drawable
+    if (result is BitmapDrawable) {
+        return result.bitmap
+    }
+    return null
 }

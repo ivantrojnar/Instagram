@@ -134,4 +134,18 @@ dependencies {
     implementation("com.mxalbert.zoomable:zoomable:1.6.1")
 
     implementation "net.engawapg.lib:zoomable:1.5.0"
+
+    implementation 'com.burhanrashid52:photoeditor:3.0.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'jp.wasabeef:glide-transformations:4.3.0'
+    // If you want to use the GPU Filters
+    implementation 'jp.co.cyberagent.android:gpuimage:2.1.0'
+
+    implementation("com.google.accompanist:accompanist-glide:0.15.0")
+
+    implementation("com.github.Commit451.coil-transformations:transformations:2.0.2")
+    implementation("com.github.Commit451.coil-transformations:transformations-gpu:2.0.2")
+
+
 }
