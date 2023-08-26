@@ -67,6 +67,9 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
     val iconPosition = remember { mutableStateOf(IntOffset(0, 0)) }
     val iconSize = remember { mutableStateOf(IntSize(0, 0)) }
 
+    val fakeUsernames = listOf("John Doe", "Milica Krmpotic", "Pero Peric")
+    val randomLikedBy = fakeUsernames.random()
+
     val instagramGradient = Brush.linearGradient(
         colors = listOf(
             Color(0xFFC13584),
@@ -231,6 +234,8 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        LikedBySection(likedByUser = randomLikedBy)
+        
         StyledDescription(userName = post.userName, postDescription = post.postDescription)
 
         Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp), color = Color.Gray)
