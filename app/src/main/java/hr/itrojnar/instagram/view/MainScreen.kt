@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -37,37 +32,38 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material.rememberDrawerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
-import hr.itrojnar.instagram.model.DummyData
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.nav.BottomNavGraph
 import hr.itrojnar.instagram.view.drawer.DrawerFooter
 import hr.itrojnar.instagram.view.drawer.DrawerHeader
 import hr.itrojnar.instagram.view.drawer.DrawerItem
+import hr.itrojnar.instagram.viewmodel.MainScreenViewModel
+import hr.itrojnar.instagram.viewmodel.UserState
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -78,51 +74,72 @@ fun MainScreen() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val user = DummyData.dummyUser
+    val viewModel: MainScreenViewModel = hiltViewModel()
+
+    val userState by viewModel.userState.observeAsState(initial = UserState.Loading)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
 
     //val isHomeScreen = currentDestination?.route == "home"
 
-    ModalDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = true,
-        drawerContent = {
-            DrawerContent(navController, drawerState, user)
-        }) {
+    when (userState) {
+        is UserState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),  // This will make the Box occupy the entire parent size
+                contentAlignment = Alignment.Center  // This will center the CircularProgressIndicator inside the Box
+            ) {
+                CircularProgressIndicator(
+                    color = Color.Blue,  // Set the color to blue
+                    modifier = Modifier.size(100.dp)  // Set a custom size
+                )
+            }  // This will show the progress bar while loading
+        }
+        is UserState.Loaded -> {
+            val user = (userState as UserState.Loaded).user
+            ModalDrawer(
+                drawerState = drawerState,
+                gesturesEnabled = true,
+                drawerContent = {
+                    DrawerContent(navController, drawerState, user)
+                }) {
 
-        Scaffold(
-            topBar = {
-                if (currentDestination == "home") {
-                    TopAppBarWithBorder(
-                        navController = navController,
-                        backgroundColor = colorResource(id = R.color.very_light_gray),
-                        contentColor = Color.Black,
-                        bottomBorderColor = Color(0xFFCCCCCC)
-                    ) {
-                        IconButton(onClick = {
-                            scope.launch {
-                                if (drawerState.isClosed) {
-                                    drawerState.open()
-                                } else {
-                                    drawerState.close()
+                Scaffold(
+                    topBar = {
+                        if (currentDestination == "home") {
+                            TopAppBarWithBorder(
+                                navController = navController,
+                                backgroundColor = colorResource(id = R.color.very_light_gray),
+                                contentColor = Color.Black,
+                                bottomBorderColor = Color(0xFFCCCCCC)
+                            ) {
+                                IconButton(onClick = {
+                                    scope.launch {
+                                        if (drawerState.isClosed) {
+                                            drawerState.open()
+                                        } else {
+                                            drawerState.close()
+                                        }
+                                    }
+                                }) {
+                                    Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
                                 }
+                                Spacer(modifier = Modifier.weight(1f))
                             }
-                        }) {
-                            Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
                         }
-                        Spacer(modifier = Modifier.weight(1f))
+                    },
+                    bottomBar = {
+                        if (currentDestination != "camera") {
+                            BottomBar(navController = navController)
+                        }
                     }
-                }
-            },
-            bottomBar = {
-                if (currentDestination != "camera") {
-                    BottomBar(navController = navController)
+                ) {
+                    BottomNavGraph(navController = navController)
                 }
             }
-        ) {
-            BottomNavGraph(navController = navController)
+        }
+        is UserState.Error -> {
+            Text("An error occurred")
         }
     }
 }

@@ -34,7 +34,7 @@ fun StoriesSection() {
 
     // Sample data for stories
     val stories = listOf(
-        Pair("John Doe", "https://www.biowritingservice.com/wp-content/themes/tuborg/images/Executive%20Bio%20Sample%20Photo.png"),
+        Pair("Šumaher", "https://cdn.hashnode.com/res/hashnode/image/upload/v1637410748416/jIQXSpXgq.jpeg"),
         Pair("CR7", "https://assets.manutd.com/AssetPicker/images/0/0/10/126/687707/Legends-Profile_Cristiano-Ronaldo1523460877263.jpg"),
         Pair("Messi", "https://www.reuters.com/resizer/MDGS1iPYUhyrw7J057g9snNYu_Y=/1200x1500/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/KWFB4SNZIVMBZBMO5FCAAIMEOU.jpg"),
         Pair("BMW M5", "https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/9a743954-daa7-4f3f-9b28-d7c355a0e11d/BMW%20M5%20%289%29.jpg?width=800&fm=jpg&auto=format"),
