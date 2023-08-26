@@ -6,10 +6,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.View
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,7 +19,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -46,27 +45,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -86,13 +76,24 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
 import com.commit451.coiltransformations.BlurTransformation
+import com.commit451.coiltransformations.ColorFilterTransformation
+import com.commit451.coiltransformations.GrayscaleTransformation
+import com.commit451.coiltransformations.gpu.ContrastFilterTransformation
+import com.commit451.coiltransformations.gpu.InvertFilterTransformation
+import com.commit451.coiltransformations.gpu.KuwaharaFilterTransformation
+import com.commit451.coiltransformations.gpu.PixelationFilterTransformation
 import com.commit451.coiltransformations.gpu.SepiaFilterTransformation
+import com.commit451.coiltransformations.gpu.SketchFilterTransformation
+import com.commit451.coiltransformations.gpu.SwirlFilterTransformation
+import com.commit451.coiltransformations.gpu.ToonFilterTransformation
+import com.commit451.coiltransformations.gpu.VignetteFilterTransformation
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
 import hr.itrojnar.instagram.view.dialog.LoadingDialog
+import hr.itrojnar.instagram.view.utility.ImageFilterOption
 import hr.itrojnar.instagram.view.utility.NoTransformation
 import hr.itrojnar.instagram.viewmodel.CameraViewModel
 import kotlinx.coroutines.launch
@@ -161,13 +162,25 @@ fun CameraScreen(navController: NavHostController) {
         navController.popBackStack()
     }
 
-    var selectedTransformation by remember { mutableStateOf<Transformation?>(null) }
+    var selectedTransformation by remember { mutableStateOf<Transformation>(NoTransformation()) }
 
     val layoutCoordinatesState = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
-    val composeView = remember { ComposeView(context) }
-
-    var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val filterOptions = listOf(
+        Pair("No Filter", NoTransformation()),
+        Pair("Blur", BlurTransformation(context)),
+        Pair("Circle Crop", CircleCropTransformation()),
+        Pair("Sepia", SepiaFilterTransformation(context)),
+        Pair("Color", ColorFilterTransformation(Color.Red.copy(0.2f).hashCode())),
+        Pair("Grayscale", GrayscaleTransformation()),
+        Pair("Invert", InvertFilterTransformation(context)),
+        Pair("Kuwahara", KuwaharaFilterTransformation(context)),
+        Pair("Pixelation", PixelationFilterTransformation(context)),
+        Pair("Sketch", SketchFilterTransformation(context)),
+        Pair("Swirl", SwirlFilterTransformation(context)),
+        Pair("Toon", ToonFilterTransformation(context)),
+        Pair("Vignette", VignetteFilterTransformation(context)),
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -265,43 +278,32 @@ fun CameraScreen(navController: NavHostController) {
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+            
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Button(onClick = { selectedTransformation = BlurTransformation(context) }) {
-                    Text("Apply Blur")
+                items(count = filterOptions.size) { index ->
+                    val (label, transformation) = filterOptions[index]
+                    ImageFilterOption(
+                        modifier = when (index) {
+                            0 -> Modifier.padding(start = 16.dp)
+                            filterOptions.size - 1 -> Modifier.padding(end = 8.dp)
+                            else -> Modifier
+                        },
+                        label = label,
+                        transformation = transformation,
+                        isSelected = transformation == selectedTransformation,
+                        onOptionSelected = { newTransformation ->
+                            selectedTransformation = newTransformation
+                            Log.d("IMAGEFILTER", "$selectedTransformation")
+                        }
+                    )
                 }
-                Button(onClick = { selectedTransformation = CircleCropTransformation() }) {
-                    Text("Apply Circle Crop")
-                }
-                Button(onClick = { selectedTransformation = SepiaFilterTransformation(context) }) {
-                    Text("Sepia")
-                }
-                // Add more buttons for other transformations if needed.
             }
 
-//            Column(modifier = Modifier.fillMaxWidth()) { // Column to align main image and filter thumbnails vertically
-//                // Display main image with selected filter
-//                FilteredImageView(imageUri = imageUri, filter = selectedFilter)
-//
-//                // Display filter thumbnails
-//                LazyRow {
-//                    items(filters.size) { index ->
-//                        val filter = filters[index]
-//                        FilterThumbnail(
-//                            imageUri = imageUri,
-//                            filter = filter
-//                        ) { transformation ->
-//                            selectedFilter = transformation
-//                        }
-//                    }
-//                }
-//            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Add the LocationInput composable here
             LocationInput(cameraViewModel = viewModel)

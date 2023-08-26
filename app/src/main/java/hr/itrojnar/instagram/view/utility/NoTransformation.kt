@@ -1,23 +1,15 @@
 package hr.itrojnar.instagram.view.utility
 
-import android.content.Context
 import android.graphics.Bitmap
-import com.bumptech.glide.load.Transformation
-import com.bumptech.glide.load.engine.Resource
-import java.security.MessageDigest
+import coil.size.Size
+import coil.transform.Transformation
 
-class NoTransformation : Transformation<Bitmap> {
+class NoTransformation : Transformation {
+    override val cacheKey: String
+        get() = "NoTransformation"
 
-    override fun transform(
-        context: Context,
-        resource: Resource<Bitmap>,
-        outWidth: Int,
-        outHeight: Int
-    ): Resource<Bitmap> {
-        return resource
+    override suspend fun transform(input: Bitmap, size: Size): Bitmap {
+        return input
     }
 
-    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-        TODO("Not yet implemented")
-    }
 }

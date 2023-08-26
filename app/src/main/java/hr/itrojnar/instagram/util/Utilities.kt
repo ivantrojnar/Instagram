@@ -279,12 +279,3 @@ val instagramGradientColors = listOf(
     Color(0xFF8134AF), // Purple
     Color(0xFF515BD4)  // Blue
 )
-
-val filters = listOf(
-    ImageFilter("Original", NoTransformation()),
-    ImageFilter("Grayscale", GrayscaleTransformation()),
-    ImageFilter("Blur", BlurTransformation()),
-    ImageFilter("Sepia", SepiaFilterTransformation()),
-    ImageFilter("Pixel", PixelationFilterTransformation())
-    // ... add more filters as needed
-)
