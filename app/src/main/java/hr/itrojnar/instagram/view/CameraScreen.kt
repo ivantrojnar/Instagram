@@ -78,7 +78,6 @@ import coil.transform.Transformation
 import com.commit451.coiltransformations.BlurTransformation
 import com.commit451.coiltransformations.ColorFilterTransformation
 import com.commit451.coiltransformations.GrayscaleTransformation
-import com.commit451.coiltransformations.gpu.ContrastFilterTransformation
 import com.commit451.coiltransformations.gpu.InvertFilterTransformation
 import com.commit451.coiltransformations.gpu.KuwaharaFilterTransformation
 import com.commit451.coiltransformations.gpu.PixelationFilterTransformation
@@ -114,6 +113,9 @@ fun CameraScreen(navController: NavHostController) {
 
     val focusManager = LocalFocusManager.current
 
+    var selectedTransformation by remember { mutableStateOf<Transformation>(NoTransformation()) }
+    var selectedFilter by remember { mutableStateOf("No filter") }
+
     val takePictureLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
             bitmap?.let {
@@ -125,6 +127,7 @@ fun CameraScreen(navController: NavHostController) {
                 imageUri = Uri.parse(path)
                 imageUri?.let { uri ->
                     viewModel.setImageUri(uri)
+                    selectedTransformation = NoTransformation()
                 }
             }
         }
@@ -133,6 +136,7 @@ fun CameraScreen(navController: NavHostController) {
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             imageUri = uri
             viewModel.setImageUri(uri)
+            selectedTransformation = NoTransformation()
         }
 
     if (showImagePickerDialog) {
@@ -162,8 +166,6 @@ fun CameraScreen(navController: NavHostController) {
         navController.popBackStack()
     }
 
-    var selectedTransformation by remember { mutableStateOf<Transformation>(NoTransformation()) }
-
     val layoutCoordinatesState = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     val filterOptions = listOf(
@@ -179,7 +181,7 @@ fun CameraScreen(navController: NavHostController) {
         Pair("Sketch", SketchFilterTransformation(context)),
         Pair("Swirl", SwirlFilterTransformation(context)),
         Pair("Toon", ToonFilterTransformation(context)),
-        Pair("Vignette", VignetteFilterTransformation(context)),
+        Pair("Vignette", VignetteFilterTransformation(context))
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -294,10 +296,10 @@ fun CameraScreen(navController: NavHostController) {
                         },
                         label = label,
                         transformation = transformation,
-                        isSelected = transformation == selectedTransformation,
+                        isSelected = label == selectedFilter,
                         onOptionSelected = { newTransformation ->
                             selectedTransformation = newTransformation
-                            Log.d("IMAGEFILTER", "$selectedTransformation")
+                            selectedFilter = label
                         }
                     )
                 }
