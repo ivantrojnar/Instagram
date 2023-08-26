@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.util.instagramGradient
+import hr.itrojnar.instagram.view.utility.PostItem
 import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -146,8 +147,6 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
                 }
             }
         }
-
-
 
         LazyColumn(
             state = lazyListState,
