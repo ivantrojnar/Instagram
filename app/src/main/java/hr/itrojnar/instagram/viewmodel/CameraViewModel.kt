@@ -7,14 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.itrojnar.instagram.api.FirebasePostRepository
+import hr.itrojnar.instagram.api.PostRepository
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.model.User
-import hr.itrojnar.instagram.repository.UserRepository
+import hr.itrojnar.instagram.api.FirebaseUserRepository
+import hr.itrojnar.instagram.api.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,11 +22,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
-@OptIn(ExperimentalPagingApi::class)
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val postRepository: FirebasePostRepository
+    private val postRepository: PostRepository
 ) : ViewModel() {
 
     private val storageReference = FirebaseStorage.getInstance().reference

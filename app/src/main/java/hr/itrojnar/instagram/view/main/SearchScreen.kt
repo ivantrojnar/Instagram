@@ -158,7 +158,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             items(
                 count = filteredPosts.count(),
             ) { index ->
-                val post = posts[index]
+                val post = filteredPosts[index]
                 val isVisible = postVisibilityMap.value[post.postId] ?: false
                 AnimatedVisibility(
                     visible = isVisible,

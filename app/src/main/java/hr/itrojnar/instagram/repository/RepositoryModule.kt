@@ -6,6 +6,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import hr.itrojnar.instagram.api.FirebasePostRepository
+import hr.itrojnar.instagram.api.FirebaseUserRepository
+import hr.itrojnar.instagram.api.PostRepository
+import hr.itrojnar.instagram.api.UserRepository
 import hr.itrojnar.instagram.db.PostDatabase
 
 @Module
@@ -13,11 +16,11 @@ import hr.itrojnar.instagram.db.PostDatabase
 object RepositoryModule {
 
     @Provides
-    fun provideUserRepository(): UserRepository = UserRepository()
+    fun provideUserRepository(): UserRepository = FirebaseUserRepository()
 
     @OptIn(ExperimentalPagingApi::class)
     @Provides
-    fun provideFirebasePostRepository(postDatabase: PostDatabase): FirebasePostRepository {
+    fun provideFirebasePostRepository(postDatabase: PostDatabase): PostRepository {
         return FirebasePostRepository(postDatabase)
     }
 }

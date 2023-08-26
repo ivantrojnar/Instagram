@@ -61,7 +61,7 @@ class FirebasePostRepository @Inject constructor(
         postDatabase.postDao().deletePosts()
     }
 
-    fun getAllPosts(): List<Post> = runBlocking {
+    override fun getAllPosts(): List<Post> = runBlocking {
         postDatabase.postDao().getAllPostsListFlow().first()
     }
 //

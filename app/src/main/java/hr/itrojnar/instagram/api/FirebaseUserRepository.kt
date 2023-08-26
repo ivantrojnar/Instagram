@@ -1,16 +1,16 @@
-package hr.itrojnar.instagram.repository
+package hr.itrojnar.instagram.api
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import hr.itrojnar.instagram.model.User
 import kotlinx.coroutines.tasks.await
 
-class UserRepository {
+class FirebaseUserRepository : UserRepository {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val currentUser = FirebaseAuth.getInstance().currentUser
 
-    suspend fun getCurrentUserDetail(): User? {
+    override suspend fun getCurrentUserDetail(): User? {
         val uid = currentUser?.uid
         if (uid != null) {
             val userDocument = firestore.collection("users").document(uid).get().await()

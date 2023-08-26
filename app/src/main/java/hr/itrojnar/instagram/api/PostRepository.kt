@@ -9,4 +9,5 @@ interface PostRepository {
     fun getPosts(): Flow<PagingData<Post>>
     suspend fun addNewPost(post: Post): Result<DocumentReference>
     fun invalidatePosts()
+    fun getAllPosts(): List<Post>
 }

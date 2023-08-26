@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.ExperimentalPagingApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.itrojnar.instagram.api.FirebasePostRepository
+import hr.itrojnar.instagram.api.PostRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchPostsViewModel @OptIn(ExperimentalPagingApi::class)
+class SearchPostsViewModel
 @Inject constructor(
-    postRepository: FirebasePostRepository
+    postRepository: PostRepository
 ) : ViewModel() {
 
-    @OptIn(ExperimentalPagingApi::class)
     val posts = postRepository.getAllPosts()
 }
