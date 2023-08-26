@@ -41,4 +41,21 @@
     <string name="user">User</string>
     <string name="location">Location</string>
     <string name="date_of_post">Date of post</string>
+    <string name="no_filter">No Filter</string>
+    <string name="blur">Blur</string>
+    <string name="circle_crop">Circle Crop</string>
+    <string name="sepia">Sepia</string>
+    <string name="color">Color</string>
+    <string name="grayscale">Grayscale</string>
+    <string name="invert">Invert</string>
+    <string name="kuwahara">Kuwahara</string>
+    <string name="pixelation">Pixelation</string>
+    <string name="sketch">Sketch</string>
+    <string name="swirl">Swirl</string>
+    <string name="toon">Toon</string>
+    <string name="vignette">Vignette</string>
+    <string name="brightness">Brightness</string>
+    <string name="Red">Red</string>
+    <string name="Green">Green</string>
+    <string name="Blue">Blue</string>
 </resources>

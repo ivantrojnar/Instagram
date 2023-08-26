@@ -4,11 +4,9 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,7 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -78,6 +75,8 @@ import coil.transform.Transformation
 import com.commit451.coiltransformations.BlurTransformation
 import com.commit451.coiltransformations.ColorFilterTransformation
 import com.commit451.coiltransformations.GrayscaleTransformation
+import com.commit451.coiltransformations.SquareCropTransformation
+import com.commit451.coiltransformations.gpu.BrightnessFilterTransformation
 import com.commit451.coiltransformations.gpu.InvertFilterTransformation
 import com.commit451.coiltransformations.gpu.KuwaharaFilterTransformation
 import com.commit451.coiltransformations.gpu.PixelationFilterTransformation
@@ -169,19 +168,22 @@ fun CameraScreen(navController: NavHostController) {
     val layoutCoordinatesState = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     val filterOptions = listOf(
-        Pair("No Filter", NoTransformation()),
-        Pair("Blur", BlurTransformation(context)),
-        Pair("Circle Crop", CircleCropTransformation()),
-        Pair("Sepia", SepiaFilterTransformation(context)),
-        Pair("Color", ColorFilterTransformation(Color.Red.copy(0.2f).hashCode())),
-        Pair("Grayscale", GrayscaleTransformation()),
-        Pair("Invert", InvertFilterTransformation(context)),
-        Pair("Kuwahara", KuwaharaFilterTransformation(context)),
-        Pair("Pixelation", PixelationFilterTransformation(context)),
-        Pair("Sketch", SketchFilterTransformation(context)),
-        Pair("Swirl", SwirlFilterTransformation(context)),
-        Pair("Toon", ToonFilterTransformation(context)),
-        Pair("Vignette", VignetteFilterTransformation(context))
+        Pair(stringResource(R.string.no_filter), NoTransformation()),
+        Pair(stringResource(R.string.blur), BlurTransformation(context)),
+        Pair(stringResource(R.string.circle_crop), CircleCropTransformation()),
+        Pair(stringResource(R.string.sepia), SepiaFilterTransformation(context)),
+        Pair(stringResource(R.string.Red), ColorFilterTransformation(Color.Red.copy(0.2f).hashCode())),
+        Pair(stringResource(R.string.Green), ColorFilterTransformation(Color.Green.copy(0.2f).hashCode())),
+        Pair(stringResource(R.string.Blue), ColorFilterTransformation(Color.Blue.copy(0.2f).hashCode())),
+        Pair(stringResource(R.string.grayscale), GrayscaleTransformation()),
+        Pair(stringResource(R.string.invert), InvertFilterTransformation(context)),
+        Pair(stringResource(R.string.kuwahara), KuwaharaFilterTransformation(context)),
+        Pair(stringResource(R.string.pixelation), PixelationFilterTransformation(context)),
+        Pair(stringResource(R.string.sketch), SketchFilterTransformation(context)),
+        Pair(stringResource(R.string.swirl), SwirlFilterTransformation(context)),
+        Pair(stringResource(R.string.toon), ToonFilterTransformation(context)),
+        Pair(stringResource(R.string.vignette), VignetteFilterTransformation(context)),
+        Pair(stringResource(R.string.brightness), BrightnessFilterTransformation(context, 0.5f))
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -232,15 +234,6 @@ fun CameraScreen(navController: NavHostController) {
                         layoutCoordinatesState.value = layoutCoordinates
                     },
             ) {
-                //val image = viewModel.selectedImage
-//                imageUri?.let {
-//                    Image(
-//                        painter = rememberImagePainter(data = it),
-//                        contentDescription = "Selected preview",
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier.fillMaxSize()
-//                    )
-//                }
                 imageUri?.let { uri ->
                     val painter = rememberImagePainter(
                         data = uri,
@@ -466,14 +459,6 @@ fun saveBitmapToMediaStore(bitmap: Bitmap, context: Context): Uri? {
     }
 
     return uri
-}
-
-
-fun captureComposeViewToBitmap(view: ComposeView, width: Int, height: Int): Bitmap? {
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    view.draw(canvas)
-    return bitmap
 }
 
 private suspend fun applyTransformationToBitmap(transformation: Transformation?, context: Context, imageUri: Uri): Bitmap? {
