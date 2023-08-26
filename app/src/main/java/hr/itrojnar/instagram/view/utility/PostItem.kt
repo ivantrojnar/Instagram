@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,10 +49,13 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import coil.compose.rememberImagePainter
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.util.formatDate
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -68,7 +73,7 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
     val iconSize = remember { mutableStateOf(IntSize(0, 0)) }
 
     val fakeUsernames = listOf("John Doe", "Milica Krmpotic", "Pero Peric")
-    val randomLikedBy = fakeUsernames.random()
+    val randomLikedBy = remember { fakeUsernames.random() }
 
     val instagramGradient = Brush.linearGradient(
         colors = listOf(
@@ -78,6 +83,8 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
             Color(0xFF89216B)
         )
     )
+
+    val zoomState = rememberZoomState()
 
     Column(
         modifier = modifier
@@ -191,6 +198,9 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
+                    .zoomable(zoomState)
+                    //.zIndex(if (zoomState.scale > 1f) 1000f else 0f)
+                    .zIndex(1000f)
             )
         }
 

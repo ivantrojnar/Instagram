@@ -21,20 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.User
+import hr.itrojnar.instagram.util.instagramGradientColors
 import hr.itrojnar.instagram.util.loadPicture
 
 @Composable
 fun DrawerHeader(user: User) {
-    val gradient = Brush.linearGradient(
-        colors = listOf(
-            Color(0xFF405DE6),
-            Color(0xFF5851DB),
-            Color(0xFF833AB4),
-            Color(0xFFC13584),
-            Color(0xFFE1306C),
-            Color(0xFFFD1D1D)
-        )
-    )
+
+    val gradient = Brush.linearGradient(colors = instagramGradientColors)
 
     Column(
         modifier = Modifier

@@ -27,7 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import hr.itrojnar.instagram.util.instagramGradient
+import hr.itrojnar.instagram.util.instagramGradientColors
 
 @Composable
 fun StoriesSection() {
@@ -57,7 +57,7 @@ fun StoriesSection() {
                 Box(
                     modifier = Modifier
                         .size(96.dp) // Increased the size to accommodate the spacing
-                        .border(3.dp, Brush.horizontalGradient(instagramGradient), CircleShape)
+                        .border(3.dp, Brush.horizontalGradient(instagramGradientColors), CircleShape)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                 ) {

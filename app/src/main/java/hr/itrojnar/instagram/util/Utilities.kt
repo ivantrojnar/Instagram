@@ -3,7 +3,6 @@ package hr.itrojnar.instagram.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.DrawableRes
@@ -19,12 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -43,22 +38,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.drawable.toBitmap
 import coil.ImageLoader
-import coil.compose.ImagePainter
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import hr.itrojnar.instagram.R
-import hr.itrojnar.instagram.sign_in.SignInResult
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
@@ -271,7 +261,7 @@ fun formatDate(date: Date, currentYear: Int): String {
     }
 }
 
-val instagramGradient = listOf(
+val instagramGradientColors = listOf(
     Color(0xFFF58529), // Orange
     Color(0xFFDD2A7B), // Pinkish
     Color(0xFF8134AF), // Purple

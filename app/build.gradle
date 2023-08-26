@@ -129,4 +129,9 @@ dependencies {
 
     //swipe
     implementation "me.saket.swipe:swipe:1.0.0"
+
+    //zoomable
+    implementation("com.mxalbert.zoomable:zoomable:1.6.1")
+
+    implementation "net.engawapg.lib:zoomable:1.5.0"
 }

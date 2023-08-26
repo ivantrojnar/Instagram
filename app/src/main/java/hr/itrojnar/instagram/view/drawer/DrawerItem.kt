@@ -14,13 +14,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import hr.itrojnar.instagram.util.instagramGradientColors
 
 @Composable
 fun DrawerItem(icon: ImageVector, label: String, isSelected: Boolean, action: () -> Unit) {
-    val backgroundColor = if (isSelected) Color(0xFFDD2A7B) else Color.White
+
+    val gradientBrush = Brush.linearGradient(colors = instagramGradientColors)
+
+    val backgroundColor = if (isSelected) gradientBrush else Brush.linearGradient(listOf(Color.White, Color.White))
     val contentColor = if (isSelected) Color.White else Color.Gray
 
     Row(

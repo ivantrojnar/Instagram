@@ -15,7 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import hr.itrojnar.instagram.util.instagramGradient
+import hr.itrojnar.instagram.util.instagramGradientColors
 
 @Composable
 fun FilterOption(
@@ -25,8 +25,8 @@ fun FilterOption(
     onOptionSelected: (String) -> Unit,
 ) {
     // Check if instagramGradient has at least 2 colors, or else set a default list
-    val safeInstagramGradient = if (instagramGradient.size >= 2) {
-        instagramGradient
+    val safeInstagramGradient = if (instagramGradientColors.size >= 2) {
+        instagramGradientColors
     } else {
         listOf(Color.Gray, Color.Gray) // Default to a single-color gradient for safety
     }
