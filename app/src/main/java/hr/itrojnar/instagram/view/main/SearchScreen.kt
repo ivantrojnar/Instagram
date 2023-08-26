@@ -41,12 +41,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.util.instagramGradient
 import hr.itrojnar.instagram.view.utility.FilterOption
@@ -65,7 +67,13 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
     val posts = searchPostsViewModel.posts
     val filteredPosts = filterPosts(posts, searchQuery, selectedOption)
 
-    val optionsList = listOf("All", "User", "Location", "Description", "Date of post")
+    val optionsList = listOf(
+        stringResource(R.string.all),
+        stringResource(R.string.user),
+        stringResource(R.string.location),
+        stringResource(R.string.description),
+        stringResource(R.string.date_of_post)
+    )
 
     val lazyListState = rememberLazyListState()
 
@@ -212,7 +220,7 @@ fun filterPosts(posts: List<Post>, query: String, option: String): List<Post> {
         val postYear = postDateTime.year
 
         when (option) {
-            "All" -> {
+            stringResource(id = R.string.all) -> {
                 post.userName.contains(query, true) ||
                         post.postAddress.contains(query, true) ||
                         post.postDescription.contains(query, true) ||
@@ -220,10 +228,10 @@ fun filterPosts(posts: List<Post>, query: String, option: String): List<Post> {
                         monthMapCroatian.keys.any { it.startsWith(query, ignoreCase = true) && monthMapCroatian[it] == postMonth } ||
                         query.contains(postYear.toString())
             }
-            "User" -> post.userName.contains(query, true)
-            "Location" -> post.postAddress.contains(query, true)
-            "Description" -> post.postDescription.contains(query, true)
-            "Date of post" -> {
+            stringResource(id = R.string.user) -> post.userName.contains(query, true)
+            stringResource(id = R.string.location) -> post.postAddress.contains(query, true)
+            stringResource(id = R.string.description) -> post.postDescription.contains(query, true)
+            stringResource(id = R.string.date_of_post) -> {
                 monthMapEnglish.keys.any { it.startsWith(query, ignoreCase = true) && monthMapEnglish[it] == postMonth } ||
                         monthMapCroatian.keys.any { it.startsWith(query, ignoreCase = true) && monthMapCroatian[it] == postMonth } ||
                         query.contains(postYear.toString())
