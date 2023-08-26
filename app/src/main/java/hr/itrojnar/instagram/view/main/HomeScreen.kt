@@ -39,8 +39,6 @@ fun HomeScreen(postsState: PostsState) {
             modifier = Modifier.fillMaxWidth()
         ) }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-        
         items(
             count = posts.itemCount,
             key = posts.itemKey { it.postId }
