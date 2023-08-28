@@ -84,8 +84,7 @@ fun MainScreen() {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
-
-    //val isHomeScreen = currentDestination?.route == "home"
+    val isMapScreen = currentDestination == "map"
 
     when (userState) {
         is UserState.Loading -> {
@@ -103,7 +102,7 @@ fun MainScreen() {
             val user = (userState as UserState.Loaded).user
             ModalDrawer(
                 drawerState = drawerState,
-                gesturesEnabled = false,
+                gesturesEnabled = !isMapScreen,
                 drawerContent = {
                     DrawerContent(navController, drawerState, user)
                 }) {
