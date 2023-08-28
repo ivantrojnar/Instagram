@@ -56,7 +56,7 @@ fun StoriesSection() {
             ) {
                 Box(
                     modifier = Modifier
-                        .size(96.dp) // Increased the size to accommodate the spacing
+                        .size(88.dp) // Increased the size to accommodate the spacing
                         .border(3.dp, Brush.horizontalGradient(instagramGradientColors), CircleShape)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))

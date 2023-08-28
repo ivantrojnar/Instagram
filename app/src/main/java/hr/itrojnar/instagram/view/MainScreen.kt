@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
@@ -59,6 +61,8 @@ import androidx.paging.ExperimentalPagingApi
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.nav.BottomNavGraph
+import hr.itrojnar.instagram.util.LottieAnimation
+import hr.itrojnar.instagram.util.LottieAnimationLoop
 import hr.itrojnar.instagram.view.drawer.DrawerFooter
 import hr.itrojnar.instagram.view.drawer.DrawerHeader
 import hr.itrojnar.instagram.view.drawer.DrawerItem
@@ -86,14 +90,14 @@ fun MainScreen() {
     when (userState) {
         is UserState.Loading -> {
             Box(
-                modifier = Modifier.fillMaxSize(),  // This will make the Box occupy the entire parent size
-                contentAlignment = Alignment.Center  // This will center the CircularProgressIndicator inside the Box
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(
-                    color = Color.Blue,  // Set the color to blue
-                    modifier = Modifier.size(100.dp)  // Set a custom size
-                )
-            }  // This will show the progress bar while loading
+                LottieAnimationLoop(resId = R.raw.loading_animation,
+                    Modifier
+                        .fillMaxWidth()
+                        .height(250.dp))
+            }
         }
         is UserState.Loaded -> {
             val user = (userState as UserState.Loaded).user
