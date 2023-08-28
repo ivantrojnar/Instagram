@@ -99,7 +99,7 @@ fun MainScreen() {
             val user = (userState as UserState.Loaded).user
             ModalDrawer(
                 drawerState = drawerState,
-                gesturesEnabled = true,
+                gesturesEnabled = false,
                 drawerContent = {
                     DrawerContent(navController, drawerState, user)
                 }) {

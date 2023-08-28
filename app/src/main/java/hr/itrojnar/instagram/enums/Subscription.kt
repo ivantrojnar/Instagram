@@ -1,4 +1,4 @@
-package hr.itrojnar.instagram.enum
+package hr.itrojnar.instagram.enums
 
 enum class Subscription(
     val id: Int,

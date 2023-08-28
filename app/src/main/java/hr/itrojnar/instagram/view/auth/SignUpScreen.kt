@@ -89,7 +89,7 @@ import hr.itrojnar.instagram.view.dialog.PhoneCallPermissionTextProvider
 import hr.itrojnar.instagram.view.dialog.RecordAudioPermissionTextProvider
 import hr.itrojnar.instagram.viewmodel.MainViewModel
 import java.io.ByteArrayOutputStream
-import hr.itrojnar.instagram.enum.Subscription
+import hr.itrojnar.instagram.enums.Subscription
 import hr.itrojnar.instagram.util.createUserWithImage
 
 @OptIn(ExperimentalMaterial3Api::class)
