@@ -106,4 +106,6 @@
     <string name="upload_limit_1gb_day_max_spend_10_photos">Upload limit: 1GB/day. Max spend: 10 photos.</string>
     <string name="upload_limit_10gb_day_max_spend_50_photos_price_9_99_month">Upload limit: 10GB/day. Max spend: 50 photos. Price: $9.99/month</string>
     <string name="upload_limit_100gb_day_max_spend_100_photos_price_24_99_month">Upload limit: 100GB/day. Max spend: 100 photos. Price: $24.99/month</string>
+    <string name="verified_icon">Verified Icon</string>
+    <string name="user_profile_image">User profile image</string>
 </resources>

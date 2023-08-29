@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -85,7 +84,7 @@ fun PostDialogContent(post: Post) {
         ) {
             Image(
                 painter = rememberImagePainter(data = post.userProfileImageUrl),
-                contentDescription = "User profile image",
+                contentDescription = stringResource(R.string.user_profile_image),
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
@@ -103,7 +102,7 @@ fun PostDialogContent(post: Post) {
                     Text(text = post.userName, fontWeight = FontWeight.Bold)
                     Image(
                         painter = painterResource(id = R.drawable.instagram_verified),
-                        contentDescription = "Verified Icon",
+                        contentDescription = stringResource(R.string.verified_icon),
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -123,10 +122,14 @@ fun PostDialogContent(post: Post) {
         ) {
             Image(
                 painter = rememberImagePainter(data = post.postImageUrl,
-                builder = {
-                    LottieAnimation(resId = R.raw.loading_animation, modifier = Modifier.fillMaxWidth().aspectRatio(1f))
-                    crossfade(true)
-                }),
+                    builder = {
+                        LottieAnimation(
+                            resId = R.raw.loading_animation, modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
+                        )
+                        crossfade(true)
+                    }),
                 contentDescription = stringResource(R.string.post_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -149,12 +152,28 @@ fun PostDialogContent(post: Post) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = stringResource(R.string.like_icon), modifier = Modifier.size(30.dp))
-                Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = stringResource(R.string.comment_icon), modifier = Modifier.size(28.dp))
-                Icon(imageVector = Icons.Outlined.Send, contentDescription = stringResource(R.string.direct_message_icon), modifier = Modifier.size(28.dp))
+                Icon(
+                    imageVector = Icons.Outlined.FavoriteBorder,
+                    contentDescription = stringResource(R.string.like_icon),
+                    modifier = Modifier.size(30.dp)
+                )
+                Icon(
+                    imageVector = Icons.Outlined.ChatBubbleOutline,
+                    contentDescription = stringResource(R.string.comment_icon),
+                    modifier = Modifier.size(28.dp)
+                )
+                Icon(
+                    imageVector = Icons.Outlined.Send,
+                    contentDescription = stringResource(R.string.direct_message_icon),
+                    modifier = Modifier.size(28.dp)
+                )
             }
 
-            Icon(imageVector = Icons.Outlined.BookmarkBorder, contentDescription = stringResource(R.string.bookmark_icon), modifier = Modifier.size(28.dp))
+            Icon(
+                imageVector = Icons.Outlined.BookmarkBorder,
+                contentDescription = stringResource(R.string.bookmark_icon),
+                modifier = Modifier.size(28.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -163,7 +182,12 @@ fun PostDialogContent(post: Post) {
 
         StyledDescription(userName = post.userName, postDescription = post.postDescription)
 
-        Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp), color = Color.Gray)
+        Text(
+            text = formattedDate,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            color = Color.Gray
+        )
 
         Spacer(modifier = Modifier.height(15.dp))
     }
