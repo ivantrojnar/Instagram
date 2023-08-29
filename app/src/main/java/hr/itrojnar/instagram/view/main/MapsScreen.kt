@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -21,14 +25,17 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import hr.itrojnar.instagram.model.Post
+import hr.itrojnar.instagram.view.dialog.PostDetailDialog
 import hr.itrojnar.instagram.viewmodel.MapsViewModel
 
 @Composable
 fun MapsScreen(mapsViewModel: MapsViewModel) {
 
     val posts = mapsViewModel.posts
-
     val context = LocalContext.current
+
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedPost by remember { mutableStateOf<Post?>(null) }
 
     Column {
         MapViewContainer(
@@ -56,6 +63,8 @@ fun MapsScreen(mapsViewModel: MapsViewModel) {
             googleMap.setOnMarkerClickListener { marker ->
                 val post = marker.tag as? Post
                 post?.let {
+                    selectedPost = it
+                    showDialog = true
                     // TODO: Display post details
                 }
                 true
@@ -75,6 +84,11 @@ fun MapsScreen(mapsViewModel: MapsViewModel) {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 12f))
                     }
                 }
+            }
+        }
+        if (showDialog && selectedPost != null) {
+            PostDetailDialog(post = selectedPost!!) {
+                showDialog = false
             }
         }
     }
