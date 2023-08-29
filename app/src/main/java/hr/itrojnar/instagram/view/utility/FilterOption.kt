@@ -24,16 +24,14 @@ fun FilterOption(
     isSelected: Boolean = false,
     onOptionSelected: (String) -> Unit,
 ) {
-    // Check if instagramGradient has at least 2 colors, or else set a default list
     val safeInstagramGradient = if (instagramGradientColors.size >= 2) {
         instagramGradientColors
     } else {
-        listOf(Color.Gray, Color.Gray) // Default to a single-color gradient for safety
+        listOf(Color.Gray, Color.Gray)
     }
 
     val gradientBrush = Brush.horizontalGradient(safeInstagramGradient)
 
-    // These animate*AsState functions allow properties to smoothly animate between their values
     val backgroundColor by animateColorAsState(
         if (isSelected) Color.Gray else Color(0xFFF0F0F0)
     )
@@ -57,7 +55,7 @@ fun FilterOption(
             .padding(8.dp),
         style = TextStyle(
             color = textColor,
-            fontSize = 14.sp, // Single font size
+            fontSize = 14.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
         )
     )

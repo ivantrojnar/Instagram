@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram.view.dialog
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,9 +10,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import hr.itrojnar.instagram.R
 
 @Composable
 fun PermissionDialog(
@@ -31,9 +34,9 @@ fun PermissionDialog(
                 Divider()
                 Text(
                     text = if(isPermanentlyDeclined) {
-                        "Grant permission"
+                        stringResource(R.string.grant_permission)
                     } else {
-                        "OK"
+                        stringResource(R.string.ok)
                     },
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -51,7 +54,7 @@ fun PermissionDialog(
             }
         },
         title = {
-            Text(text = "Permission required")
+            Text(text = stringResource(R.string.permission_required))
         },
         text = {
             Text(
@@ -67,49 +70,49 @@ interface PermissionTextProvider {
     fun getDescription(isPermanentlyDeclined: Boolean): String
 }
 
-class MediaImagesPermissionTextProvider: PermissionTextProvider {
+class MediaImagesPermissionTextProvider(private val context: Context): PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "It seems you permanently declined permission to access images and videos. " +
-                    "You can go to the app settings to grant it."
+            context.getString(R.string.it_seems_you_permanently_declined_permission_to_access_images_and_videos) +
+                    context.getString(R.string.you_can_go_to_the_app_settings_to_grant_it)
         } else {
-            "This app needs access to your gallery so that you can take choose pictures to upload while using the app."
+            context.getString(R.string.this_app_needs_access_to_your_gallery_so_that_you_can_take_choose_pictures_to_upload_while_using_the_app)
         }
     }
 
 }
 
-class CameraPermissionTextProvider: PermissionTextProvider {
+class CameraPermissionTextProvider(private val context: Context): PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "It seems you permanently declined camera permission. " +
-                    "You can go to the app settings to grant it."
+            context.getString(R.string.it_seems_you_permanently_declined_camera_permission) +
+                    context.getString(R.string.you_can_go_to_the_app_settings_to_grant_it)
         } else {
-            "This app needs access to your camera so that you can take pictures while using the app."
+            context.getString(R.string.this_app_needs_access_to_your_camera_so_that_you_can_take_pictures_while_using_the_app)
         }
     }
 
 }
 
-class RecordAudioPermissionTextProvider: PermissionTextProvider {
+class RecordAudioPermissionTextProvider(private val context: Context): PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "It seems you permanently declined microphone permission. " +
-                    "You can go to the app settings to grant it."
+            context.getString(R.string.it_seems_you_permanently_declined_microphone_permission) +
+                    context.getString(R.string.you_can_go_to_the_app_settings_to_grant_it)
         } else {
-            "This app needs access to your microphone so that your friends can hear you."
+            context.getString(R.string.this_app_needs_access_to_your_microphone_so_that_your_friends_can_hear_you)
         }
     }
 
 }
 
-class PhoneCallPermissionTextProvider: PermissionTextProvider {
+class PhoneCallPermissionTextProvider(private val context: Context): PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "It seems you permanently declined phone calling permission. " +
-                    "You can go to the app settings to grant it."
+            context.getString(R.string.it_seems_you_permanently_declined_phone_calling_permission) +
+                    context.getString(R.string.you_can_go_to_the_app_settings_to_grant_it)
         } else {
-            "This app needs phone calling permission so that you can talk to your friends."
+            context.getString(R.string.this_app_needs_phone_calling_permission_so_that_you_can_talk_to_your_friends)
         }
     }
 

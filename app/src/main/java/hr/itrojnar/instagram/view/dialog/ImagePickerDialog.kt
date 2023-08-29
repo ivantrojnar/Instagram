@@ -5,6 +5,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import hr.itrojnar.instagram.R
 
 @Composable
 fun ImagePickerDialog(
@@ -14,20 +16,20 @@ fun ImagePickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = "Choose Picture") },
+        title = { Text(text = stringResource(R.string.choose_picture)) },
         text = {
             Column {
                 TextButton(onClick = onTakePhoto) {
-                    Text(text = "Take Photo")
+                    Text(text = stringResource(R.string.take_photo))
                 }
                 TextButton(onClick = onSelectFromGallery) {
-                    Text(text = "Select from Gallery")
+                    Text(text = stringResource(R.string.select_from_gallery))
                 }
             }
         },
         confirmButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
         }
     )

@@ -17,17 +17,13 @@ fun StyledDescription(userName: String, postDescription: String) {
     val defaultColor = MaterialTheme.colorScheme.onSurface
     val hashtagColor = Color(0xFF45B8F0)  // Blue color
 
-    // Create a builder for the AnnotatedString
     val annotatedString = buildAnnotatedString {
-        // Append the user name with bold
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
             append(userName)
-            append(" ")  // Space after the user name
+            append(" ")
         }
 
-        // Split the description into words and process each word
         postDescription.split(" ").forEach { word ->
-            // Check if the word is a hashtag
             if (word.startsWith("#")) {
                 withStyle(style = SpanStyle(color = hashtagColor)) {
                     append(word)
@@ -37,7 +33,7 @@ fun StyledDescription(userName: String, postDescription: String) {
                     append(word)
                 }
             }
-            append(" ")  // Space after each word
+            append(" ")
         }
     }
 

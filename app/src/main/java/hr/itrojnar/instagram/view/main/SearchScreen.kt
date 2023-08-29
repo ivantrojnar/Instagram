@@ -68,12 +68,10 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 
     val lazyListState = rememberLazyListState()
 
-    // 1. Create a remembered mutable state map for visibility:
     val postVisibilityMap = remember { mutableStateOf(mutableMapOf<String, Boolean>()) }
 
     val focusManager = LocalFocusManager.current
 
-    // 2. Update visibility map
     filteredPosts.forEach { post ->
         postVisibilityMap.value[post.postId] = true
     }
@@ -83,13 +81,10 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
         }
     }
 
-    // Track visibility of the search bar and filter options
     var searchBarVisible by remember { mutableStateOf(true) }
 
-    // Track the last scroll position
     var lastScrollOffset by remember { mutableStateOf(0f) }
 
-    // Listen to the scroll state
     LaunchedEffect(lazyListState) {
         snapshotFlow { lazyListState.firstVisibleItemScrollOffset.toFloat() }
             .collect { scrollOffset ->
@@ -105,27 +100,26 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             exit = slideOutVertically(targetOffsetY = { -50 }) + fadeOut()
         ) {
             Column {
-                // Search Bar
                 TextField(
                     value = searchQuery,
                     onValueChange = { value -> searchQuery = value },
                     label = { Text("Search") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp), // This adds padding to the left and right
+                        .padding(start = 8.dp, end = 8.dp),
                     singleLine = true,
-                    shape = RoundedCornerShape(30.dp), // This will round the corners of the TextField
-                    colors = TextFieldDefaults.textFieldColors( // Customize the colors
-                        containerColor = Color(0xFFEDEDED), // Very light gray
+                    shape = RoundedCornerShape(30.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFEDEDED),
                         textColor = Color.Black,
                         cursorColor = Color.Black,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
-                        focusedLabelColor = Color.Black,  // Set your desired color when focused
+                        focusedLabelColor = Color.Black,
                         unfocusedLabelColor = Color.Black
                     ),
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_icon)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
@@ -137,7 +131,6 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Options
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -145,7 +138,6 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
                     items(count = optionsList.size) { index ->
                         val option = optionsList[index]
                         FilterOption(
-                            // Add start padding only for the first item
                             modifier = when (index) {
                                 0 -> Modifier.padding(start = 8.dp)
                                 optionsList.size - 1 -> Modifier.padding(end = 8.dp)
@@ -181,7 +173,6 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
                 ) {
                     PostItem(post = post)
                 }
-                //PostItem(post = post)
             }
         }
 

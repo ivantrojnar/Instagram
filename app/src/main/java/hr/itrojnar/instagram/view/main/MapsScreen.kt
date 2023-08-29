@@ -39,14 +39,11 @@ fun MapsScreen(mapsViewModel: MapsViewModel) {
             context,
         ) { googleMap ->
 
-            // Zoom Controls
             googleMap.uiSettings.isZoomControlsEnabled = true
 
-            // Default Camera View
-            val currentLocation = LatLng(45.8150, 15.9819)  // default to some location in Zagreb
+            val currentLocation = LatLng(45.8150, 15.9819)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12f))
 
-            // Post Markers
             posts.forEach { post ->
                 val postLocation = LatLng(post.postLatitude, post.postLongitude)
                 googleMap.addMarker(
@@ -56,7 +53,6 @@ fun MapsScreen(mapsViewModel: MapsViewModel) {
                 )?.tag = post
             }
 
-            // Marker Click Listener
             googleMap.setOnMarkerClickListener { marker ->
                 val post = marker.tag as? Post
                 post?.let {
@@ -65,7 +61,6 @@ fun MapsScreen(mapsViewModel: MapsViewModel) {
                 true
             }
 
-            // Center on User's Location
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.ACCESS_FINE_LOCATION

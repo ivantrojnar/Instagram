@@ -31,18 +31,15 @@ class GithubAuthClient(
     private val storage = FirebaseStorage.getInstance()
 
     suspend fun signInWithIntent(intentData: IdpResponse): SignInResult {
-        Log.w("CUSTOM TAG", "ENTER the function")
         val githubToken = intentData.idpToken ?: return SignInResult(
             data = null,
             errorMessage = "Github token is null."
         )
-        Log.w("CUSTOM TAG", "YEEEEEEEEEEEEEEEEES")
         val githubCredentials = GithubAuthProvider.getCredential(githubToken)
 
         return try {
             val authResult = auth.signInWithCredential(githubCredentials).await()
             val user = authResult.user
-            //val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
             val existingUser = Firebase.firestore.collection("users").document(user?.uid ?: "").get().await()
             val isNewUser = !existingUser.exists()
 

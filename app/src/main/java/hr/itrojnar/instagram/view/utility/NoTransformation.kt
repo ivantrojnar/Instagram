@@ -11,5 +11,4 @@ class NoTransformation : Transformation {
     override suspend fun transform(input: Bitmap, size: Size): Bitmap {
         return input
     }
-
 }

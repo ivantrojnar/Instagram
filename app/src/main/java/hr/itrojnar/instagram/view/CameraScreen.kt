@@ -196,7 +196,7 @@ fun CameraScreen(navController: NavHostController) {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_back),
-                contentDescription = "Go back",
+                contentDescription = stringResource(R.string.go_back),
                 modifier = Modifier
                     .size(24.dp)
                     .clickable { navController.popBackStack() }
@@ -245,7 +245,7 @@ fun CameraScreen(navController: NavHostController) {
                     )
                     Image(
                         painter = painter,
-                        contentDescription = "Selected preview",
+                        contentDescription = stringResource(R.string.selected_preview),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -260,13 +260,13 @@ fun CameraScreen(navController: NavHostController) {
                     if (imageUri != null) {
                         Icon(
                             Icons.Default.Edit,
-                            contentDescription = "Edit",
+                            contentDescription = stringResource(R.string.edit),
                             modifier = Modifier.size(36.dp)
                         )
                     } else {
                         Icon(
                             Icons.Default.CameraAlt,
-                            contentDescription = "Camera",
+                            contentDescription = stringResource(R.string.camera),
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -300,7 +300,6 @@ fun CameraScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Add the LocationInput composable here
             LocationInput(cameraViewModel = viewModel)
 
             Text(
@@ -332,10 +331,10 @@ fun CameraScreen(navController: NavHostController) {
                         onNext = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                        focusedLabelColor = Color.Black, // Color for the hint text when focused
-                        focusedBorderColor = Color.Black, // Color for the border when focused
+                        unfocusedLabelColor = Color.Gray,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedLabelColor = Color.Black,
+                        focusedBorderColor = Color.Black,
                     )
                 )
             }
@@ -379,8 +378,10 @@ fun CameraScreen(navController: NavHostController) {
 
 @Composable
 fun LocationInput(cameraViewModel: CameraViewModel) {
+
     val context = LocalContext.current
-    var locationText by remember { mutableStateOf("No location selected") }
+    val noLocationSelectedString = stringResource(R.string.no_location_selected)
+    var locationText by remember { mutableStateOf(noLocationSelectedString) }
 
     val activityResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -398,7 +399,7 @@ fun LocationInput(cameraViewModel: CameraViewModel) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
-            text = "Selected location:",
+            text = stringResource(R.string.selected_location),
             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
         )
 
@@ -407,7 +408,6 @@ fun LocationInput(cameraViewModel: CameraViewModel) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                //.padding(12.dp)
                 .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                 .padding(12.dp),
             contentAlignment = Alignment.CenterStart

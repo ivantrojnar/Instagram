@@ -43,6 +43,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
@@ -67,7 +68,6 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
     val postDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.postDate) ?: Date()
     val formattedDate = formatDate(postDate, currentYear)
 
-    // State for DropdownMenu
     var showMenu by remember { mutableStateOf(false) }
     val iconPosition = remember { mutableStateOf(IntOffset(0, 0)) }
     val iconSize = remember { mutableStateOf(IntSize(0, 0)) }
@@ -91,7 +91,6 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
             .fillMaxWidth()
             .padding(0.dp)
     ) {
-        // User info
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -170,13 +169,12 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                     .padding(2.dp)
             ) {
                 DropdownMenuItem(onClick = {
-                    // Handle item click
+                    // TODO add onClick for show profile
                     showMenu = false
                 }, text = {
                     Text(text = "Show profile")
                 })
                 DropdownMenuItem(onClick = {
-                    // Handle item click
                     showMenu = false
                 }, text = {
                     Text(text = "Cancel")
@@ -186,20 +184,18 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
 
         Spacer(modifier = Modifier.height(2.dp))
 
-        // Post Image
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = rememberImagePainter(data = post.postImageUrl),
-                contentDescription = "Post image",
+                contentDescription = stringResource(R.string.post_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .zoomable(zoomState)
-                    //.zIndex(if (zoomState.scale > 1f) 1000f else 0f)
                     .zIndex(1000f)
             )
         }
@@ -213,18 +209,18 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left icons
             Row(
                 modifier = Modifier.weight(1f), // assign equal weight
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Like icon", modifier = Modifier.size(30.dp))
-                Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = "Comment icon", modifier = Modifier.size(28.dp))
-                Icon(imageVector = Icons.Outlined.Send, contentDescription = "Direct message icon", modifier = Modifier.size(28.dp))
+                Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = stringResource(
+                                    R.string.like_icon), modifier = Modifier.size(30.dp))
+                Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = stringResource(
+                                    R.string.comment_icon), modifier = Modifier.size(28.dp))
+                Icon(imageVector = Icons.Outlined.Send, contentDescription = stringResource(R.string.direct_message_icon), modifier = Modifier.size(28.dp))
             }
 
-            // Centered blue dot (also with equal weight, so it stays in the middle)
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -238,8 +234,7 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                 )
             }
 
-            // Right bookmark icon
-            Icon(imageVector = Icons.Outlined.BookmarkBorder, contentDescription = "Bookmark icon", modifier = Modifier.size(28.dp))
+            Icon(imageVector = Icons.Outlined.BookmarkBorder, contentDescription = stringResource(R.string.bookmark_icon), modifier = Modifier.size(28.dp))
         }
 
         Spacer(modifier = Modifier.height(8.dp))

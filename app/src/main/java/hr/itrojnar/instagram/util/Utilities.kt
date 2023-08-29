@@ -133,7 +133,6 @@ fun LogoImage(topPadding: Int, bottomPadding: Int) {
 fun ShowSuccessDialog(showDialog: MutableState<Boolean>) {
     if (showDialog.value) {
         Dialog(onDismissRequest = { showDialog.value = false }) {
-            // Outer Box with gray background to act as the border
             Box(
                 modifier = Modifier
                     .background(Color(0xFF3797EF), RoundedCornerShape(8.dp))
@@ -141,7 +140,6 @@ fun ShowSuccessDialog(showDialog: MutableState<Boolean>) {
                     .size(350.dp),
                 contentAlignment = Alignment.Center
             ) {
-                // Inner Box with white background
                 Box(
                     modifier = Modifier
                         .background(Color.White, RoundedCornerShape(6.dp))

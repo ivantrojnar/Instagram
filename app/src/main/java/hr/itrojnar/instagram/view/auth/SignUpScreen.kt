@@ -357,19 +357,19 @@ fun SignUpScreen(
             dialogQueue.reversed().forEach { permission ->
                 PermissionDialog(permissionTextProvider = when (permission) {
                     Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE -> {
-                        MediaImagesPermissionTextProvider()
+                        MediaImagesPermissionTextProvider(context)
                     }
 
                     Manifest.permission.CAMERA -> {
-                        CameraPermissionTextProvider()
+                        CameraPermissionTextProvider(context)
                     }
 
                     Manifest.permission.RECORD_AUDIO -> {
-                        RecordAudioPermissionTextProvider()
+                        RecordAudioPermissionTextProvider(context)
                     }
 
                     Manifest.permission.CALL_PHONE -> {
-                        PhoneCallPermissionTextProvider()
+                        PhoneCallPermissionTextProvider(context)
                     }
 
                     else -> return@forEach
@@ -399,29 +399,33 @@ fun SignUpScreen(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_back),
-                contentDescription = "Back arrow",
+                contentDescription = stringResource(R.string.back_arrow),
                 modifier = Modifier
                     .padding(16.dp)
                     .size(24.dp)
                     .clickable { currentScreen = "SignUp" }
             )
             Text(
-                text = if (selectedSubscription != null) "Current selection: $selectedSubscription" else "No subscription selected",
+                text = if (selectedSubscription != null) stringResource(R.string.current_selection) + " $selectedSubscription" else stringResource(
+                                    R.string.no_subscription_selected),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = 10.dp)
             )
 
             Subscription.values().forEach { subscription ->
+                val title = stringResource(id = subscription.titleResId)
+                val description = stringResource(id = subscription.descriptionResId)
+
                 SubscriptionCard(
-                    title = subscription.title,
-                    description = subscription.description,
+                    title = title,
+                    description = description,
                     gradient = when (subscription) {
                         Subscription.FREE -> listOf(Color.LightGray, Color.Gray)
                         Subscription.PRO -> listOf(Color.Blue, Color(0xFF00008B))
                         Subscription.GOLD -> listOf(Color.Yellow, Color(0xFFFFD700))
                     },
-                    onClick = { onSelectedChanged(subscription.id, subscription.title) },
-                    isSelected = selectedSubscription == subscription.title
+                    onClick = { onSelectedChanged(subscription.id, title) },
+                    isSelected = selectedSubscription == title
                 )
             }
 
@@ -464,20 +468,18 @@ fun SignUpScreen(
         }
         if (showDialog) {
             Dialog(onDismissRequest = { showDialog = false }) {
-                // Outer Box with gray background to act as the border
                 Box(
                     modifier = Modifier
-                        .background(Color(0xFF3797EF), RoundedCornerShape(8.dp)) // Gray border
-                        .padding(2.dp) // Determines the thickness of the border
+                        .background(Color(0xFF3797EF), RoundedCornerShape(8.dp))
+                        .padding(2.dp)
                         .size(350.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Inner Box with white background
                     Box(
                         modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(6.dp)) // White background
+                            .background(Color.White, RoundedCornerShape(6.dp))
                             .padding(10.dp)
-                            .fillMaxSize(0.98f), // Take up 95% of the parent to ensure the gray border is visible
+                            .fillMaxSize(0.98f),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
@@ -552,7 +554,7 @@ fun SubscriptionCard(
                             offset = Offset(1f, 1f),
                             blurRadius = 2f
                         )
-                    ), // assuming titleMedium is not a default style, switching to h6
+                    ),
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
@@ -564,7 +566,7 @@ fun SubscriptionCard(
                             offset = Offset(1f, 1f),
                             blurRadius = 2f
                         )
-                    ), // assuming bodyLarge is not a default style, switching to body1
+                    ),
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
@@ -577,7 +579,7 @@ fun SubscriptionCard(
 fun ProfileImage(imageUri: Uri?, onImageClick: () -> Unit) {
     val image: Painter = imageUri?.let {
         rememberImagePainter(data = it)
-    } ?: painterResource(id = R.drawable.default_profile_picture) // Replace with your default image
+    } ?: painterResource(id = R.drawable.default_profile_picture)
 
     Row(
         modifier = Modifier

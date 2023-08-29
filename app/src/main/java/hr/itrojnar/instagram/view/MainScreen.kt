@@ -125,7 +125,7 @@ fun MainScreen() {
                                         }
                                     }
                                 }) {
-                                    Icon(Icons.Filled.Menu, contentDescription = "Open Drawer")
+                                    Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.open_drawer))
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                             }
@@ -142,7 +142,7 @@ fun MainScreen() {
             }
         }
         is UserState.Error -> {
-            Text("An error occurred")
+            Text(stringResource(R.string.an_error_occurred))
         }
     }
 }
@@ -166,16 +166,16 @@ fun TopAppBarWithBorder(
             Spacer(modifier = Modifier.weight(1f))
 
             val painter = painterResource(id = R.drawable.instagram_logo)
-            Icon(painter = painter, contentDescription = "Instagram Logo", modifier = Modifier.size(125.dp))
+            Icon(painter = painter, contentDescription = stringResource(R.string.instagram_logo_cd), modifier = Modifier.size(125.dp))
 
             Spacer(modifier = Modifier.weight(1f))
 
             Row {
                 IconButton(onClick = { navController.navigate("camera") }) {
-                    Icon(Icons.Outlined.CameraAlt, contentDescription = "Open Camera")
+                    Icon(Icons.Outlined.CameraAlt, contentDescription = stringResource(R.string.open_camera))
                 }
                 IconButton(onClick = { /* Handle send/paper plane click */ }) {
-                    Icon(Icons.Outlined.Send, contentDescription = "Direct Messages")
+                    Icon(Icons.Outlined.Send, contentDescription = stringResource(R.string.direct_messages))
                 }
             }
         }
@@ -238,7 +238,6 @@ fun RowScope.AddItem(
                 modifier = Modifier.size(animatedSize)
             )
         },
-        //label = { Text(text = stringResource(id = screen.title))},
         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
         onClick = {
             navController.navigate(screen.route) {
@@ -275,27 +274,27 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, us
 
         DrawerHeader(user = user)
 
-        DrawerItem(icon = Icons.Default.Home, label = "Home", isSelected = currentDestination?.route == "home") {
+        DrawerItem(icon = Icons.Default.Home, label = stringResource(id = R.string.home), isSelected = currentDestination?.route == "home") {
             navController.navigate("home")
             closeDrawer()
         }
 
-        DrawerItem(icon = Icons.Default.Search, label = "Search", isSelected = currentDestination?.route == "search") {
+        DrawerItem(icon = Icons.Default.Search, label = stringResource(id = R.string.search), isSelected = currentDestination?.route == "search") {
             navController.navigate("search")
             closeDrawer()
         }
 
-        DrawerItem(icon = Icons.Default.Map, label = "Map", isSelected = currentDestination?.route == "map") {
+        DrawerItem(icon = Icons.Default.Map, label = stringResource(id = R.string.map), isSelected = currentDestination?.route == "map") {
             navController.navigate("map")
             closeDrawer()
         }
 
-        DrawerItem(icon = Icons.Default.Person, label = "Profile", isSelected = currentDestination?.route == "profile") {
+        DrawerItem(icon = Icons.Default.Person, label = stringResource(id = R.string.profile), isSelected = currentDestination?.route == "profile") {
             navController.navigate("profile")
             closeDrawer()
         }
 
-        DrawerItem(icon = Icons.Default.Settings, label = "Settings", isSelected = currentDestination?.route == "settings") {
+        DrawerItem(icon = Icons.Default.Settings, label = stringResource(id = R.string.settings), isSelected = currentDestination?.route == "settings") {
             navController.navigate("settings")
             closeDrawer()
         }

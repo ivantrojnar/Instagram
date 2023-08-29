@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +40,7 @@ fun DrawerHeader(user: User) {
         image?.let { img ->
             Image(
                 bitmap = img.asImageBitmap(),
-                contentDescription = "User Profile Picture",
+                contentDescription = stringResource(R.string.user_profile_picture),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)

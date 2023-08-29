@@ -42,7 +42,7 @@ fun DrawerFooter(logoutAction: () -> Unit) {
             IconButton(onClick = { logoutAction() }) {
                 Icon(
                     imageVector = Icons.Default.ExitToApp,
-                    contentDescription = "Logout",
+                    contentDescription = stringResource(R.string.logout),
                     tint = Color.Gray
                 )
             }

@@ -116,10 +116,10 @@ fun ForgotPasswordScreen(
                 onDone = { focusManager.clearFocus() }
             ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                focusedLabelColor = Color.Black, // Color for the hint text when focused
-                focusedBorderColor = Color.Black, // Color for the border when focused
+                unfocusedLabelColor = Color.Gray,
+                unfocusedBorderColor = Color.Gray,
+                focusedLabelColor = Color.Black,
+                focusedBorderColor = Color.Black,
             )
         )
         Button(
@@ -171,20 +171,18 @@ fun ForgotPasswordScreen(
         }
         if (showDialog) {
             Dialog(onDismissRequest = { showDialog = false }) {
-                // Outer Box with gray background to act as the border
                 Box(
                     modifier = Modifier
-                        .background(Color(0xFF3797EF), RoundedCornerShape(8.dp)) // Gray border
-                        .padding(2.dp) // Determines the thickness of the border
+                        .background(Color(0xFF3797EF), RoundedCornerShape(8.dp))
+                        .padding(2.dp)
                         .size(350.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Inner Box with white background
                     Box(
                         modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(6.dp)) // White background
+                            .background(Color.White, RoundedCornerShape(6.dp))
                             .padding(10.dp)
-                            .fillMaxSize(0.98f), // Take up 95% of the parent to ensure the gray border is visible
+                            .fillMaxSize(0.98f),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
@@ -197,7 +195,7 @@ fun ForgotPasswordScreen(
                             )
 
                             Text(
-                                text = "Instructions sent to your email!",
+                                text = stringResource(R.string.instructions_sent_to_your_email),
                                 textAlign = TextAlign.Center,
                                 style = TextStyle(fontSize = 16.sp)
                             )
@@ -210,7 +208,7 @@ fun ForgotPasswordScreen(
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             ) {
-                                Text("Ok")
+                                Text(stringResource(R.string.ok))
                             }
                         }
                     }
