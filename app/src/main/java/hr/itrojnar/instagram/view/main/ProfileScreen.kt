@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import hr.itrojnar.instagram.R
@@ -58,7 +59,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         // Profile Picture and Statistics
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp)
         ) {
             // Profile Picture
             CircleImage(imageUrl = user.profilePictureUrl)
@@ -91,7 +93,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
 @Composable
 fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.size(95.dp)  // Increase by 8dp to accommodate the ring and padding
+        modifier = modifier.size(95.dp),
+        contentAlignment = Alignment.Center// Increase by 8dp to accommodate the ring and padding
     ) {
         // 1. The outer grayish ring
         Box(
@@ -119,8 +122,7 @@ fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier) {
                     }),
                     contentDescription = null,  // Consider providing a meaningful description
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.onSurface.copy(alpha = 0.2f)),  // Light background in case of loading/transparency
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -143,7 +145,38 @@ fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier) {
 
 @Composable
 fun UserStatistics(posts: Int, followers: Int, following: Int) {
-    // Display the numbers and labels for posts, followers, and following
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,  // Centers items vertically
+        modifier = Modifier.fillMaxWidth().padding(start = 25.dp)
+    ) {
+        // Posts
+        StatisticItem(number = posts, label = "Posts")
+
+        // Followers
+        StatisticItem(number = followers, label = "Followers")
+
+        // Following
+        StatisticItem(number = following, label = "Following")
+    }
+}
+
+@Composable
+fun StatisticItem(number: Int, label: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Text(
+            text = number.toString(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
+        Text(
+            text = label,
+            fontSize = 15.sp
+        )
+    }
 }
 
 @Composable
