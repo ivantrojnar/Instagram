@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.model.Story
 import hr.itrojnar.instagram.util.LottieAnimation
 import hr.itrojnar.instagram.util.getRandomNumber
 import hr.itrojnar.instagram.util.getUser
@@ -57,6 +58,12 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
     val userPosts = profileViewModel.posts
     val followers = remember { getRandomNumber() }
     val following = remember { getRandomNumber() }
+
+    val sampleStories = listOf(
+        Story("F1", "https://cdn-1.motorsport.com/images/amp/0oODaa70/s6/charles-leclerc-ferrari-f1-75-.jpg"),
+        Story("WRC", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Jari_Ketomaa_-_Rally_Finland_2009.JPG/1200px-Jari_Ketomaa_-_Rally_Finland_2009.JPG"),
+        // Add more stories as needed
+    )
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -94,8 +101,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         }
 
         // User Stories
-        Spacer(modifier = Modifier.height(16.dp))
-        UserStories()
+        Spacer(modifier = Modifier.height(0.dp))
+        UserStories(sampleStories)
 
         // User Posts
         Spacer(modifier = Modifier.height(16.dp))
@@ -104,9 +111,9 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
 }
 
 @Composable
-fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier) {
+fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier, outerSize: Int = 95, innerSize: Int = 85) {
     Box(
-        modifier = modifier.size(95.dp),
+        modifier = modifier.size(outerSize.dp),
         contentAlignment = Alignment.Center// Increase by 8dp to accommodate the ring and padding
     ) {
         // 1. The outer grayish ring
@@ -120,7 +127,7 @@ fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier) {
         // 2. The round padding (by setting a smaller size to the Box)
         Box(
             modifier = Modifier
-                .size(85.dp)
+                .size(innerSize.dp)
                 .align(Alignment.Center)
                 .clip(CircleShape)
         ) {
@@ -193,21 +200,47 @@ fun StatisticItem(number: Int, label: String) {
 }
 
 @Composable
-fun UserStories() {
-    LazyRow {
+fun UserStories(stories: List<Story>) {
+    LazyRow (modifier = Modifier.padding(start = 5.dp)) {
         item {
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
-                    .border(2.dp, Color.Gray, CircleShape)
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "New Story", tint = Color.Black)
-                Text(text = "New", modifier = Modifier.align(Alignment.BottomCenter))
-            }
+            NewStoryItem()
         }
+        items(stories.size) { index ->
+            StoryItem(stories[index])
+        }
+    }
+}
+
+@Composable
+fun NewStoryItem() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(69.dp)
+                .clip(CircleShape)
+                .background(Color.White)
+                .border(1.dp, Color.Gray, CircleShape)
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "New Story", tint = Color.Black)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = "New", modifier = Modifier.align(Alignment.CenterHorizontally))
+    }
+}
+
+@Composable
+fun StoryItem(story: Story) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        CircleImage(imageUrl = story.imageUrl, modifier = Modifier.size(69.dp), outerSize = 65, innerSize = 60)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = story.label, modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }
