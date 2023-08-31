@@ -304,3 +304,5 @@ fun SharedPreferences.getUser(): User {
         numOfPicsUploadedToday = getInt("numOfPicsUploadedToday", 0)
     )
 }
+
+fun getRandomNumber(): Int = (0..10000).random()

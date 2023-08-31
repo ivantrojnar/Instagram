@@ -10,4 +10,5 @@ interface PostRepository {
     suspend fun addNewPost(post: Post): Result<DocumentReference>
     fun invalidatePosts()
     fun getAllPosts(): List<Post>
+    fun getAllUserPosts(userId: String): List<Post>
 }

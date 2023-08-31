@@ -64,6 +64,10 @@ class FirebasePostRepository @Inject constructor(
     override fun getAllPosts(): List<Post> = runBlocking {
         postDatabase.postDao().getAllPostsListFlow().first()
     }
+
+    override fun getAllUserPosts(userId: String): List<Post> = runBlocking {
+        postDatabase.postDao().getAllUserPostsListFlow(userId).first()
+    }
 //
 //    suspend fun fetchPostsFromFirestoreAndSaveToDb() {
 //        val posts = getAllPosts()

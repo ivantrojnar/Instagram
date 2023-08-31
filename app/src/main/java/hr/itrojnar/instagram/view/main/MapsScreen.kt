@@ -65,7 +65,6 @@ fun MapsScreen(mapsViewModel: MapsViewModel) {
                 post?.let {
                     selectedPost = it
                     showDialog = true
-                    // TODO: Display post details
                 }
                 true
             }

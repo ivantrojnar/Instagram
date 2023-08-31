@@ -31,4 +31,7 @@ interface PostDao {
 
     @Query("SELECT COUNT(*) FROM posts_table")
     fun countPosts(): Int
+
+    @Query("SELECT * FROM posts_table WHERE userId = :userId ORDER BY postDate DESC ")
+    fun getAllUserPostsListFlow(userId: String): Flow<List<Post>>
 }

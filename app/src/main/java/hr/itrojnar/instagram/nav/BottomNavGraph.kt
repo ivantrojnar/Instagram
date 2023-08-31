@@ -12,9 +12,11 @@ import hr.itrojnar.instagram.view.Screen
 import hr.itrojnar.instagram.view.main.HomeScreen
 import hr.itrojnar.instagram.view.main.MapsScreen
 import hr.itrojnar.instagram.view.main.PostsState
+import hr.itrojnar.instagram.view.main.ProfileScreen
 import hr.itrojnar.instagram.view.main.SearchScreen
 import hr.itrojnar.instagram.viewmodel.MapsViewModel
 import hr.itrojnar.instagram.viewmodel.PostsViewModel
+import hr.itrojnar.instagram.viewmodel.ProfileViewModel
 import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
 
 @ExperimentalPagingApi
@@ -38,6 +40,8 @@ fun BottomNavGraph(navController: NavHostController) {
             MapsScreen(mapsViewModel = mapsViewModel)
         }
         composable(route = BottomNavScreen.Profile.route) {
+            val profileViewModel = hiltViewModel<ProfileViewModel>()
+            ProfileScreen(profileViewModel = profileViewModel)
         }
         composable(route = BottomNavScreen.Settings.route) {
         }
