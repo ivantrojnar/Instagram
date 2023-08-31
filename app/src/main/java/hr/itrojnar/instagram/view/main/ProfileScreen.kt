@@ -1,6 +1,7 @@
 package hr.itrojnar.instagram.view.main
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,14 +18,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +55,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
     val user = sharedPref.getUser()
 
     val userPosts = profileViewModel.posts
+    val followers = remember { getRandomNumber() }
+    val following = remember { getRandomNumber() }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -65,18 +71,26 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
             CircleImage(imageUrl = user.profilePictureUrl)
 
             // User Statistics (Posts, Followers, Following)
-            UserStatistics(userPosts.size, getRandomNumber(), getRandomNumber())
+            UserStatistics(userPosts.size, followers, following)
         }
 
         //User Details (Name and Email)
         Text(modifier = Modifier.padding(start = 10.dp), text = user.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
         Text(modifier = Modifier.padding(start = 10.dp), text = user.email)
 
         // Edit Profile Button
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { /* TODO: Implement edit profile action */ }) {
-            Text("Edit Profile")
+        Button(
+            onClick = { /* TODO: Implement edit profile action */ },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp, vertical = 5.dp),
+            colors = ButtonDefaults.buttonColors(Color.White),
+            shape = RoundedCornerShape(7.dp),
+            border = BorderStroke(1.dp, Color.LightGray)
+        ) {
+            Text("Edit Profile", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
         }
 
         // User Stories
