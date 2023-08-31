@@ -53,14 +53,13 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
     val userPosts = profileViewModel.posts
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
     ) {
         // Profile Picture and Statistics
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp)
+            modifier = Modifier.fillMaxWidth().padding(10.dp)
         ) {
             // Profile Picture
             CircleImage(imageUrl = user.profilePictureUrl)
@@ -69,10 +68,10 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
             UserStatistics(userPosts.size, getRandomNumber(), getRandomNumber())
         }
 
-        // User Details (Name and Email)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = user.fullName, fontWeight = FontWeight.Bold)
-        Text(text = user.email)
+        //User Details (Name and Email)
+        Text(modifier = Modifier.padding(start = 10.dp), text = user.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(modifier = Modifier.padding(start = 10.dp), text = user.email)
 
         // Edit Profile Button
         Spacer(modifier = Modifier.height(8.dp))
