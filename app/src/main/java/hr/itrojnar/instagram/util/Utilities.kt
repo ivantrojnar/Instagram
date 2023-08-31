@@ -3,6 +3,7 @@ package hr.itrojnar.instagram.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
@@ -54,6 +55,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.ImageFilter
+import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.view.utility.NoTransformation
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.GrayscaleTransformation
@@ -277,3 +279,28 @@ val instagramGradientColors = listOf(
     Color(0xFF8134AF), // Purple
     Color(0xFF515BD4)  // Blue
 )
+
+fun SharedPreferences.Editor.putUser(user: User) {
+    putString("firebaseUserId", user.firebaseUserId)
+    putString("fullName", user.fullName)
+    putString("email", user.email)
+    putString("profilePictureUrl", user.profilePictureUrl)
+    putInt("subscriptionId", user.subscriptionId)
+    putString("lastSignInDate", user.lastSignInDate)
+    putInt("mbUsedToday", user.mbUsedToday)
+    putInt("numOfPicsUploadedToday", user.numOfPicsUploadedToday)
+    apply()
+}
+
+fun SharedPreferences.getUser(): User {
+    return User(
+        firebaseUserId = getString("firebaseUserId", "") ?: "",
+        fullName = getString("fullName", "") ?: "",
+        email = getString("email", "") ?: "",
+        profilePictureUrl = getString("profilePictureUrl", null),
+        subscriptionId = getInt("subscriptionId", 0),
+        lastSignInDate = getString("lastSignInDate", LocalDate.now().toString()) ?: LocalDate.now().toString(),
+        mbUsedToday = getInt("mbUsedToday", 0),
+        numOfPicsUploadedToday = getInt("numOfPicsUploadedToday", 0)
+    )
+}

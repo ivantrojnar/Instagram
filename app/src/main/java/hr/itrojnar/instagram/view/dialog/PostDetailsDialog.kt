@@ -55,7 +55,7 @@ fun PostDetailDialog(post: Post, onDismiss: () -> Unit) {
         Card(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp)),
-            elevation = 16.dp // Adjust this value for desired elevation effect
+            elevation = 16.dp
         ) {
             PostDialogContent(post)
         }

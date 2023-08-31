@@ -1,6 +1,7 @@
 package hr.itrojnar.instagram.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -47,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,6 +65,7 @@ import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.nav.BottomNavGraph
 import hr.itrojnar.instagram.util.LottieAnimation
 import hr.itrojnar.instagram.util.LottieAnimationLoop
+import hr.itrojnar.instagram.util.putUser
 import hr.itrojnar.instagram.view.drawer.DrawerFooter
 import hr.itrojnar.instagram.view.drawer.DrawerHeader
 import hr.itrojnar.instagram.view.drawer.DrawerItem
@@ -86,6 +89,8 @@ fun MainScreen() {
     val currentDestination = navBackStackEntry?.destination?.route
     val isMapScreen = currentDestination == "map"
 
+    val context = LocalContext.current
+
     when (userState) {
         is UserState.Loading -> {
             Box(
@@ -100,6 +105,10 @@ fun MainScreen() {
         }
         is UserState.Loaded -> {
             val user = (userState as UserState.Loaded).user
+            val sharedPreferences = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
+            with(sharedPreferences.edit()) {
+                putUser(user)
+            }
             ModalDrawer(
                 drawerState = drawerState,
                 gesturesEnabled = !isMapScreen,
