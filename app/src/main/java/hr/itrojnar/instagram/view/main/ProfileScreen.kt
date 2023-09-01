@@ -1,6 +1,9 @@
 package hr.itrojnar.instagram.view.main
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,7 +36,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +62,9 @@ import hr.itrojnar.instagram.viewmodel.ProfileViewModel
 @Composable
 fun ProfileScreen(profileViewModel: ProfileViewModel) {
 
+    var currentScreen by remember { mutableStateOf("Profile") }
+    var selectedPost by remember { mutableStateOf<Post?>(null) }
+
     val context = LocalContext.current
 
     val sharedPref = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
@@ -71,60 +80,79 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         // Add more stories as needed
     )
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    AnimatedVisibility(
+        visible = currentScreen == "Profile",
+        enter = if (currentScreen == "Profile") slideInHorizontally(initialOffsetX = { -it }) else slideInHorizontally(
+            initialOffsetX = { it }),
+        exit = if (currentScreen == "Profile") slideOutHorizontally(targetOffsetX = { it }) else slideOutHorizontally(
+            targetOffsetX = { -it })
     ) {
-        // Profile Picture and Statistics
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Profile Picture
-            CircleImage(imageUrl = user.profilePictureUrl)
+            // Profile Picture and Statistics
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                // Profile Picture
+                CircleImage(imageUrl = user.profilePictureUrl)
 
-            // User Statistics (Posts, Followers, Following)
-            UserStatistics(userPosts.size, followers, following)
+                // User Statistics (Posts, Followers, Following)
+                UserStatistics(userPosts.size, followers, following)
+            }
+
+            //User Details (Name and Email)
+            Text(modifier = Modifier.padding(start = 10.dp), text = user.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(modifier = Modifier.padding(start = 10.dp), text = user.email)
+
+            // Edit Profile Button
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = { /* TODO: Implement edit profile action */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp, vertical = 5.dp),
+                colors = ButtonDefaults.buttonColors(Color.White),
+                shape = RoundedCornerShape(7.dp),
+                border = BorderStroke(1.dp, Color.LightGray)
+            ) {
+                Text("Edit Profile", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            }
+
+            // User Stories
+            Spacer(modifier = Modifier.height(0.dp))
+            UserStories(sampleStories)
+
+            // User Posts
+            Divider(color = Color.LightGray, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(2.dp))
+            UserPostsGrid(posts = userPosts, setCurrentScreen = { currentScreen = it }, setSelectedPost = { selectedPost = it})
         }
+    }
 
-        //User Details (Name and Email)
-        Text(modifier = Modifier.padding(start = 10.dp), text = user.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(modifier = Modifier.padding(start = 10.dp), text = user.email)
-
-        // Edit Profile Button
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = { /* TODO: Implement edit profile action */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 15.dp, vertical = 5.dp),
-            colors = ButtonDefaults.buttonColors(Color.White),
-            shape = RoundedCornerShape(7.dp),
-            border = BorderStroke(1.dp, Color.LightGray)
-        ) {
-            Text("Edit Profile", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-        }
-
-        // User Stories
-        Spacer(modifier = Modifier.height(0.dp))
-        UserStories(sampleStories)
-
-        // User Posts
-        Divider(color = Color.LightGray, thickness = 1.dp)
-        Spacer(modifier = Modifier.height(2.dp))
-        UserPostsGrid(posts = userPosts)
+    AnimatedVisibility(
+        visible = currentScreen == "PostDetails",
+        enter = if (currentScreen == "PostDetails") slideInHorizontally(initialOffsetX = { it }) else slideInHorizontally(
+            initialOffsetX = { -it }),
+        exit = if (currentScreen == "PostDetails") slideOutHorizontally(targetOffsetX = { -it }) else slideOutHorizontally(
+            targetOffsetX = { it })
+    ) {
+        PostDetailsScreen(post = selectedPost!!)
     }
 }
 
 @Composable
-fun UserPostsGrid(posts: List<Post>) {
+fun UserPostsGrid(posts: List<Post>, setCurrentScreen: (String) -> Unit, setSelectedPost: (Post) -> Unit) {
     val padding = 0.5.dp
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
+        modifier = Modifier.padding(bottom = 57.dp)
     ) {
         items(posts.size) { index ->
             val post = posts[index]
@@ -141,14 +169,13 @@ fun UserPostsGrid(posts: List<Post>) {
                 modifier = modifier
                     .aspectRatio(1f)
                     .clickable {
-
+                        setCurrentScreen("PostDetails")
+                        setSelectedPost(post)
                     },
                 contentScale = ContentScale.Crop
             )
         }
     }
-    
-    Spacer(modifier = Modifier.height(30.dp))
 }
 
 @Composable
@@ -285,5 +312,20 @@ fun StoryItem(story: Story) {
         CircleImage(imageUrl = story.imageUrl, modifier = Modifier.size(69.dp), outerSize = 65, innerSize = 60)
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = story.label, modifier = Modifier.align(Alignment.CenterHorizontally))
+    }
+}
+
+@Composable
+fun PostDetailsScreen(post: Post) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = rememberImagePainter(data = post.postImageUrl),
+            contentDescription = "Detailed Post Image",
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentScale = ContentScale.Crop
+        )
+        // Add more details like post description, comments, etc.
     }
 }
