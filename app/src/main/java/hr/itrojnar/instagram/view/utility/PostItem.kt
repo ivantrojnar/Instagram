@@ -172,12 +172,12 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                     // TODO add onClick for show profile
                     showMenu = false
                 }, text = {
-                    Text(text = "Show profile")
+                    Text(text = stringResource(R.string.show_profile))
                 })
                 DropdownMenuItem(onClick = {
                     showMenu = false
                 }, text = {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(R.string.cancel))
                 })
             }
         }
