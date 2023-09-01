@@ -103,6 +103,11 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
     val sampleStories = listOf(
         Story("F1", "https://cdn-1.motorsport.com/images/amp/0oODaa70/s6/charles-leclerc-ferrari-f1-75-.jpg"),
         Story("WRC", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Jari_Ketomaa_-_Rally_Finland_2009.JPG/1200px-Jari_Ketomaa_-_Rally_Finland_2009.JPG"),
+        Story("Sea", "https://climate.copernicus.eu/sites/default/files/styles/hero_image_extra_large_2x/public/2023-07/iStock-1267333118.jpg?itok=1udeNtwZ"),
+        Story("Sport", "https://www.bfh.ch/dam/jcr:b69aa727-c5ea-46d6-abe3-4f323be68083/Studiengang_Bsc%20EHSM%20in%20Sports.jpg"),
+        Story("Work", "https://ychef.files.bbci.co.uk/976x549/p0982k70.jpg"),
+        Story("Friends", "https://upload.wikimedia.org/wikipedia/commons/f/f0/2018_IMG_8253_Helsinki%2C_Finland_%2840249531641%29_%28cropped%29.jpg"),
+        Story("Lopovi", "https://tris.com.hr/wp-content/uploads/2020/10/hdz-logo.jpg"),
         // Add more stories as needed
     )
 
@@ -306,6 +311,9 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
 
             Spacer(modifier = Modifier.size(24.dp))
         }
+
+        Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(Color.LightGray))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
