@@ -5,9 +5,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -25,6 +29,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.model.Story
 import hr.itrojnar.instagram.util.LottieAnimation
 import hr.itrojnar.instagram.util.getRandomNumber
@@ -72,7 +78,9 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
         ) {
             // Profile Picture
             CircleImage(imageUrl = user.profilePictureUrl)
@@ -105,9 +113,42 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         UserStories(sampleStories)
 
         // User Posts
-        Spacer(modifier = Modifier.height(16.dp))
-        //UserPostsGrid(posts = userPosts)
+        Divider(color = Color.LightGray, thickness = 1.dp)
+        Spacer(modifier = Modifier.height(2.dp))
+        UserPostsGrid(posts = userPosts)
     }
+}
+
+@Composable
+fun UserPostsGrid(posts: List<Post>) {
+    val padding = 0.5.dp
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+    ) {
+        items(posts.size) { index ->
+            val post = posts[index]
+            val modifier = when (index % 3) {
+                0 -> Modifier.padding(end = padding, top = padding, bottom = padding)  // Leftmost
+                1 -> Modifier.padding(start = padding, end = padding, top = padding, bottom = padding)  // Middle
+                2 -> Modifier.padding(start = padding, top = padding, bottom = padding)  // Rightmost
+                else -> Modifier  // Should not be reached
+            }
+
+            Image(
+                painter = rememberImagePainter(data = post.postImageUrl),
+                contentDescription = "Post Image",
+                modifier = modifier
+                    .aspectRatio(1f)
+                    .clickable {
+
+                    },
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+    
+    Spacer(modifier = Modifier.height(30.dp))
 }
 
 @Composable
@@ -168,7 +209,9 @@ fun UserStatistics(posts: Int, followers: Int, following: Int) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,  // Centers items vertically
-        modifier = Modifier.fillMaxWidth().padding(start = 25.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp)
     ) {
         // Posts
         StatisticItem(number = posts, label = "Posts")
