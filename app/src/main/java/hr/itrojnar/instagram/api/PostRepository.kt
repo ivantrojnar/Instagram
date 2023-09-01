@@ -11,4 +11,5 @@ interface PostRepository {
     fun invalidatePosts()
     fun getAllPosts(): List<Post>
     fun getAllUserPosts(userId: String): List<Post>
+    fun deletePost(postId: String): Result<Unit>
 }

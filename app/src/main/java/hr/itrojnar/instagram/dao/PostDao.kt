@@ -34,4 +34,7 @@ interface PostDao {
 
     @Query("SELECT * FROM posts_table WHERE userId = :userId ORDER BY postDate DESC ")
     fun getAllUserPostsListFlow(userId: String): Flow<List<Post>>
+
+    @Query("DELETE FROM posts_table WHERE postId = :postId")
+    fun deletePostById(postId: String): Int
 }

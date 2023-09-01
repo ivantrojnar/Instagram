@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram.api
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,6 +11,7 @@ import hr.itrojnar.instagram.dao.PostDao
 import hr.itrojnar.instagram.db.PostDatabase
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.paging.PostsRemoteMediator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -68,9 +70,22 @@ class FirebasePostRepository @Inject constructor(
     override fun getAllUserPosts(userId: String): List<Post> = runBlocking {
         postDatabase.postDao().getAllUserPostsListFlow(userId).first()
     }
-//
-//    suspend fun fetchPostsFromFirestoreAndSaveToDb() {
-//        val posts = getAllPosts()
-//        postDao.insertAll(posts)
-//    }
+
+    override fun deletePost(postId: String): Result<Unit> {
+        val firebaseResult = try {
+            runBlocking {
+                postsCollection.document(postId).delete().await()
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("DELETE", "Unable to delete post with ID: $postId due to ${e.message}")
+            Result.failure(e)
+        }
+        if (firebaseResult.isSuccess) {
+            runBlocking(Dispatchers.IO) {
+                postDatabase.postDao().deletePostById(postId)
+            }
+        }
+        return firebaseResult
+    }
 }

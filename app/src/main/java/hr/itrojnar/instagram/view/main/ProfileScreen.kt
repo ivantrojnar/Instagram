@@ -12,7 +12,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -69,7 +68,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.rememberImagePainter
-import coil.transform.CircleCropTransformation
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.model.Story
@@ -98,7 +96,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
     val sharedPref = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
     val user = sharedPref.getUser()
 
-    val userPosts = profileViewModel.posts
+    val userPosts = profileViewModel.posts.value
     val followers = remember { getRandomNumber() }
     val following = remember { getRandomNumber() }
 
@@ -107,6 +105,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         Story("WRC", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Jari_Ketomaa_-_Rally_Finland_2009.JPG/1200px-Jari_Ketomaa_-_Rally_Finland_2009.JPG"),
         // Add more stories as needed
     )
+
 
     AnimatedVisibility(
         visible = currentScreen == "Profile",
@@ -170,7 +169,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         exit = if (currentScreen == "PostDetails") slideOutHorizontally(targetOffsetX = { -it }) else slideOutHorizontally(
             targetOffsetX = { it })
     ) {
-        PostDetailsScreen(post = selectedPost!!, onBackClick = { currentScreen = it })
+        PostDetailsScreen(post = selectedPost!!, onBackClick = { currentScreen = it }, profileViewModel = profileViewModel)
     }
 }
 
@@ -260,91 +259,7 @@ fun CircleImage(imageUrl: String?, modifier: Modifier = Modifier, outerSize: Int
 }
 
 @Composable
-fun UserStatistics(posts: Int, followers: Int, following: Int) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,  // Centers items vertically
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 25.dp)
-    ) {
-        // Posts
-        StatisticItem(number = posts, label = "Posts")
-
-        // Followers
-        StatisticItem(number = followers, label = "Followers")
-
-        // Following
-        StatisticItem(number = following, label = "Following")
-    }
-}
-
-@Composable
-fun StatisticItem(number: Int, label: String) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        Text(
-            text = number.toString(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-        Text(
-            text = label,
-            fontSize = 15.sp
-        )
-    }
-}
-
-@Composable
-fun UserStories(stories: List<Story>) {
-    LazyRow (modifier = Modifier.padding(start = 5.dp)) {
-        item {
-            NewStoryItem()
-        }
-        items(stories.size) { index ->
-            StoryItem(stories[index])
-        }
-    }
-}
-
-@Composable
-fun NewStoryItem() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(69.dp)
-                .clip(CircleShape)
-                .background(Color.White)
-                .border(1.dp, Color.Gray, CircleShape)
-                .padding(4.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "New Story", tint = Color.Black)
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "New", modifier = Modifier.align(Alignment.CenterHorizontally))
-    }
-}
-
-@Composable
-fun StoryItem(story: Story) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        CircleImage(imageUrl = story.imageUrl, modifier = Modifier.size(69.dp), outerSize = 65, innerSize = 60)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = story.label, modifier = Modifier.align(Alignment.CenterHorizontally))
-    }
-}
-
-@Composable
-fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (String) -> Unit) {
+fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (String) -> Unit, profileViewModel: ProfileViewModel) {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val postDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.postDate) ?: Date()
     val formattedDate = formatDate(postDate, currentYear)
@@ -475,8 +390,9 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
                     Text(text = stringResource(R.string.edit))
                 })
                 DropdownMenuItem(onClick = {
-                    // TODO add onClick for delete
                     showMenu = false
+                    profileViewModel.deletePost(postId = post.postId)
+                    onBackClick("Profile")
                 }, text = {
                     Text(text = stringResource(R.string.delete))
                 })
@@ -552,5 +468,89 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
         Text(text = formattedDate, style = androidx.compose.material3.MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp), color = Color.Gray)
 
         Spacer(modifier = Modifier.height(15.dp))
+    }
+}
+
+@Composable
+fun UserStatistics(posts: Int, followers: Int, following: Int) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,  // Centers items vertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp)
+    ) {
+        // Posts
+        StatisticItem(number = posts, label = "Posts")
+
+        // Followers
+        StatisticItem(number = followers, label = "Followers")
+
+        // Following
+        StatisticItem(number = following, label = "Following")
+    }
+}
+
+@Composable
+fun StatisticItem(number: Int, label: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Text(
+            text = number.toString(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
+        Text(
+            text = label,
+            fontSize = 15.sp
+        )
+    }
+}
+
+@Composable
+fun UserStories(stories: List<Story>) {
+    LazyRow (modifier = Modifier.padding(start = 5.dp)) {
+        item {
+            NewStoryItem()
+        }
+        items(stories.size) { index ->
+            StoryItem(stories[index])
+        }
+    }
+}
+
+@Composable
+fun NewStoryItem() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(69.dp)
+                .clip(CircleShape)
+                .background(Color.White)
+                .border(1.dp, Color.Gray, CircleShape)
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "New Story", tint = Color.Black)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = "New", modifier = Modifier.align(Alignment.CenterHorizontally))
+    }
+}
+
+@Composable
+fun StoryItem(story: Story) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        CircleImage(imageUrl = story.imageUrl, modifier = Modifier.size(69.dp), outerSize = 65, innerSize = 60)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = story.label, modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }
