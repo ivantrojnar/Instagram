@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -80,26 +81,6 @@ fun LogInScreen(
             ).show()
         }
     }
-
-    val auth = FirebaseAuth.getInstance()
-
-    // For handling the result of the sign-in intent
-    val signInLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // Successfully signed in
-                val user = auth.currentUser
-
-                val displayName = user?.displayName
-                val email = user?.email
-                val photoUrl = user?.photoUrl
-
-                Toast.makeText(context, "Logged in as: $displayName", Toast.LENGTH_LONG).show()
-            } else {
-                // Sign in failed. You can show an error to the user.
-                Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
-            }
-        }
 
     Box(
         modifier = Modifier
@@ -151,7 +132,8 @@ fun LogInScreen(
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 5.dp, 0.dp, 5.dp),
+                        .padding(0.dp, 5.dp, 0.dp, 5.dp)
+                        .testTag("Email"),
                     value = logInState.password,
                     onValueChange = onPasswordChanged,
                     label = { Text(text = stringResource(R.string.password)) },

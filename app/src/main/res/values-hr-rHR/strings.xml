@@ -4,10 +4,10 @@
     <string name="email">Email</string>
     <string name="password">Lozinka</string>
     <string name="forgot_password">Zaboravili lozinku?</string>
-    <string name="google_icon">Google ikona</string>
+    <string name="google_icon">Google Icon</string>
     <string name="log_in_with_google">Prijava s Google računom</string>
     <string name="log_in_with_github">Prijava s GitHub računom</string>
-    <string name="github_icon">GitHub ikona</string>
+    <string name="github_icon">GitHub Icon</string>
     <string name="or">ILI</string>
     <string name="don_t_have_an_account">Nemate račun?</string>
     <string name="log_in">Prijava</string>
