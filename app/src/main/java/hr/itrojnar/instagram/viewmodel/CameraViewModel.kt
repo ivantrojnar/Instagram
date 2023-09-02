@@ -1,6 +1,7 @@
 package hr.itrojnar.instagram.viewmodel
 
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -8,6 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.places.api.model.Place
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.itrojnar.instagram.api.PostRepository
@@ -25,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val firebaseAnalytics: FirebaseAnalytics
 ) : ViewModel() {
 
     private val storageReference = FirebaseStorage.getInstance().reference
@@ -99,6 +104,12 @@ class CameraViewModel @Inject constructor(
                         dateFormat.format(Date()),
                         1
                     )
+
+                    val bundle = Bundle()
+                    bundle.putString("user_id", userDetails.value!!.firebaseUserId)
+                    bundle.putString("created_post_id", postId)
+                    Firebase.analytics.setUserId(userDetails.value!!.firebaseUserId)
+                    Firebase.analytics.logEvent("post_created", bundle)
 
                     CoroutineScope(Dispatchers.IO).launch {
                         val result = postRepository.addNewPost(post)

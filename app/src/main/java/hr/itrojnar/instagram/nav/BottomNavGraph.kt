@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.paging.ExperimentalPagingApi
 import hr.itrojnar.instagram.view.BottomNavScreen
-import hr.itrojnar.instagram.view.CameraScreen
+import hr.itrojnar.instagram.view.camera.CameraScreen
 import hr.itrojnar.instagram.view.Screen
 import hr.itrojnar.instagram.view.main.HomeScreen
 import hr.itrojnar.instagram.view.main.MapsScreen

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.SharedPreferences
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
@@ -32,13 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.drawable.toBitmap
@@ -54,15 +50,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import hr.itrojnar.instagram.R
-import hr.itrojnar.instagram.model.ImageFilter
 import hr.itrojnar.instagram.model.User
-import hr.itrojnar.instagram.view.utility.NoTransformation
-import jp.wasabeef.glide.transformations.BlurTransformation
-import jp.wasabeef.glide.transformations.GrayscaleTransformation
-import jp.wasabeef.glide.transformations.gpu.PixelationFilterTransformation
-import jp.wasabeef.glide.transformations.gpu.SepiaFilterTransformation
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date

@@ -1,4 +1,4 @@
-package hr.itrojnar.instagram.view.utility
+package hr.itrojnar.instagram.view.camera
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background

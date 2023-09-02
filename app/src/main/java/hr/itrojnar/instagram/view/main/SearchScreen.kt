@@ -42,7 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.Post
-import hr.itrojnar.instagram.view.utility.FilterOption
+import hr.itrojnar.instagram.view.camera.FilterOption
 import hr.itrojnar.instagram.view.utility.PostItem
 import hr.itrojnar.instagram.viewmodel.SearchPostsViewModel
 import java.time.LocalDateTime

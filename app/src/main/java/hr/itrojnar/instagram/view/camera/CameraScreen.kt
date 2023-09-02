@@ -1,4 +1,4 @@
-package hr.itrojnar.instagram.view
+package hr.itrojnar.instagram.view.camera
 
 import android.app.Activity
 import android.content.ContentValues
@@ -75,7 +75,6 @@ import coil.transform.Transformation
 import com.commit451.coiltransformations.BlurTransformation
 import com.commit451.coiltransformations.ColorFilterTransformation
 import com.commit451.coiltransformations.GrayscaleTransformation
-import com.commit451.coiltransformations.SquareCropTransformation
 import com.commit451.coiltransformations.gpu.BrightnessFilterTransformation
 import com.commit451.coiltransformations.gpu.InvertFilterTransformation
 import com.commit451.coiltransformations.gpu.KuwaharaFilterTransformation
@@ -91,8 +90,6 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
 import hr.itrojnar.instagram.view.dialog.LoadingDialog
-import hr.itrojnar.instagram.view.utility.ImageFilterOption
-import hr.itrojnar.instagram.view.utility.NoTransformation
 import hr.itrojnar.instagram.viewmodel.CameraViewModel
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -371,74 +368,6 @@ fun CameraScreen(navController: NavHostController) {
                     color = Color.White
                 )
             }
-        }
-    }
-}
-
-
-@Composable
-fun LocationInput(cameraViewModel: CameraViewModel) {
-
-    val context = LocalContext.current
-    val noLocationSelectedString = stringResource(R.string.no_location_selected)
-    var locationText by remember { mutableStateOf(noLocationSelectedString) }
-
-    val activityResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val place = Autocomplete.getPlaceFromIntent(result.data!!)
-            locationText = place.address ?: "Unknown location"
-            cameraViewModel.setLocation(place)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.selected_location),
-            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                .padding(12.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Text(
-                text = locationText,
-                style = TextStyle(fontSize = 16.sp),
-                color = Color.Black
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(
-            onClick = {
-                val intent = Autocomplete.IntentBuilder(
-                    AutocompleteActivityMode.FULLSCREEN,
-                    listOf(
-                        Place.Field.ID,
-                        Place.Field.NAME,
-                        Place.Field.ADDRESS,
-                        Place.Field.LAT_LNG
-                    )
-                ).build(context)
-                activityResultLauncher.launch(intent)
-            },
-            modifier = Modifier.align(Alignment.Start),
-            colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(stringResource(R.string.select_location))
         }
     }
 }

@@ -31,10 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,13 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
-import hr.itrojnar.instagram.util.ShowSuccessDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,19 +100,6 @@ fun LogInScreen(
                 Toast.makeText(context, "GitHub sign-in failed", Toast.LENGTH_LONG).show()
             }
         }
-
-    fun handleGithubSignIn() {
-        val providers = arrayListOf(
-            AuthUI.IdpConfig.GitHubBuilder().build()
-        )
-
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-
-        signInLauncher.launch(signInIntent)
-    }
 
     Box(
         modifier = Modifier

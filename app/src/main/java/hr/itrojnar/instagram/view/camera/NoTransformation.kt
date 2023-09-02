@@ -1,4 +1,4 @@
-package hr.itrojnar.instagram.view.utility
+package hr.itrojnar.instagram.view.camera
 
 import android.graphics.Bitmap
 import coil.size.Size
