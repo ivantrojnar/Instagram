@@ -47,7 +47,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -97,15 +99,19 @@ fun MainScreen() {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                LottieAnimationLoop(resId = R.raw.loading_animation,
+                LottieAnimationLoop(
+                    resId = R.raw.loading_animation,
                     Modifier
                         .fillMaxWidth()
-                        .height(250.dp))
+                        .height(250.dp)
+                )
             }
         }
+
         is UserState.Loaded -> {
             val user = (userState as UserState.Loaded).user
-            val sharedPreferences = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
+            val sharedPreferences =
+                context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
             with(sharedPreferences.edit()) {
                 putUser(user)
             }
@@ -134,7 +140,10 @@ fun MainScreen() {
                                         }
                                     }
                                 }) {
-                                    Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.open_drawer))
+                                    Icon(
+                                        Icons.Filled.Menu,
+                                        contentDescription = stringResource(R.string.open_drawer)
+                                    )
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                             }
@@ -150,6 +159,7 @@ fun MainScreen() {
                 }
             }
         }
+
         is UserState.Error -> {
             Text(stringResource(R.string.an_error_occurred))
         }
@@ -175,16 +185,26 @@ fun TopAppBarWithBorder(
             Spacer(modifier = Modifier.weight(1f))
 
             val painter = painterResource(id = R.drawable.instagram_logo)
-            Icon(painter = painter, contentDescription = stringResource(R.string.instagram_logo_cd), modifier = Modifier.size(125.dp))
+            Icon(
+                painter = painter,
+                contentDescription = stringResource(R.string.instagram_logo_cd),
+                modifier = Modifier.size(125.dp)
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Row {
                 IconButton(onClick = { navController.navigate("camera") }) {
-                    Icon(Icons.Outlined.CameraAlt, contentDescription = stringResource(R.string.open_camera))
+                    Icon(
+                        Icons.Outlined.CameraAlt,
+                        contentDescription = stringResource(R.string.open_camera)
+                    )
                 }
                 IconButton(onClick = { /* Handle send/paper plane click */ }) {
-                    Icon(Icons.Outlined.Send, contentDescription = stringResource(R.string.direct_messages))
+                    Icon(
+                        Icons.Outlined.Send,
+                        contentDescription = stringResource(R.string.direct_messages)
+                    )
                 }
             }
         }
@@ -272,46 +292,70 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, us
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
-            .background(Color.Transparent),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+            .background(Color.Transparent)
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
 
-        DrawerHeader(user = user)
+            DrawerHeader(user = user)
 
-        DrawerItem(icon = Icons.Default.Home, label = stringResource(id = R.string.home), isSelected = currentDestination?.route == "home") {
-            navController.navigate("home")
-            closeDrawer()
-        }
+            DrawerItem(
+                icon = Icons.Default.Home,
+                label = stringResource(id = R.string.home),
+                isSelected = currentDestination?.route == "home"
+            ) {
+                navController.navigate("home")
+                closeDrawer()
+            }
 
-        DrawerItem(icon = Icons.Default.Search, label = stringResource(id = R.string.search), isSelected = currentDestination?.route == "search") {
-            navController.navigate("search")
-            closeDrawer()
-        }
+            DrawerItem(
+                icon = Icons.Default.Search,
+                label = stringResource(id = R.string.search),
+                isSelected = currentDestination?.route == "search"
+            ) {
+                navController.navigate("search")
+                closeDrawer()
+            }
 
-        DrawerItem(icon = Icons.Default.Map, label = stringResource(id = R.string.map), isSelected = currentDestination?.route == "map") {
-            navController.navigate("map")
-            closeDrawer()
-        }
+            DrawerItem(
+                icon = Icons.Default.Map,
+                label = stringResource(id = R.string.map),
+                isSelected = currentDestination?.route == "map"
+            ) {
+                navController.navigate("map")
+                closeDrawer()
+            }
 
-        DrawerItem(icon = Icons.Default.Person, label = stringResource(id = R.string.profile), isSelected = currentDestination?.route == "profile") {
-            navController.navigate("profile")
-            closeDrawer()
-        }
+            DrawerItem(
+                icon = Icons.Default.Person,
+                label = stringResource(id = R.string.profile),
+                isSelected = currentDestination?.route == "profile"
+            ) {
+                navController.navigate("profile")
+                closeDrawer()
+            }
 
-        DrawerItem(icon = Icons.Default.Settings, label = stringResource(id = R.string.settings), isSelected = currentDestination?.route == "settings") {
-            navController.navigate("settings")
-            closeDrawer()
-        }
+            DrawerItem(
+                icon = Icons.Default.Settings,
+                label = stringResource(id = R.string.settings),
+                isSelected = currentDestination?.route == "settings"
+            ) {
+                navController.navigate("settings")
+                closeDrawer()
+            }
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-        DrawerFooter {
-            // TODO IMPLEMENT LOG OUT LOGIC
+            DrawerFooter {
+                // TODO IMPLEMENT LOG OUT LOGIC
+            }
         }
     }
 }
