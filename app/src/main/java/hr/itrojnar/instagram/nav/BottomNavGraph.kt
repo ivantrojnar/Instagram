@@ -14,6 +14,7 @@ import hr.itrojnar.instagram.view.main.MapsScreen
 import hr.itrojnar.instagram.view.main.PostsState
 import hr.itrojnar.instagram.view.main.ProfileScreen
 import hr.itrojnar.instagram.view.main.SearchScreen
+import hr.itrojnar.instagram.view.main.SettingsScreen
 import hr.itrojnar.instagram.viewmodel.MapsViewModel
 import hr.itrojnar.instagram.viewmodel.PostsViewModel
 import hr.itrojnar.instagram.viewmodel.ProfileViewModel
@@ -44,6 +45,7 @@ fun BottomNavGraph(navController: NavHostController) {
             ProfileScreen(profileViewModel = profileViewModel)
         }
         composable(route = BottomNavScreen.Settings.route) {
+            SettingsScreen()
         }
         composable(route = Screen.Camera) {
             CameraScreen(navController = navController)

@@ -91,6 +91,8 @@ import hr.itrojnar.instagram.viewmodel.MainViewModel
 import java.io.ByteArrayOutputStream
 import hr.itrojnar.instagram.enums.Subscription
 import hr.itrojnar.instagram.util.createUserWithImage
+import hr.itrojnar.instagram.view.utility.ProfileImage
+import hr.itrojnar.instagram.view.utility.SubscriptionCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -513,90 +515,4 @@ fun openAppSettings(activity: Activity) {
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
         Uri.fromParts("package", activity.packageName, null)
     ).also { activity.startActivity(it) }
-}
-
-@Composable
-fun SubscriptionCard(
-    title: String,
-    description: String,
-    gradient: List<Color>,
-    onClick: () -> Unit,
-    isSelected: Boolean
-) {
-    val border = if (isSelected) BorderStroke(4.dp, Color.Black) else null
-
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 8.dp)
-            .clickable(onClick = onClick),
-        border = border,
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .requiredHeight(200.dp)
-                .background(Brush.horizontalGradient(gradient))
-        ) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(10.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        shadow = Shadow(
-                            Color.Black,
-                            offset = Offset(1f, 1f),
-                            blurRadius = 2f
-                        )
-                    ),
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        shadow = Shadow(
-                            Color.Black,
-                            offset = Offset(1f, 1f),
-                            blurRadius = 2f
-                        )
-                    ),
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ProfileImage(imageUri: Uri?, onImageClick: () -> Unit) {
-    val image: Painter = imageUri?.let {
-        rememberImagePainter(data = it)
-    } ?: painterResource(id = R.drawable.default_profile_picture)
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp), horizontalArrangement = Arrangement.Center
-    ) {
-        Box(modifier = Modifier
-            .size(120.dp)
-            .clip(CircleShape)
-            .clickable { onImageClick() }) {
-            Image(
-                painter = image,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center)
-            )
-        }
-    }
 }
