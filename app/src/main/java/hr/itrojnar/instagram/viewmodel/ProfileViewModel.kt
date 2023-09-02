@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.itrojnar.instagram.api.PostRepository
 import hr.itrojnar.instagram.model.Post
@@ -32,11 +34,11 @@ class ProfileViewModel
             postRepository.deletePost(postId)
             refreshPosts()
 
-            val bundle = Bundle().apply {
-                putString("firebase_user_id", userId)
-                putString("deleted_post_id", postId)
-            }
-            firebaseAnalytics.logEvent("post_deleted", bundle)
+            val bundle = Bundle()
+            bundle.putString("user_id", userId)
+            bundle.putString("deleted_post_id", postId)
+            Firebase.analytics.setUserId(userId)
+            Firebase.analytics.logEvent("post_deleted", bundle)
         }
     }
 
