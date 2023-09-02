@@ -148,5 +148,6 @@ dependencies {
     implementation("com.github.Commit451.coil-transformations:transformations:2.0.2")
     implementation("com.github.Commit451.coil-transformations:transformations-gpu:2.0.2")
 
-
+    testImplementation "org.mockito:mockito-core:5.5.0"
+    testImplementation "org.mockito:mockito-inline:5.5.0"
 }
