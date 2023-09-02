@@ -461,8 +461,7 @@ fun SignUpScreen(
                 Text(
                     stringResource(R.string.sign_up),
                     fontSize = 16.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(top = 5.dp)
+                    color = Color.White
                 )
             }
         }

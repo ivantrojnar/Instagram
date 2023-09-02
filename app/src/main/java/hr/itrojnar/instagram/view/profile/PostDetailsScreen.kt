@@ -22,11 +22,13 @@ import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -87,6 +89,8 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
     )
 
     val zoomState = rememberZoomState()
+
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -194,8 +198,7 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
             ) {
                 DropdownMenuItem(onClick = {
                     showMenu = false
-                    profileViewModel.deletePost(postId = post.postId)
-                    onBackClick("Profile")
+                    showDialog = true
                 }, text = {
                     Text(text = stringResource(R.string.delete))
                 })
@@ -271,5 +274,38 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
         Text(text = formattedDate, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 8.dp), color = Color.Gray)
 
         Spacer(modifier = Modifier.height(15.dp))
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showDialog = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.confirm_delete_title))
+                },
+                text = {
+                    Text(text = stringResource(R.string.confirm_delete_message))
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDialog = false
+                        profileViewModel.deletePost(postId = post.postId)
+                        onBackClick("Profile")
+                    }) {
+                        Text(
+                            text = stringResource(R.string.confirm),
+                            color = Color.Red
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showDialog = false
+                    }) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     }
 }

@@ -18,7 +18,7 @@
     <string name="trouble_logging_in">Trouble logging in?</string>
     <string name="sign_up">Sign up</string>
     <string name="full_name">Full name</string>
-    <string name="finish">Finish\n</string>
+    <string name="finish">Finish</string>
     <string name="web_client_id">893185908089-s31084semslet4cd71461mj3kkmk0vp1.apps.googleusercontent.com</string>
     <string name="unable_to_log_in">Unable to log in</string>
     <string name="successful_log_in">Successful log in</string>
@@ -103,11 +103,14 @@
     <string name="free">FREE</string>
     <string name="pro">PRO</string>
     <string name="gold">GOLD</string>
-    <string name="upload_limit_1gb_day_max_spend_10_photos">Upload limit: 1GB/day. Max spend: 10 photos.</string>
-    <string name="upload_limit_10gb_day_max_spend_50_photos_price_9_99_month">Upload limit: 10GB/day. Max spend: 50 photos. Price: $9.99/month</string>
-    <string name="upload_limit_100gb_day_max_spend_100_photos_price_24_99_month">Upload limit: 100GB/day. Max spend: 100 photos. Price: $24.99/month</string>
+    <string name="upload_limit_1gb_day_max_spend_10_photos">Upload limit: 10MB/day. Max spend: 10 photos.</string>
+    <string name="upload_limit_10gb_day_max_spend_50_photos_price_9_99_month">Upload limit: 100MB/day. Max spend: 50 photos. Price: $9.99/month</string>
+    <string name="upload_limit_100gb_day_max_spend_100_photos_price_24_99_month">Upload limit: 1GB/day. Max spend: 100 photos. Price: $24.99/month</string>
     <string name="verified_icon">Verified Icon</string>
     <string name="user_profile_image">User profile image</string>
     <string name="show_profile">Show profile</string>
     <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="confirm_delete_title">Confirm Deletion</string>
+    <string name="confirm_delete_message">Are you sure you want to delete this post?</string>
 </resources>
