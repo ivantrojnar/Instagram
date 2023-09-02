@@ -103,7 +103,8 @@ fun LogInScreen(
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                        .padding(0.dp, 0.dp, 0.dp, 5.dp)
+                        .testTag("Email"),
                     value = logInState.email,
                     onValueChange = onEmailChanged,
                     label = { Text(text = stringResource(R.string.email)) },
@@ -133,7 +134,7 @@ fun LogInScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 5.dp, 0.dp, 5.dp)
-                        .testTag("Email"),
+                        .testTag("Password"),
                     value = logInState.password,
                     onValueChange = onPasswordChanged,
                     label = { Text(text = stringResource(R.string.password)) },
@@ -160,6 +161,7 @@ fun LogInScreen(
                 horizontalArrangement = Arrangement.End
             ) {
                 ClickableText(
+                    modifier = Modifier.testTag("Forgot password?"),
                     text = AnnotatedString(stringResource(R.string.forgot_password)),
                     onClick = { onForgotPasswordClick() },
                     style = TextStyle(
@@ -171,7 +173,8 @@ fun LogInScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .padding(start = 20.dp, end = 20.dp),
+                    .padding(start = 20.dp, end = 20.dp)
+                    .testTag("Log in"),
                 onClick = onLogin,
                 enabled = logInState.isEmailValid && logInState.isPasswordValid,
                 colors = ButtonDefaults.buttonColors(
@@ -278,6 +281,7 @@ fun LogInScreen(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 ClickableText(
+                    modifier = Modifier.testTag("Sign up"),
                     text = AnnotatedString(stringResource(R.string.sign_up) + "."),
                     style = TextStyle(
                         color = Color(0xFF3797EF),

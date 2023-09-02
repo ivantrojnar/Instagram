@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -87,6 +88,7 @@ fun ForgotPasswordScreen(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
+                .testTag("Trouble loggin in?")
         )
 
         Text(
