@@ -114,4 +114,6 @@
     <string name="confirm">Potvrdi</string>
     <string name="confirm_delete_title">Potvrdite brisanje</string>
     <string name="confirm_delete_message">Jeste li sigurni da želite izbrisati ovu objavu?</string>
+    <string name="confirm_subscription_change">Confirm Subscription Change</string>
+    <string name="note_you_can_change_your_subscription_only_once_a_day_changes_will_take_effect_the_next_day">Note: You can change your subscription only once a day. Changes will take effect the next day.</string>
 </resources>

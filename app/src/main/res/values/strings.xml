@@ -113,4 +113,8 @@
     <string name="confirm">Confirm</string>
     <string name="confirm_delete_title">Confirm Deletion</string>
     <string name="confirm_delete_message">Are you sure you want to delete this post?</string>
+    <string name="confirm_subscription_change">Confirm Subscription Change</string>
+    <string name="your_subscription_settings">Your Subscription Settings</string>
+    <string name="note_you_can_change_your_subscription_only_once_a_day_changes_will_take_effect_the_next_day">Note: You can change your subscription only once a day. Changes will take effect the next day.</string>
+    <string name="note_subscription_changed_awaiting_confirmation">Note: Subscription changed, awaiting your confirmation</string>
 </resources>
