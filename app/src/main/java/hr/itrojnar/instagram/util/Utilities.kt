@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
@@ -306,9 +307,11 @@ fun getImageSizeInMegabytes(context: Context, uri: Uri): Float {
 }
 
 fun addUserDailyConsumption(context: Context, mbUsed: Float, numOfPics: Int) {
-    val prefs = context.getSharedPreferences("UserDetails", Context.MODE_PRIVATE)
+    val prefs = context.applicationContext.getSharedPreferences("user_details", Context.MODE_PRIVATE)
     val currentMbUsed = prefs.getFloat("mbUsedToday", 0f)
     val currentNumOfPics = prefs.getInt("numOfPicsUploadedToday", 0)
+
+    Log.d("SHAREDPREFS", "Updated")
 
     prefs.edit()
         .putFloat("mbUsedToday", currentMbUsed + mbUsed)

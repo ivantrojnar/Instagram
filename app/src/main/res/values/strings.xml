@@ -117,4 +117,8 @@
     <string name="your_subscription_settings">Your Subscription Settings</string>
     <string name="note_you_can_change_your_subscription_only_once_a_day_changes_will_take_effect_the_next_day">Note: You can change your subscription only once a day. Changes will take effect the next day.</string>
     <string name="note_subscription_changed_awaiting_confirmation">Note: Subscription changed, awaiting your confirmation</string>
+    <string name="your_usage_statistics">Your Daily Usage Statistics</string>
+    <string name="photos">" photos ("</string>
+    <string name="usage_photos">Daily photo usage:</string>
+    <string name="usage_mb">Daily storage usage:</string>
 </resources>
