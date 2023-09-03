@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,9 +63,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
+import com.google.firebase.auth.FirebaseAuth
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.nav.BottomNavGraph
+import hr.itrojnar.instagram.nav.Graph
 import hr.itrojnar.instagram.util.LottieAnimation
 import hr.itrojnar.instagram.util.LottieAnimationLoop
 import hr.itrojnar.instagram.util.putUser
@@ -78,7 +81,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagingApi::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(navHostController: NavHostController) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -119,7 +122,7 @@ fun MainScreen() {
                 drawerState = drawerState,
                 gesturesEnabled = !isMapScreen,
                 drawerContent = {
-                    DrawerContent(navController, drawerState, user)
+                    DrawerContent(navController, navHostController, drawerState, user, context)
                 }) {
 
                 Scaffold(
@@ -277,7 +280,7 @@ fun RowScope.AddItem(
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, drawerState: DrawerState, user: User) {
+fun DrawerContent(navController: NavHostController, navHostController: NavHostController, drawerState: DrawerState, user: User, context: Context) {
 
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -354,7 +357,13 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, us
             Spacer(modifier = Modifier.weight(1f))
 
             DrawerFooter {
-                // TODO IMPLEMENT LOG OUT LOGIC
+                FirebaseAuth.getInstance().signOut()
+
+                val sharedPreferences = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
+                sharedPreferences.edit().clear().apply()
+
+                navController.popBackStack()
+                navHostController.navigate(AuthScreen.Login.route)
             }
         }
     }
