@@ -114,6 +114,12 @@
     <string name="confirm">Potvrdi</string>
     <string name="confirm_delete_title">Potvrdite brisanje</string>
     <string name="confirm_delete_message">Jeste li sigurni da želite izbrisati ovu objavu?</string>
-    <string name="confirm_subscription_change">Confirm Subscription Change</string>
-    <string name="note_you_can_change_your_subscription_only_once_a_day_changes_will_take_effect_the_next_day">Note: You can change your subscription only once a day. Changes will take effect the next day.</string>
+    <string name="confirm_subscription_change">Potvrdite promjenu pretplate</string>
+    <string name="your_subscription_settings">Vaše postavke pretplate</string>
+    <string name="note_you_can_change_your_subscription_only_once_a_day_changes_will_take_effect_the_next_day">Napomena: Pretplatu možete promijeniti samo jednom dnevno. Promjene stupaju na snagu sljedeći dan.</string>
+    <string name="note_subscription_changed_awaiting_confirmation">Napomena: pretplata je promijenjena, čeka se vaša potvrda</string>
+    <string name="your_usage_statistics">Vaša dnevna statistika potrošnje</string>
+    <string name="photos">" slika ("</string>
+    <string name="usage_photos">Dnevno korištenje fotografija:</string>
+    <string name="usage_mb">Dnevno korištenje prostora za pohranu:</string>
 </resources>

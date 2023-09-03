@@ -46,7 +46,10 @@ import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.util.getUser
 import hr.itrojnar.instagram.view.utility.SubscriptionCard
 import hr.itrojnar.instagram.view.utility.UsageLine
+import java.text.NumberFormat
+import java.text.ParseException
 import java.time.LocalDate
+import java.util.Locale
 
 @Composable
 fun SettingsScreen() {
@@ -87,7 +90,7 @@ fun SettingsScreen() {
         val hasChanged = remember { mutableStateOf(false) }
 
         val currentUploadedPhotos = firebaseUser.value!!.numOfPicsUploadedToday
-        val currentUploadedMegabytes = String.format("%.2f", firebaseUser.value!!.mbUsedToday.toDouble()).toDouble()
+        val currentUploadedMegabytes = String.format(Locale.US,"%.2f", firebaseUser.value!!.mbUsedToday.toDouble()).toDouble()
 
         // Retrieve the Subscription details using the selectedSubscription value
         val selectedSubDetails = Subscription.values().first { it.id == selectedSubscription.value }
@@ -295,5 +298,15 @@ fun SettingsScreen() {
 
             Spacer(modifier = Modifier.height(65.dp))
         }
+    }
+}
+
+fun parseDoubleLocaleAware(input: String): Double? {
+    return try {
+        val numberFormat = NumberFormat.getInstance(Locale.getDefault())
+        val number = numberFormat.parse(input)
+        number?.toDouble()
+    } catch (e: ParseException) {
+        null
     }
 }
