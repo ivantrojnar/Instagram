@@ -109,7 +109,8 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)),
+                    contentScale = ContentScale.Crop
                 )
                 Column(
                     modifier = Modifier

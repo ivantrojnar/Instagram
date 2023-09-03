@@ -1,10 +1,10 @@
 package hr.itrojnar.instagram.api
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import hr.itrojnar.instagram.model.User
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDate
 
 class FirebaseUserRepository : UserRepository {
 
@@ -13,10 +13,27 @@ class FirebaseUserRepository : UserRepository {
     override suspend fun getCurrentUserDetail(): User? {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val uid = currentUser?.uid
-        Log.d("DEBUG", "Firebase User Repo logged in via Google with UID: $uid")
+        val currentDate = LocalDate.now().toString()
+
         if (uid != null) {
-            val userDocument = firestore.collection("users").document(uid).get().await()
-            return userDocument.toObject(User::class.java)
+            val userDocumentRef = firestore.collection("users").document(uid)
+            val userDocument = userDocumentRef.get().await()
+            val user = userDocument.toObject(User::class.java)
+
+            if (user != null && user.lastSignInDate != currentDate) {
+                // Create a copy with updated fields
+                val updatedUser = user.copy(
+                    lastSignInDate = currentDate,
+                    mbUsedToday = 0,
+                    numOfPicsUploadedToday = 0
+                )
+
+                // Update Firestore with the modified user details
+                userDocumentRef.set(updatedUser).await()
+
+                return updatedUser
+            }
+            return user
         }
         return null
     }
