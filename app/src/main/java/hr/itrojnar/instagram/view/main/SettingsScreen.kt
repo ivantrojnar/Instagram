@@ -1,6 +1,8 @@
 package hr.itrojnar.instagram.view.main
 
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +51,19 @@ fun SettingsScreen() {
 
     val canChangeToday = LocalDate.now().toString() != lastChangedDate.value
     val hasChanged = remember { mutableStateOf(false) }  // New state to check if subscription was changed
+
+    val currentUploadedPhotos = remember { mutableStateOf(sharedPreferences.getInt("numOfPicsUploadedToday", 0)) }
+    val currentUploadedMegabytes = remember { mutableStateOf(sharedPreferences.getFloat("mbUsedToday", 0.0f).toDouble()) }
+
+    // Retrieve the Subscription details using the selectedSubscription value
+    val selectedSubDetails = Subscription.values().first { it.id == selectedSubscription.value }
+
+    val photoLimit = selectedSubDetails.photoLimit
+    val mbLimit = selectedSubDetails.uploadLimit
+
+    val photoUsagePercentage = (currentUploadedPhotos.value.toDouble() / photoLimit) * 100
+    val mbUsagePercentage = (currentUploadedMegabytes.value / mbLimit) * 100
+
 
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()).fillMaxSize()
@@ -119,9 +134,25 @@ fun SettingsScreen() {
                     color = Color.White
                 )
             }
-            
-            Spacer(modifier = Modifier.height(65.dp))
         }
+
+        Text(
+            text = "Usage: ${currentUploadedPhotos.value} / $photoLimit photos (${photoUsagePercentage.toInt()}%)",
+            fontSize = 14.sp,
+            modifier = Modifier.padding(10.dp)
+        )
+        // Add a line or a ProgressBar to visualize the percentage
+        UsageLine(photoUsagePercentage)
+
+        Text(
+            text = "Usage: ${currentUploadedMegabytes.value} / $mbLimit MB (${mbUsagePercentage.toInt()}%)",
+            fontSize = 14.sp,
+            modifier = Modifier.padding(10.dp)
+        )
+        // Add a line or a ProgressBar to visualize the percentage
+        UsageLine(mbUsagePercentage)
+
+        Spacer(modifier = Modifier.height(65.dp))
     }
 
     // Singleton usage
@@ -182,4 +213,22 @@ fun SettingsScreen() {
 //        DesignPatternItem("Builder", "Setting: ${notificationSetting.name}, Enabled: ${notificationSetting.enabled}")
 //        DesignPatternItem("Adapter", adapterOutput)
 //    }
+}
+
+@Composable
+fun UsageLine(percentage: Double) {
+    // A simple line (can be replaced with a ProgressBar for a better visual)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(5.dp)
+            .background(Color.Gray)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(fraction = percentage.toFloat() / 100)
+                .height(5.dp)
+                .background(Color.Blue)
+        )
+    }
 }
