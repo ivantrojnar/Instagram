@@ -24,7 +24,7 @@ class FirebaseUserRepository : UserRepository {
                 // Create a copy with updated fields
                 val updatedUser = user.copy(
                     lastSignInDate = currentDate,
-                    mbUsedToday = 0,
+                    mbUsedToday = 0f,
                     numOfPicsUploadedToday = 0
                 )
 
@@ -36,5 +36,25 @@ class FirebaseUserRepository : UserRepository {
             return user
         }
         return null
+    }
+
+    override suspend fun updateUserConsumption(mbUsed: Float, numOfPics: Int) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val uid = currentUser?.uid
+
+        if (uid != null) {
+            val userDocumentRef = firestore.collection("users").document(uid)
+            val userDocument = userDocumentRef.get().await()
+            val user = userDocument.toObject(User::class.java)
+
+            if (user != null) {
+                val updatedUser = user.copy(
+                    mbUsedToday = user.mbUsedToday + mbUsed,
+                    numOfPicsUploadedToday = user.numOfPicsUploadedToday + numOfPics
+                )
+
+                userDocumentRef.set(updatedUser).await()
+            }
+        }
     }
 }

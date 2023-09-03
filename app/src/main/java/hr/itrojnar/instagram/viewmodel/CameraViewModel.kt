@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,8 @@ import hr.itrojnar.instagram.model.Post
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.api.FirebaseUserRepository
 import hr.itrojnar.instagram.api.UserRepository
+import hr.itrojnar.instagram.util.addUserDailyConsumption
+import hr.itrojnar.instagram.util.getImageSizeInMegabytes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,7 +67,7 @@ class CameraViewModel @Inject constructor(
     val isReadyToPost: Boolean
         get() = imageUri.value != null && location.value != null && description.value.isNotBlank()
 
-    fun createPost() {
+    fun createPost(context: Context) {
         if (isReadyToPost) {
 
             isLoading.value = true
@@ -104,6 +107,12 @@ class CameraViewModel @Inject constructor(
                         dateFormat.format(Date()),
                         1
                     )
+
+                    val imageSizeInMb = getImageSizeInMegabytes(context, imageUri.value!!)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        userRepository.updateUserConsumption(imageSizeInMb, 1)
+                        addUserDailyConsumption(context, imageSizeInMb, 1)
+                    }
 
                     val bundle = Bundle()
                     bundle.putString("user_id", userDetails.value!!.firebaseUserId)

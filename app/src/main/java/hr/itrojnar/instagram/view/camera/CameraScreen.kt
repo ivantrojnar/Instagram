@@ -1,6 +1,5 @@
 package hr.itrojnar.instagram.view.camera
 
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,7 +11,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -84,9 +82,6 @@ import com.commit451.coiltransformations.gpu.SketchFilterTransformation
 import com.commit451.coiltransformations.gpu.SwirlFilterTransformation
 import com.commit451.coiltransformations.gpu.ToonFilterTransformation
 import com.commit451.coiltransformations.gpu.VignetteFilterTransformation
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.view.dialog.ImagePickerDialog
 import hr.itrojnar.instagram.view.dialog.LoadingDialog
@@ -352,7 +347,7 @@ fun CameraScreen(navController: NavHostController) {
                                 viewModel.setImageUri(savedUri)
                             }
                         }
-                        viewModel.createPost()
+                        viewModel.createPost(context)
                     }
                 },
                 enabled = viewModel.isReadyToPost,

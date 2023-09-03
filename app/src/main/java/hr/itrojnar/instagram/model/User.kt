@@ -9,6 +9,6 @@ data class User(
     val profilePictureUrl: String? = null,
     val subscriptionId: Int = 0,
     val lastSignInDate: String = LocalDate.now().toString(),
-    val mbUsedToday: Int = 0,
+    val mbUsedToday: Float = 0f,
     val numOfPicsUploadedToday: Int = 0
 )

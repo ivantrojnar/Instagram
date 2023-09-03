@@ -51,6 +51,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.model.User
+import java.lang.reflect.Array.getDouble
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
@@ -275,7 +276,7 @@ fun SharedPreferences.Editor.putUser(user: User) {
     putString("profilePictureUrl", user.profilePictureUrl)
     putInt("subscriptionId", user.subscriptionId)
     putString("lastSignInDate", user.lastSignInDate)
-    putInt("mbUsedToday", user.mbUsedToday)
+    putFloat("mbUsedToday", user.mbUsedToday)
     putInt("numOfPicsUploadedToday", user.numOfPicsUploadedToday)
     apply()
 }
@@ -288,9 +289,29 @@ fun SharedPreferences.getUser(): User {
         profilePictureUrl = getString("profilePictureUrl", null),
         subscriptionId = getInt("subscriptionId", 0),
         lastSignInDate = getString("lastSignInDate", LocalDate.now().toString()) ?: LocalDate.now().toString(),
-        mbUsedToday = getInt("mbUsedToday", 0),
+        mbUsedToday = getFloat("mbUsedToday", 0f),
         numOfPicsUploadedToday = getInt("numOfPicsUploadedToday", 0)
     )
 }
 
 fun getRandomNumber(): Int = (0..10000).random()
+
+fun getImageSizeInBytes(context: Context, uri: Uri): Long {
+    return context.contentResolver.openInputStream(uri)?.use { it.available().toLong() } ?: 0L
+}
+
+fun getImageSizeInMegabytes(context: Context, uri: Uri): Float {
+    val bytes = getImageSizeInBytes(context, uri)
+    return (bytes / (1024f * 1024f))
+}
+
+fun addUserDailyConsumption(context: Context, mbUsed: Float, numOfPics: Int) {
+    val prefs = context.getSharedPreferences("UserDetails", Context.MODE_PRIVATE)
+    val currentMbUsed = prefs.getFloat("mbUsedToday", 0f)
+    val currentNumOfPics = prefs.getInt("numOfPicsUploadedToday", 0)
+
+    prefs.edit()
+        .putFloat("mbUsedToday", currentMbUsed + mbUsed)
+        .putInt("numOfPicsUploadedToday", currentNumOfPics + numOfPics)
+        .apply()
+}
