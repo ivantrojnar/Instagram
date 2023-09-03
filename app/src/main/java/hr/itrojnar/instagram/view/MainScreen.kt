@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Divider
@@ -36,7 +34,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material.rememberDrawerState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -44,13 +41,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -64,11 +60,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.api.FirebaseUserRepository
+import hr.itrojnar.instagram.api.UserRepository
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.nav.BottomNavGraph
-import hr.itrojnar.instagram.nav.Graph
-import hr.itrojnar.instagram.util.LottieAnimation
 import hr.itrojnar.instagram.util.LottieAnimationLoop
 import hr.itrojnar.instagram.util.putUser
 import hr.itrojnar.instagram.view.drawer.DrawerFooter
@@ -122,7 +119,7 @@ fun MainScreen(navHostController: NavHostController) {
                 drawerState = drawerState,
                 gesturesEnabled = !isMapScreen,
                 drawerContent = {
-                    DrawerContent(navController, navHostController, drawerState, user, context)
+                    DrawerContent(navController, navHostController, drawerState, user, context, viewModel)
                 }) {
 
                 Scaffold(
@@ -164,6 +161,10 @@ fun MainScreen(navHostController: NavHostController) {
         }
 
         is UserState.Error -> {
+            Text(stringResource(R.string.an_error_occurred))
+        }
+
+        is UserState.Default -> {
             Text(stringResource(R.string.an_error_occurred))
         }
     }
@@ -280,7 +281,7 @@ fun RowScope.AddItem(
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, navHostController: NavHostController, drawerState: DrawerState, user: User, context: Context) {
+fun DrawerContent(navController: NavHostController, navHostController: NavHostController, drawerState: DrawerState, user: User, context: Context, viewModel: MainScreenViewModel) {
 
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -358,12 +359,27 @@ fun DrawerContent(navController: NavHostController, navHostController: NavHostCo
 
             DrawerFooter {
                 FirebaseAuth.getInstance().signOut()
+                if (FirebaseAuth.getInstance().currentUser == null) {
+                    Log.d("LOGOUT", "User successfully logged out")
+                } else {
+                    Log.d("LOGOUT", "Something went wrong")
+                }
+                FirebaseAuth.getInstance().currentUser?.reload()
 
                 val sharedPreferences = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
                 sharedPreferences.edit().clear().apply()
 
-                navController.popBackStack()
-                navHostController.navigate(AuthScreen.Login.route)
+                while (navController.popBackStack()) {
+
+                }
+
+                viewModel.clearResources()
+
+                navHostController.navigate(AuthScreen.Login.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                }
             }
         }
     }

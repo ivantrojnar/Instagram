@@ -35,10 +35,17 @@ class MainScreenViewModel @Inject constructor(private val userRepository: UserRe
             }
         }
     }
+
+    fun clearResources() {
+        // Clear or close any resources or objects you've held onto.
+        // This could be stopping listeners, clearing lists, nullifying large objects, etc.
+        _userState.value = UserState.Default
+    }
 }
 
 sealed class UserState {
     object Loading : UserState()
     data class Loaded(val user: User) : UserState()
     object Error : UserState()
+    object Default : UserState()
 }

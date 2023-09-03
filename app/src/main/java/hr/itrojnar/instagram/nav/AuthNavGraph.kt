@@ -2,6 +2,7 @@ package hr.itrojnar.instagram.nav
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -18,6 +19,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GithubAuthClient
 import hr.itrojnar.instagram.sign_in.GoogleAuthUiClient
@@ -62,6 +65,8 @@ fun NavGraphBuilder.authNavGraph(
                             val signInResult = googleAuthUiClient.signInWithIntent(result.data ?: return@launch)
                             viewModel.onSignInResult(signInResult)
                             if (signInResult.data != null) {
+                                val uid = signInResult.data.userId
+                                Log.d("DEBUG", "Logged in via Google with UID: $uid")
                                 navHostController.popBackStack()
                                 navHostController.navigate(Graph.MAIN)
                             } else {
@@ -87,6 +92,8 @@ fun NavGraphBuilder.authNavGraph(
                     coroutineScope.launch {
                         val signInResult = githubAuthClient.signInWithIntent(response)
                         if (signInResult.data != null) {
+                            val uid = signInResult.data.userId
+                            Log.d("DEBUG", "Logged in via GitHub with UID: $uid")
                             navHostController.popBackStack()
                             navHostController.navigate(Graph.MAIN)
                         } else {
