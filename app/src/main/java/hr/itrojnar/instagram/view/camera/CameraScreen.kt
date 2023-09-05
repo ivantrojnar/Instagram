@@ -96,11 +96,10 @@ fun CameraScreen(navController: NavHostController) {
 
     val darkTheme = isSystemInDarkTheme()
     val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
-    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the hint text when not focused
-    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the border when not focused
-    val focusedLabelColor = if (darkTheme) Color.White else Color.Black // Color for the hint text when focused
-    val focusedBorderColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
-    val textColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray
+    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray
+    val focusedLabelColor = if (darkTheme) Color.White else Color.Black
+    val focusedBorderColor = if (darkTheme) Color.White else Color.Black
 
     val context = LocalContext.current
 

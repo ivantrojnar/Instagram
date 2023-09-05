@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,6 +54,9 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
 
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+
     var searchQuery by remember { mutableStateOf("") }
     var selectedOption by remember { mutableStateOf("All") }
 
@@ -93,7 +98,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             }
     }
 
-    Column {
+    Column (modifier = Modifier.background(backgroundColor)) {
         AnimatedVisibility(
             visible = searchBarVisible,
             enter = slideInVertically(initialOffsetY = { -50 }) + fadeIn(),
