@@ -1,6 +1,8 @@
 package hr.itrojnar.instagram.view.main
 
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +55,10 @@ import java.util.Locale
 
 @Composable
 fun SettingsScreen() {
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+
     val context = LocalContext.current
 
     val firebaseAuth = FirebaseAuth.getInstance()
@@ -71,11 +77,10 @@ fun SettingsScreen() {
                     val userData = document.toObject(User::class.java)
                     firebaseUser.value = userData
                 }
-                isLoading.value = false  // Mark data as loaded
+                isLoading.value = false
             }
             .addOnFailureListener { exception ->
-                isLoading.value = false  // Mark data as loaded even if there was an error
-                // Handle the error here
+                isLoading.value = false
             }
     }
 
@@ -181,7 +186,7 @@ fun SettingsScreen() {
             .setName("Notifications")
             .setEnabled(true)
             .setSummary("Manage app notifications")
-            .setIcon(R.drawable.instagram_verified) // Placeholder
+            .setIcon(R.drawable.instagram_verified)
             .build()
 
         // Adapter pattern usage
@@ -194,6 +199,7 @@ fun SettingsScreen() {
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
+                .background(backgroundColor)
         ) {
             Text (
                 text = stringResource(R.string.your_subscription_settings),
@@ -224,7 +230,6 @@ fun SettingsScreen() {
                 )
             }
 
-            // If the user has changed the subscription today and can't change again
             if (!canChangeToday) {
                 Text(
                     modifier = Modifier.padding(10.dp),
@@ -232,7 +237,6 @@ fun SettingsScreen() {
                 )
             }
 
-            // If the user has made a recent change
             if (hasChanged.value) {
                 Text(
                     modifier = Modifier.padding(10.dp),
@@ -249,7 +253,7 @@ fun SettingsScreen() {
                             putString("lastChangedDate", LocalDate.now().toString())
                             apply()
                         }
-                        hasChanged.value = false  // Reset after user confirms
+                        hasChanged.value = false
                     },
                     shape = RoundedCornerShape(5.dp),
                     colors = ButtonDefaults.buttonColors(

@@ -122,4 +122,7 @@
     <string name="usage_photos">Daily photo usage:</string>
     <string name="usage_mb">Daily storage usage:</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="posts">Posts</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
 </resources>

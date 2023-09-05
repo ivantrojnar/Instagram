@@ -122,4 +122,8 @@
     <string name="photos">" slika ("</string>
     <string name="usage_photos">Dnevno korištenje fotografija:</string>
     <string name="usage_mb">Dnevno korištenje prostora za pohranu:</string>
+    <string name="edit_profile">Uredi profil</string>
+    <string name="posts">Objava</string>
+    <string name="followers">Pratitelja</string>
+    <string name="following">Prati</string>
 </resources>
