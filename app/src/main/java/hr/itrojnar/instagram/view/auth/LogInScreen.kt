@@ -287,7 +287,7 @@ fun LogInScreen(
                 Text(
                     text = stringResource(R.string.don_t_have_an_account),
                     style = TextStyle(fontSize = 16.sp),
-                    color = Color.Black.copy(alpha = 0.4f)
+                    color = textColor.copy(alpha = 0.4f)
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
@@ -308,18 +308,16 @@ fun LogInScreen(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Thin line
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(1.dp)
-                        .background(Color.Black.copy(alpha = 0.2f))
+                        .background(textColor.copy(alpha = 0.2f))
                 )
 
-                // "Instagram or Facebook" text, centered
                 Text(
                     text = stringResource(R.string.instagram_or_facebook),
-                    color = Color.Black.copy(alpha = 0.4f),
+                    color = textColor.copy(alpha = 0.4f),
                     modifier = Modifier.padding(top = 30.dp),
                     textAlign = TextAlign.Center
                 )
