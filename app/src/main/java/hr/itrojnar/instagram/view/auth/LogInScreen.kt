@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,28 +83,38 @@ fun LogInScreen(
         }
     }
 
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the hint text when not focused
+    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the border when not focused
+    val focusedLabelColor = if (darkTheme) Color.White else Color.Black // Color for the hint text when focused
+    val focusedBorderColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+    val textColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Transparent),
+            .background(backgroundColor),
     ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Transparent)
+                .background(backgroundColor)
         ) {
             LogoImage(topPadding = 110, 25)
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp, 0.dp)
-                    .background(Color.Transparent),
+                    .background(backgroundColor),
+                color = backgroundColor,
                 shape = RoundedCornerShape(10.dp),
             ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 0.dp, 0.dp, 5.dp)
+                        .background(backgroundColor)
                         .testTag("Email"),
                     value = logInState.email,
                     onValueChange = onEmailChanged,
@@ -116,10 +127,10 @@ fun LogInScreen(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                        focusedLabelColor = Color.Black, // Color for the hint text when focused
-                        focusedBorderColor = Color.Black, // Color for the border when focused
+                        unfocusedLabelColor = unfocusedLabelColor, // Color for the hint text when not focused
+                        unfocusedBorderColor = unfocusedBorderColor, // Color for the border when not focused
+                        focusedLabelColor = focusedLabelColor, // Color for the hint text when focused
+                        focusedBorderColor = focusedBorderColor, // Color for the border when focused
                     )
                 )
             }
@@ -127,13 +138,15 @@ fun LogInScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
-                    .background(Color.Transparent),
+                    .background(backgroundColor),
+                color = backgroundColor,
                 shape = RoundedCornerShape(10.dp),
             ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 5.dp, 0.dp, 5.dp)
+                        .background(backgroundColor)
                         .testTag("Password"),
                     value = logInState.password,
                     onValueChange = onPasswordChanged,
@@ -146,10 +159,10 @@ fun LogInScreen(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                        focusedLabelColor = Color.Black, // Color for the hint text when focused
-                        focusedBorderColor = Color.Black, // Color for the border when focused
+                        unfocusedLabelColor = unfocusedLabelColor, // Color for the hint text when not focused
+                        unfocusedBorderColor = unfocusedBorderColor, // Color for the border when not focused
+                        focusedLabelColor = focusedLabelColor, // Color for the hint text when focused
+                        focusedBorderColor = focusedBorderColor, // Color for the border when focused
                     ),
                     visualTransformation = PasswordVisualTransformation()
                 )
@@ -208,14 +221,13 @@ fun LogInScreen(
 
                 Spacer(modifier = modifier.width(8.dp))
 
-                Text(text = stringResource(R.string.log_in_with_google))
+                Text(text = stringResource(R.string.log_in_with_google), color = textColor)
             }
             Row(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
                     .clickable {
-                        //handleGithubSignIn()
                         onGithubSignIn()
                     },
                 verticalAlignment = Alignment.CenterVertically,
@@ -230,7 +242,7 @@ fun LogInScreen(
 
                 Spacer(modifier = modifier.width(8.dp))
 
-                Text(text = stringResource(R.string.log_in_with_github))
+                Text(text = stringResource(R.string.log_in_with_github), color = textColor)
             }
             Row(
                 modifier = modifier

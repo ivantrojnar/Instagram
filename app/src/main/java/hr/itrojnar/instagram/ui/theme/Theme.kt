@@ -23,7 +23,7 @@ private val DarkColorScheme = darkColorScheme(
 val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -61,8 +61,9 @@ fun InstagramTheme(
     DisposableEffect(systemUiController, useDarkIcons) {
         // Update all of the system bar colors to be transparent, and use
         // dark icons if we're in light theme
+        val color = if (darkTheme) Color.Black else Color.Transparent
         systemUiController.setSystemBarsColor(
-            color = Color.Transparent,
+            color = color,
             darkIcons = useDarkIcons
         )
 
