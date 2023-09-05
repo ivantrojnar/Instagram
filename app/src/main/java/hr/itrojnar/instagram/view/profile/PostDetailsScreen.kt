@@ -4,12 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -68,6 +70,11 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (String) -> Unit, profileViewModel: ProfileViewModel) {
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val dividerColor = if (darkTheme) Color.DarkGray else Color.LightGray
+
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val postDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.postDate) ?: Date()
     val formattedDate = formatDate(postDate, currentYear)
@@ -94,8 +101,9 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(0.dp)
+            .background(backgroundColor)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -117,7 +125,7 @@ fun PostDetailsScreen(modifier: Modifier = Modifier, post: Post, onBackClick: (S
             Spacer(modifier = Modifier.size(24.dp))
         }
 
-        Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(Color.LightGray))
+        Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(dividerColor))
 
         Row(
             modifier = Modifier

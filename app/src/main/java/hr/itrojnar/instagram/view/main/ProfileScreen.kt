@@ -70,6 +70,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
 
     val darkTheme = isSystemInDarkTheme()
     val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val dividerColor = if (darkTheme) Color.DarkGray else Color.LightGray
 
     var currentScreen by remember { mutableStateOf("Profile") }
     var selectedPost by remember { mutableStateOf<Post?>(null) }
@@ -104,7 +105,6 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
         Column(
             modifier = Modifier.fillMaxSize().background(backgroundColor)
         ) {
-            // Profile Picture and Statistics
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -112,15 +112,11 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
-                // Profile Picture
                 CircleImage(imageUrl = user.profilePictureUrl)
 
-                // User Statistics (Posts, Followers, Following)
                 UserStatistics(userPosts.size, followers, following)
             }
 
-            //User Details (Name and Email)
-            //Text(modifier = Modifier.padding(start = 10.dp), text = user.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -136,7 +132,6 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(modifier = Modifier.padding(start = 10.dp), text = user.email)
 
-            // Edit Profile Button
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { /* TODO: Implement edit profile action */ },
@@ -147,15 +142,13 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
                 shape = RoundedCornerShape(7.dp),
                 border = BorderStroke(1.dp, Color.LightGray)
             ) {
-                Text("Edit Profile", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                Text(stringResource(R.string.edit_profile), color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
             }
 
-            // User Stories
             Spacer(modifier = Modifier.height(0.dp))
             UserStories(sampleStories)
 
-            // User Posts
-            Divider(color = Color.LightGray, thickness = 1.dp)
+            Divider(color = dividerColor, thickness = 1.dp)
             Spacer(modifier = Modifier.height(2.dp))
             UserPostsGrid(posts = userPosts, setCurrentScreen = { currentScreen = it }, setSelectedPost = { selectedPost = it})
         }
