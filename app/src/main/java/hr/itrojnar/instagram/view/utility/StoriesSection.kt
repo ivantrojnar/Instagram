@@ -3,6 +3,7 @@ package hr.itrojnar.instagram.view.utility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,9 @@ import hr.itrojnar.instagram.util.instagramGradientColors
 @Composable
 fun StoriesSection() {
 
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+
     val stories = listOf(
         Pair("Šumaher", "https://cdn.hashnode.com/res/hashnode/image/upload/v1637410748416/jIQXSpXgq.jpeg"),
         Pair("Senna", "https://firebasestorage.googleapis.com/v0/b/instagram-c212b.appspot.com/o/profile_images%2FScreenshot%202023-08-29%20174617.png?alt=media&token=101d672c-b185-4109-8d01-604a754b3ca9"),
@@ -43,7 +47,7 @@ fun StoriesSection() {
     )
 
     LazyRow(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().background(backgroundColor),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {

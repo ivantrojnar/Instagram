@@ -1,5 +1,7 @@
 package hr.itrojnar.instagram.view.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,11 +23,16 @@ import hr.itrojnar.instagram.view.utility.StoriesSection
 @Composable
 fun HomeScreen(postsState: PostsState) {
 
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val bottomBorderColor = if (darkTheme) Color(0xFF232323) else Color(0xFFCCCCCC)
+
     val posts = postsState.posts.collectAsLazyPagingItems()
 
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
+            .background(backgroundColor)
             .padding(top = 5.dp),
         contentPadding = PaddingValues(0.dp)
     ) {
@@ -34,7 +41,7 @@ fun HomeScreen(postsState: PostsState) {
         item { StoriesSection() }
 
         item { Divider(
-            color = Color(0xFFCCCCCC),
+            color = bottomBorderColor,
             modifier = Modifier.fillMaxWidth()
         ) }
 

@@ -83,6 +83,9 @@ fun MainScreen(navHostController: NavHostController) {
 
     val darkTheme = isSystemInDarkTheme()
     val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val topAppBarBackgroundColor =
+        if (darkTheme) Color(0xFF121212) else colorResource(id = R.color.very_light_gray)
+    val bottomBorderColor = if (darkTheme) Color(0xFF232323) else Color(0xFFCCCCCC)
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -101,7 +104,9 @@ fun MainScreen(navHostController: NavHostController) {
     when (userState) {
         is UserState.Loading -> {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(backgroundColor),
                 contentAlignment = Alignment.Center
             ) {
                 LottieAnimationLoop(
@@ -124,7 +129,17 @@ fun MainScreen(navHostController: NavHostController) {
                 drawerState = drawerState,
                 gesturesEnabled = !isMapScreen,
                 drawerContent = {
-                    DrawerContent(navController, navHostController, drawerState, user, context, viewModel, backgroundColor)
+                    DrawerContent(
+                        navController,
+                        navHostController,
+                        drawerState,
+                        user,
+                        context,
+                        viewModel,
+                        backgroundColor,
+                        topAppBarBackgroundColor,
+                        bottomBorderColor,
+                    )
                 }) {
 
                 Scaffold(
@@ -132,9 +147,9 @@ fun MainScreen(navHostController: NavHostController) {
                         if (currentDestination == "home") {
                             TopAppBarWithBorder(
                                 navController = navController,
-                                backgroundColor = colorResource(id = R.color.very_light_gray),
+                                backgroundColor = topAppBarBackgroundColor,
                                 contentColor = Color.Black,
-                                bottomBorderColor = Color(0xFFCCCCCC)
+                                bottomBorderColor = bottomBorderColor
                             ) {
                                 IconButton(onClick = {
                                     scope.launch {
@@ -184,6 +199,8 @@ fun TopAppBarWithBorder(
     bottomBorderColor: Color,
     content: @Composable RowScope.() -> Unit
 ) {
+    val logo =
+        if (isSystemInDarkTheme()) R.drawable.instagram_logo_dark else R.drawable.instagram_logo
     Box {
         TopAppBar(
             backgroundColor = backgroundColor,
@@ -193,7 +210,7 @@ fun TopAppBarWithBorder(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            val painter = painterResource(id = R.drawable.instagram_logo)
+            val painter = painterResource(id = logo)
             Icon(
                 painter = painter,
                 contentDescription = stringResource(R.string.instagram_logo_cd),
@@ -228,12 +245,16 @@ fun TopAppBarWithBorder(
 @Composable
 fun BottomBar(navController: NavHostController) {
 
+    val bottomBarBackgroundColor =
+        if (isSystemInDarkTheme()) Color(0xFF121212) else colorResource(id = R.color.very_light_gray)
+    val topBorderColor = if (isSystemInDarkTheme()) Color(0xFF232323) else Color(0xFFCCCCCC)
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     Box {
         BottomNavigation(
-            backgroundColor = colorResource(id = R.color.very_light_gray)
+            backgroundColor = bottomBarBackgroundColor
         ) {
             BottomNavScreen.items.forEach {
                 AddItem(
@@ -244,7 +265,7 @@ fun BottomBar(navController: NavHostController) {
             }
         }
         Divider(
-            color = Color(0xFFCCCCCC),
+            color = topBorderColor,
             modifier = Modifier.align(Alignment.TopCenter)
         )
     }
@@ -256,6 +277,11 @@ fun RowScope.AddItem(
     currentDestination: NavDestination?,
     navController: NavHostController
 ) {
+    val tintSelected =
+        if (isSystemInDarkTheme()) Color.White else Color.Black
+    val tintNotSelected =
+        if (isSystemInDarkTheme()) Color.LightGray else Color.Gray
+
     val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
     val iconSize = if (isSelected) 34.dp else 27.dp
@@ -272,7 +298,7 @@ fun RowScope.AddItem(
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(id = screen.title),
-                tint = if (isSelected) Color.Black else Color.Gray,
+                tint = if (isSelected) tintSelected else Color.Gray,
                 modifier = Modifier.size(animatedSize)
             )
         },
@@ -286,7 +312,17 @@ fun RowScope.AddItem(
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, navHostController: NavHostController, drawerState: DrawerState, user: User, context: Context, viewModel: MainScreenViewModel, backgroundColor: Color) {
+fun DrawerContent(
+    navController: NavHostController,
+    navHostController: NavHostController,
+    drawerState: DrawerState,
+    user: User,
+    context: Context,
+    viewModel: MainScreenViewModel,
+    backgroundColor: Color,
+    topAppBarBackgroundColor: Color,
+    bottomBorderColor: Color
+) {
 
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -371,7 +407,8 @@ fun DrawerContent(navController: NavHostController, navHostController: NavHostCo
                 }
                 FirebaseAuth.getInstance().currentUser?.reload()
 
-                val sharedPreferences = context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
+                val sharedPreferences =
+                    context.getSharedPreferences("user_details", Context.MODE_PRIVATE)
                 sharedPreferences.edit().clear().apply()
 
                 while (navController.popBackStack()) {
