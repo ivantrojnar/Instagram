@@ -2,7 +2,9 @@ package hr.itrojnar.instagram.view.drawer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,12 +13,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,7 +41,10 @@ fun DrawerHeader(user: User) {
             .background(brush = gradient)
             .padding(16.dp)
     ) {
-        val image = loadPicture(url = user.profilePictureUrl!!, defaultImage = R.drawable.default_profile_picture).value
+        val image = loadPicture(
+            url = user.profilePictureUrl!!,
+            defaultImage = R.drawable.default_profile_picture
+        ).value
         image?.let { img ->
             Image(
                 bitmap = img.asImageBitmap(),
@@ -51,12 +58,22 @@ fun DrawerHeader(user: User) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = user.fullName,
-            fontWeight = FontWeight.Bold,
-            fontSize = 26.sp,
-            color = Color.White
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = user.fullName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+                color = Color.White
+            )
+            Image(
+                painter = painterResource(id = R.drawable.instagram_verified),
+                contentDescription = stringResource(R.string.verified_icon),
+                modifier = Modifier.size(20.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(6.dp))
 

@@ -42,8 +42,6 @@ fun AuthenticationScreen(
         mutableStateOf(AuthenticationScreenState.LogIn)
     }
 
-    val context = LocalContext.current
-
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = modifier
             .fillMaxSize()
@@ -76,16 +74,6 @@ fun AuthenticationScreen(
                     AuthenticationScreenState.ForgotPassword -> ForgotPasswordScreen(
                         modifier = modifier,
                         onLogInClick = { currentScreen = AuthenticationScreenState.LogIn },
-//                        onRequestEmailForForgottenPassword = { email, onSuccess, onFailure ->
-//                            val auth = FirebaseAuth.getInstance()
-//                            auth.sendPasswordResetEmail(email)
-//                                .addOnCompleteListener { task ->
-//                                    if (task.isSuccessful) {
-//                                    } else {
-//                                        Toast.makeText(context, context.getString(R.string.unable_to_send_email_to_reset_password), Toast.LENGTH_SHORT).show()
-//                                    }
-//                                }
-//                        }
                     )
                 }
             }
