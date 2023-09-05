@@ -159,7 +159,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 5.dp),
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(bottom = 85.dp)
         ) {
             items(
                 count = filteredPosts.count(),
