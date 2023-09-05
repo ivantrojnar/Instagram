@@ -256,7 +256,7 @@ fun LogInScreen(
                     modifier = modifier
                         .weight(1f)
                         .height(1.dp)
-                        .background(Color.Black.copy(alpha = 0.2f))
+                        .background(textColor.copy(alpha = 0.2f))
                 )
 
                 Spacer(modifier = modifier.width(8.dp))
@@ -264,7 +264,7 @@ fun LogInScreen(
                 Text(
                     modifier = modifier.padding(horizontal = 8.dp),
                     text = stringResource(R.string.or),
-                    color = Color.Black.copy(alpha = 0.4f)
+                    color = textColor.copy(alpha = 0.4f)
                 )
 
                 Spacer(modifier = modifier.width(8.dp))
@@ -273,7 +273,7 @@ fun LogInScreen(
                     modifier = modifier
                         .weight(1f)
                         .height(1.dp)
-                        .background(Color.Black.copy(alpha = 0.2f))
+                        .background(textColor.copy(alpha = 0.2f))
                 )
             }
             Row(

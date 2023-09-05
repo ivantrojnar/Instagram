@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,9 @@ import hr.itrojnar.instagram.viewmodel.ProfileViewModel
 @Composable
 fun ProfileScreen(profileViewModel: ProfileViewModel) {
 
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+
     var currentScreen by remember { mutableStateOf("Profile") }
     var selectedPost by remember { mutableStateOf<Post?>(null) }
 
@@ -98,7 +102,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
             targetOffsetX = { -it })
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(backgroundColor)
         ) {
             // Profile Picture and Statistics
             Row(
