@@ -124,8 +124,8 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
                         Text(text = post.userName, fontWeight = FontWeight.Bold)
                         Image(
                             painter = painterResource(id = R.drawable.instagram_verified),
-                            contentDescription = "Verified Icon",
-                            modifier = Modifier.size(16.dp)  // Adjust the size as needed
+                            contentDescription = stringResource(R.string.verified_icon),
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                     Text(

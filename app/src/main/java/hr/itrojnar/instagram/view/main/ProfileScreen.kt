@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -123,8 +124,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
                 Text(modifier = Modifier.padding(start = 10.dp), text = user.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Image(
                     painter = painterResource(id = R.drawable.instagram_verified),
-                    contentDescription = "Verified Icon",
-                    modifier = Modifier.size(18.dp)  // Adjust the size as needed
+                    contentDescription = stringResource(R.string.verified_icon),
+                    modifier = Modifier.size(18.dp)
                 )
             }
 

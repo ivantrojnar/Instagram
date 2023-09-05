@@ -11,6 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,8 +109,10 @@ fun Context.findActivity(): Activity? {
 
 @Composable
 fun LogoImage(topPadding: Int, bottomPadding: Int) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val logo = if (isDarkTheme) R.drawable.instagram_logo_dark else R.drawable.instagram_logo
     Image(
-        painter = painterResource(id = R.drawable.instagram_logo),
+        painter = painterResource(id = logo),
         contentDescription = stringResource(R.string.instagram_logo),
         contentScale = ContentScale.Fit,
         modifier = Modifier.padding(
