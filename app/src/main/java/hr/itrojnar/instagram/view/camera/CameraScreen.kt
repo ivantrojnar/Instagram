@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -92,6 +93,14 @@ import java.io.ByteArrayOutputStream
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(navController: NavHostController) {
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the hint text when not focused
+    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the border when not focused
+    val focusedLabelColor = if (darkTheme) Color.White else Color.Black // Color for the hint text when focused
+    val focusedBorderColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+    val textColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
 
     val context = LocalContext.current
 
@@ -178,7 +187,7 @@ fun CameraScreen(navController: NavHostController) {
         Pair(stringResource(R.string.brightness), BrightnessFilterTransformation(context, 0.5f))
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(backgroundColor)) {
 
         Box(
             modifier = Modifier
@@ -305,8 +314,9 @@ fun CameraScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .background(Color.Transparent),
+                    .background(backgroundColor),
                 shape = RoundedCornerShape(10.dp),
+                color = backgroundColor
             ) {
                 OutlinedTextField(
                     modifier = Modifier
@@ -323,10 +333,10 @@ fun CameraScreen(navController: NavHostController) {
                         onNext = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = Color.Black,
-                        focusedBorderColor = Color.Black,
+                        unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedBorderColor = unfocusedBorderColor,
+                        focusedLabelColor = focusedLabelColor,
+                        focusedBorderColor = focusedBorderColor,
                     )
                 )
             }

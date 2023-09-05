@@ -99,7 +99,7 @@ fun MapViewContainer(
     context: Context,
     onMapReady: (GoogleMap) -> Unit
 ) {
-    val mapOptions = GoogleMapOptions().mapType(GoogleMap.MAP_TYPE_NORMAL)
+    val mapOptions = GoogleMapOptions().mapType(GoogleMap.MAP_TYPE_NORMAL).mapId("bae209deaaa42fb4")
 
     AndroidView(
         modifier = modifier,

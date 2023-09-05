@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +37,9 @@ import hr.itrojnar.instagram.viewmodel.CameraViewModel
 
 @Composable
 fun LocationInput(cameraViewModel: CameraViewModel) {
+
+    val darkTheme = isSystemInDarkTheme()
+    val textColor = if (darkTheme) Color.White else Color.Black
 
     val context = LocalContext.current
     val noLocationSelectedString = stringResource(R.string.no_location_selected)
@@ -73,7 +77,7 @@ fun LocationInput(cameraViewModel: CameraViewModel) {
             Text(
                 text = locationText,
                 style = TextStyle(fontSize = 16.sp),
-                color = Color.Black
+                color = textColor
             )
         }
 
@@ -96,7 +100,7 @@ fun LocationInput(cameraViewModel: CameraViewModel) {
             colors = ButtonDefaults.buttonColors(Color(0xFF3797EF)),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text(stringResource(R.string.select_location))
+            Text(stringResource(R.string.select_location), color = Color.White)
         }
     }
 }
