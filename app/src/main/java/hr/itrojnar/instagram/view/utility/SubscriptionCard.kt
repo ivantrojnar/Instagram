@@ -3,6 +3,7 @@ package hr.itrojnar.instagram.view.utility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,9 @@ fun SubscriptionCard(
     onClick: () -> Unit,
     isSelected: Boolean
 ) {
-    val border = if (isSelected) BorderStroke(4.dp, Color.Black) else null
+    val darkTheme = isSystemInDarkTheme()
+    val borderColor = if (darkTheme) Color.White else Color.Black
+    val border = if (isSelected) BorderStroke(4.dp, borderColor) else null
 
     Card(
         modifier = Modifier

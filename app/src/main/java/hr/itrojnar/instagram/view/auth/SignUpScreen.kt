@@ -18,6 +18,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,6 +109,14 @@ fun SignUpScreen(
     onSignUp: () -> Unit,
     resetSignUpState: () -> Unit,
 ) {
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the hint text when not focused
+    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the border when not focused
+    val focusedLabelColor = if (darkTheme) Color.White else Color.Black // Color for the hint text when focused
+    val focusedBorderColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+    val textColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
 
     var currentScreen by remember { mutableStateOf("SignUp") }
 
@@ -204,7 +213,7 @@ fun SignUpScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Transparent)
+                .background(backgroundColor)
         ) {
             LogoImage(topPadding = 10, 0)
 
@@ -219,7 +228,8 @@ fun SignUpScreen(
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 21.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = textColor
                 ),
                 modifier = modifier
                     .fillMaxWidth()
@@ -234,7 +244,8 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
-                    .background(Color.Transparent),
+                    .background(backgroundColor),
+                color = backgroundColor,
                 shape = RoundedCornerShape(10.dp),
             ) {
                 OutlinedTextField(
@@ -252,10 +263,10 @@ fun SignUpScreen(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                        focusedLabelColor = Color.Black, // Color for the hint text when focused
-                        focusedBorderColor = Color.Black, // Color for the border when focused
+                        unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedBorderColor = unfocusedBorderColor,
+                        focusedLabelColor = focusedLabelColor,
+                        focusedBorderColor = focusedBorderColor,
                     )
                 )
             }
@@ -263,7 +274,9 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
-                    .background(Color.Transparent),
+                    .background(Color.Transparent)
+                    .background(backgroundColor),
+                color = backgroundColor,
                 shape = RoundedCornerShape(10.dp),
             ) {
                 OutlinedTextField(
@@ -281,10 +294,10 @@ fun SignUpScreen(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray, // Color for the hint text when not focused
-                        unfocusedBorderColor = Color.Gray, // Color for the border when not focused
-                        focusedLabelColor = Color.Black, // Color for the hint text when focused
-                        focusedBorderColor = Color.Black, // Color for the border when focused
+                        unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedBorderColor = unfocusedBorderColor,
+                        focusedLabelColor = focusedLabelColor,
+                        focusedBorderColor = focusedBorderColor,
                     )
                 )
             }
@@ -292,7 +305,9 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 10.dp)
-                    .background(Color.Transparent),
+                    .background(Color.Transparent)
+                    .background(backgroundColor),
+                color = backgroundColor,
                 shape = RoundedCornerShape(10.dp),
             ) {
                 OutlinedTextField(
@@ -310,10 +325,10 @@ fun SignUpScreen(
                         onDone = { focusManager.clearFocus() }
                     ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = Color.Gray,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = Color.Black,
-                        focusedBorderColor = Color.Black,
+                        unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedBorderColor = unfocusedBorderColor,
+                        focusedLabelColor = focusedLabelColor,
+                        focusedBorderColor = focusedBorderColor,
                     ),
                     visualTransformation = PasswordVisualTransformation()
                 )
@@ -399,6 +414,7 @@ fun SignUpScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(backgroundColor)
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp)
         ) {
             Icon(
@@ -413,6 +429,7 @@ fun SignUpScreen(
                 text = if (selectedSubscription != null) stringResource(R.string.current_selection) + " $selectedSubscription" else stringResource(
                                     R.string.no_subscription_selected),
                 style = MaterialTheme.typography.titleLarge,
+                color = textColor,
                 modifier = Modifier.padding(horizontal = 10.dp)
             )
 
@@ -491,18 +508,22 @@ fun SignUpScreen(
                         ) {
                             LottieAnimationLoop(
                                 resId = R.raw.email_password_success_animation,
-                                Modifier.width(280.dp).height(200.dp)
+                                Modifier
+                                    .width(280.dp)
+                                    .height(200.dp)
                             )
 
                             Button(
                                 onClick = { showDialog = false },
-                                modifier = Modifier.width(100.dp).height(40.dp),
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(40.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF3797EF)
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             ) {
-                                Text("Ok")
+                                Text(stringResource(id = R.string.ok), color = Color.White)
                             }
                         }
                     }

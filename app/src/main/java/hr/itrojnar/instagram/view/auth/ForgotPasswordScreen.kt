@@ -1,8 +1,11 @@
 package hr.itrojnar.instagram.view.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -46,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.util.LogoImage
@@ -56,8 +61,17 @@ import hr.itrojnar.instagram.util.LottieAnimationLoop
 @Composable
 fun ForgotPasswordScreen(
     modifier: Modifier,
-    onLogInClick: () -> Unit,
-    onRequestEmailForForgottenPassword: (email: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) -> Unit) {
+    onLogInClick: () -> Unit){
+
+    val context = LocalContext.current
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the hint text when not focused
+    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the border when not focused
+    val focusedLabelColor = if (darkTheme) Color.White else Color.Black // Color for the hint text when focused
+    val focusedBorderColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+    val textColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
 
     val focusManager = LocalFocusManager.current
 
@@ -72,7 +86,7 @@ fun ForgotPasswordScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Transparent)) {
+            .background(backgroundColor)) {
 
         LogoImage(topPadding = 110, 25)
 
@@ -88,7 +102,8 @@ fun ForgotPasswordScreen(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
-                .testTag("Trouble loggin in?")
+                .testTag("Trouble loggin in?"),
+            color = textColor
         )
 
         Text(
@@ -97,7 +112,8 @@ fun ForgotPasswordScreen(
             fontSize = 14.sp,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(top = 8.dp),
+            color = textColor
         )
 
         OutlinedTextField(
@@ -118,10 +134,10 @@ fun ForgotPasswordScreen(
                 onDone = { focusManager.clearFocus() }
             ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedLabelColor = Color.Gray,
-                unfocusedBorderColor = Color.Gray,
-                focusedLabelColor = Color.Black,
-                focusedBorderColor = Color.Black,
+                unfocusedLabelColor = unfocusedLabelColor,
+                unfocusedBorderColor = unfocusedBorderColor,
+                focusedLabelColor = focusedLabelColor,
+                focusedBorderColor = focusedBorderColor,
             )
         )
         Button(
@@ -130,19 +146,21 @@ fun ForgotPasswordScreen(
                 .height(60.dp)
                 .padding(start = 20.dp, end = 20.dp, top = 10.dp),
             onClick = {
-                      onRequestEmailForForgottenPassword(
-                          forgotPasswordEmailState,
-                          {
-                              val bundle = Bundle().apply {
-                                  putString("email", forgotPasswordEmailState)
-                              }
-
-                              Firebase.analytics.logEvent("request_email_for_password_reset", bundle)
-
-                              showDialog = true
-                          },
-                          {}
-                      )
+                val auth = FirebaseAuth.getInstance()
+                auth.sendPasswordResetEmail(forgotPasswordEmailState)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Handle success here
+                            val bundle = Bundle().apply {
+                                putString("email", forgotPasswordEmailState)
+                            }
+                            Firebase.analytics.logEvent("request_email_for_password_reset", bundle)
+                            showDialog = true
+                        } else {
+                            // Handle failure here
+                            Toast.makeText(context, context.getString(R.string.unable_to_send_email_to_reset_password), Toast.LENGTH_SHORT).show()
+                        }
+                    }
             },
             enabled = isEmailValid,
             colors = ButtonDefaults.buttonColors(
@@ -199,7 +217,7 @@ fun ForgotPasswordScreen(
                             Text(
                                 text = stringResource(R.string.instructions_sent_to_your_email),
                                 textAlign = TextAlign.Center,
-                                style = TextStyle(fontSize = 16.sp)
+                                style = TextStyle(fontSize = 16.sp, color = Color.Black)
                             )
 
                             Button(
