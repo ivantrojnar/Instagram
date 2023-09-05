@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -79,6 +80,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagingApi::class)
 @Composable
 fun MainScreen(navHostController: NavHostController) {
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -119,7 +124,7 @@ fun MainScreen(navHostController: NavHostController) {
                 drawerState = drawerState,
                 gesturesEnabled = !isMapScreen,
                 drawerContent = {
-                    DrawerContent(navController, navHostController, drawerState, user, context, viewModel)
+                    DrawerContent(navController, navHostController, drawerState, user, context, viewModel, backgroundColor)
                 }) {
 
                 Scaffold(
@@ -281,7 +286,7 @@ fun RowScope.AddItem(
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, navHostController: NavHostController, drawerState: DrawerState, user: User, context: Context, viewModel: MainScreenViewModel) {
+fun DrawerContent(navController: NavHostController, navHostController: NavHostController, drawerState: DrawerState, user: User, context: Context, viewModel: MainScreenViewModel, backgroundColor: Color) {
 
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -299,7 +304,7 @@ fun DrawerContent(navController: NavHostController, navHostController: NavHostCo
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Transparent)
+            .background(backgroundColor)
     ) {
         Column(
             modifier = Modifier

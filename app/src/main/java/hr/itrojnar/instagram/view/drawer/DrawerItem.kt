@@ -2,6 +2,7 @@ package hr.itrojnar.instagram.view.drawer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +24,12 @@ import hr.itrojnar.instagram.util.instagramGradientColors
 @Composable
 fun DrawerItem(icon: ImageVector, label: String, isSelected: Boolean, action: () -> Unit) {
 
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundThemeColor = if (darkTheme) Color.Black else Color.Transparent
+
     val gradientBrush = Brush.linearGradient(colors = instagramGradientColors)
 
-    val backgroundColor = if (isSelected) gradientBrush else Brush.linearGradient(listOf(Color.White, Color.White))
+    val backgroundColor = if (isSelected) gradientBrush else Brush.linearGradient(listOf(backgroundThemeColor, backgroundThemeColor))
     val contentColor = if (isSelected) Color.White else Color.Gray
 
     Row(
