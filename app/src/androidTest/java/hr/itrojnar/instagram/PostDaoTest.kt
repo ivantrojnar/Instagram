@@ -73,7 +73,6 @@ class PostDaoTest {
 
         val retrievedPosts = postDao.getAllPostsList()
 
-        // Checking if the data we inserted matches the data we retrieved
         assertThat(retrievedPosts, hasItem(post1))
         assertThat(retrievedPosts, hasItem(post2))
     }
@@ -113,7 +112,6 @@ class PostDaoTest {
         postDao.deletePosts()
         val retrievedPosts = postDao.getAllPostsList()
 
-        // After deleting, the list should be empty
         assertTrue(retrievedPosts.isEmpty())
     }
 

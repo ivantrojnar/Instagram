@@ -42,6 +42,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,8 +65,8 @@ fun LogInScreen(
     onLogin: () -> Unit
 ) {
 
+    val themeColors = getThemeColors(isSystemInDarkTheme())
     val focusManager = LocalFocusManager.current
-
     val context = LocalContext.current
 
     LaunchedEffect(key1 = googleSignInState.signInError) {
@@ -97,71 +98,57 @@ fun LogInScreen(
                 .background(backgroundColor)
         ) {
             LogoImage(topPadding = 110, 25)
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp, 0.dp)
-                    .background(backgroundColor),
-                color = backgroundColor,
-                shape = RoundedCornerShape(10.dp),
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 0.dp, 5.dp)
-                        .background(backgroundColor)
-                        .testTag("Email"),
-                    value = logInState.email,
-                    onValueChange = onEmailChanged,
-                    label = { Text(text = stringResource(R.string.email)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = unfocusedLabelColor, // Color for the hint text when not focused
-                        unfocusedBorderColor = unfocusedBorderColor, // Color for the border when not focused
-                        focusedLabelColor = focusedLabelColor, // Color for the hint text when focused
-                        focusedBorderColor = focusedBorderColor, // Color for the border when focused
-                    )
-                )
-            }
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 0.dp)
-                    .background(backgroundColor),
-                color = backgroundColor,
-                shape = RoundedCornerShape(10.dp),
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 5.dp, 0.dp, 5.dp)
-                        .background(backgroundColor)
-                        .testTag("Password"),
-                    value = logInState.password,
-                    onValueChange = onPasswordChanged,
-                    label = { Text(text = stringResource(R.string.password)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedLabelColor = unfocusedLabelColor, // Color for the hint text when not focused
-                        unfocusedBorderColor = unfocusedBorderColor, // Color for the border when not focused
-                        focusedLabelColor = focusedLabelColor, // Color for the hint text when focused
-                        focusedBorderColor = focusedBorderColor, // Color for the border when focused
-                    ),
-                    visualTransformation = PasswordVisualTransformation()
-                )
-            }
+//            Surface(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(20.dp, 0.dp)
+//                    .background(backgroundColor),
+//                color = backgroundColor,
+//                shape = RoundedCornerShape(10.dp),
+//            ) {
+//                OutlinedTextField(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(0.dp, 0.dp, 0.dp, 5.dp)
+//                        .background(backgroundColor)
+//                        .testTag("Email"),
+//                    value = logInState.email,
+//                    onValueChange = onEmailChanged,
+//                    label = { Text(text = stringResource(R.string.email)) },
+//                    keyboardOptions = KeyboardOptions(
+//                        keyboardType = KeyboardType.Email,
+//                        imeAction = ImeAction.Next
+//                    ),
+//                    keyboardActions = KeyboardActions(
+//                        onDone = { focusManager.clearFocus() }
+//                    ),
+//                    colors = TextFieldDefaults.outlinedTextFieldColors(
+//                        unfocusedLabelColor = unfocusedLabelColor, // Color for the hint text when not focused
+//                        unfocusedBorderColor = unfocusedBorderColor, // Color for the border when not focused
+//                        focusedLabelColor = focusedLabelColor, // Color for the hint text when focused
+//                        focusedBorderColor = focusedBorderColor, // Color for the border when focused
+//                    )
+//                )
+//            }
+            StyledOutlinedTextField(
+                value = logInState.email,
+                onValueChange = onEmailChanged,
+                label = stringResource(R.string.email),
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next,
+                themeColors = themeColors,
+                testTag = "Email"
+            )
+            StyledOutlinedTextField(
+                value = logInState.password,
+                onValueChange = onPasswordChanged,
+                label = stringResource(R.string.password),
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+                themeColors = themeColors,
+                visualTransformation = PasswordVisualTransformation(),
+                testTag = "Password"
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -320,3 +307,80 @@ fun LogInScreen(
         }
     }
 }
+// Single Responsibility Principle (SRP)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StyledOutlinedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    keyboardType: KeyboardType,
+    imeAction: ImeAction,
+    themeColors: ThemeColors,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    testTag: String? = null
+) {
+    val focusManager = LocalFocusManager.current
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp, 0.dp)
+            .background(themeColors.backgroundColor),
+        color = themeColors.backgroundColor,
+        shape = RoundedCornerShape(10.dp),
+    ) {
+        OutlinedTextField(
+            modifier = Modifier.padding(0.dp, 5.dp).testTag(testTag!!),
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(text = label) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
+            ),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedLabelColor = themeColors.unfocusedLabelColor,
+                unfocusedBorderColor = themeColors.unfocusedBorderColor,
+                focusedLabelColor = themeColors.focusedLabelColor,
+                focusedBorderColor = themeColors.focusedBorderColor
+            ),
+            visualTransformation = visualTransformation
+        )
+    }
+}
+
+@Composable
+fun getThemeColors(darkTheme: Boolean): ThemeColors {
+    return if (darkTheme) {
+        ThemeColors(
+            backgroundColor = Color.Black,
+            unfocusedLabelColor = Color.LightGray,
+            unfocusedBorderColor = Color.LightGray,
+            focusedLabelColor = Color.White,
+            focusedBorderColor = Color.White,
+            textColor = Color.White
+        )
+    } else {
+        ThemeColors(
+            backgroundColor = Color.Transparent,
+            unfocusedLabelColor = Color.Gray,
+            unfocusedBorderColor = Color.Gray,
+            focusedLabelColor = Color.Black,
+            focusedBorderColor = Color.Black,
+            textColor = Color.Black
+        )
+    }
+}
+
+data class ThemeColors(
+    val backgroundColor: Color,
+    val unfocusedLabelColor: Color,
+    val unfocusedBorderColor: Color,
+    val focusedLabelColor: Color,
+    val focusedBorderColor: Color,
+    val textColor: Color
+)
