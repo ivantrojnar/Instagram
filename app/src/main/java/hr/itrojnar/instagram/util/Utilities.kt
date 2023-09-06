@@ -252,21 +252,35 @@ fun loadPicture(url: String, @DrawableRes defaultImage: Int): State<Bitmap?> {
 
 fun formatDate(date: Date, currentYear: Int): String {
     val now = Date()
-    val minutesDiff = TimeUnit.MILLISECONDS.toMinutes(now.time - date.time)
-    val hoursDiff = TimeUnit.MILLISECONDS.toHours(now.time - date.time)
-    val daysDiff = TimeUnit.MILLISECONDS.toDays(now.time - date.time)
+    val minutesDiff = getMinutesDifference(now, date)
+    val hoursDiff = getHoursDifference(now, date)
+    val daysDiff = getDaysDifference(now, date)
 
     return when {
         minutesDiff <= 1 -> "A minute ago"
         minutesDiff in 2..59 -> "$minutesDiff minutes ago"
-        hoursDiff == 1L -> "1 hour ago"
-        hoursDiff in 2L..23L -> "$hoursDiff hours ago"
-        daysDiff == 1L -> "1 day ago"
-        daysDiff in 2L..6L -> "$daysDiff days ago"
-        SimpleDateFormat("yyyy").format(date).toInt() == currentYear -> SimpleDateFormat("d MMMM").format(date)
-        else -> SimpleDateFormat("d MMMM yyyy").format(date)
+        hoursDiff in 1L..23L -> formatHours(hoursDiff)
+        daysDiff in 1L..6L -> formatDays(daysDiff)
+        isCurrentYear(date, currentYear) -> formatDateWithMonth(date)
+        else -> formatDateWithMonthAndYear(date)
     }
 }
+
+fun getMinutesDifference(start: Date, end: Date) = TimeUnit.MILLISECONDS.toMinutes(start.time - end.time)
+
+fun getHoursDifference(start: Date, end: Date) = TimeUnit.MILLISECONDS.toHours(start.time - end.time)
+
+fun getDaysDifference(start: Date, end: Date) = TimeUnit.MILLISECONDS.toDays(start.time - end.time)
+
+fun formatHours(hours: Long) = if (hours == 1L) "1 hour ago" else "$hours hours ago"
+
+fun formatDays(days: Long) = if (days == 1L) "1 day ago" else "$days days ago"
+
+fun isCurrentYear(date: Date, currentYear: Int): Boolean = SimpleDateFormat("yyyy").format(date).toInt() == currentYear
+
+fun formatDateWithMonth(date: Date) = SimpleDateFormat("d MMMM").format(date)
+
+fun formatDateWithMonthAndYear(date: Date) = SimpleDateFormat("d MMMM yyyy").format(date)
 
 val instagramGradientColors = listOf(
     Color(0xFFF58529), // Orange
