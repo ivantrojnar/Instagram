@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
+import hr.itrojnar.instagram.util.StyledButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,26 +165,33 @@ fun LogInScreen(
                     )
                 )
             }
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(start = 20.dp, end = 20.dp)
-                    .testTag("Log in"),
+            // Open/Closed Principle
+            StyledButton(
                 onClick = onLogin,
-                enabled = logInState.isEmailValid && logInState.isPasswordValid,
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
-                    containerColor = Color(0xFF3797EF)
-                ),
-                shape = RoundedCornerShape(5.dp)
-            ) {
-                Text(
-                    stringResource(R.string.log_in),
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-            }
+                isEnabled = logInState.isEmailValid && logInState.isPasswordValid,
+                buttonText = stringResource(R.string.log_in),
+                testTag = "Log in"
+            )
+//            Button(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(50.dp)
+//                    .padding(start = 20.dp, end = 20.dp)
+//                    .testTag("Log in"),
+//                onClick = onLogin,
+//                enabled = logInState.isEmailValid && logInState.isPasswordValid,
+//                colors = ButtonDefaults.buttonColors(
+//                    disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+//                    containerColor = Color(0xFF3797EF)
+//                ),
+//                shape = RoundedCornerShape(5.dp)
+//            ) {
+//                Text(
+//                    stringResource(R.string.log_in),
+//                    fontSize = 16.sp,
+//                    color = Color.White
+//                )
+//            }
             Row(
                 modifier = modifier
                     .fillMaxWidth()

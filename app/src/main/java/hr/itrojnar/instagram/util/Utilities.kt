@@ -11,16 +11,21 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -30,14 +35,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.drawable.toBitmap
 import coil.ImageLoader
@@ -356,5 +364,37 @@ fun capitalize(str: String, mode: String = "first"): String {
     return when (mode) {
         "last" -> str.split(" ").let { it.dropLast(1).joinToString(" ") + " " + it.last().capitalize() }
         else -> str.capitalize()
+    }
+}
+
+
+// Open/Closed Principle (OCP)
+@Composable
+fun StyledButton(
+    onClick: () -> Unit,
+    isEnabled: Boolean,
+    buttonText: String,
+    testTag: String,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .padding(start = 20.dp, end = 20.dp)
+            .testTag(testTag),
+        onClick = onClick,
+        enabled = isEnabled,
+        colors = ButtonDefaults.buttonColors(
+            disabledContainerColor = Color(0xFF3797EF).copy(alpha = 0.4f),
+            containerColor = Color(0xFF3797EF)
+        ),
+        shape = RoundedCornerShape(5.dp)
+    ) {
+        Text(
+            buttonText,
+            fontSize = 16.sp,
+            color = Color.White
+        )
     }
 }
