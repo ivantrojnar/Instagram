@@ -46,6 +46,7 @@ import hr.itrojnar.instagram.designpatterns.strategy.SettingsSaver
 import hr.itrojnar.instagram.enums.Subscription
 import hr.itrojnar.instagram.model.User
 import hr.itrojnar.instagram.util.getUser
+import hr.itrojnar.instagram.view.utility.FunctionalUI
 import hr.itrojnar.instagram.view.utility.SubscriptionCard
 import hr.itrojnar.instagram.view.utility.UsageLine
 import java.text.NumberFormat
@@ -143,6 +144,10 @@ fun SettingsScreen() {
             }
             append(")")
         }
+
+        //FUNCTIONAL PROGRAMMING
+        // Integrate the functional utility functions.
+
 
         //DESIGN PATTERNS
         // Singleton usage
@@ -299,6 +304,10 @@ fun SettingsScreen() {
             DesignPatternItem("Strategy", strategyOutput.toString())
             DesignPatternItem("Builder", "Setting: ${notificationSetting.name}, Enabled: ${notificationSetting.enabled}")
             DesignPatternItem("Adapter", adapterOutput)
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            FunctionalUI()
 
             Spacer(modifier = Modifier.height(65.dp))
         }

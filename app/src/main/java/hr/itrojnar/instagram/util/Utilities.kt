@@ -52,11 +52,13 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.enums.Subscription
 import hr.itrojnar.instagram.model.User
 import java.lang.reflect.Array.getDouble
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
+import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
@@ -320,4 +322,25 @@ fun addUserDailyConsumption(context: Context, mbUsed: Float, numOfPics: Int) {
         .putFloat("mbUsedToday", currentMbUsed + mbUsed)
         .putInt("numOfPicsUploadedToday", currentNumOfPics + numOfPics)
         .apply()
+}
+
+//Functional programming
+// 1. Double Multiplier
+fun doubleMultiplier(number: Int, customMultiplier: (Int) -> Int = { it * 2 }): Int = customMultiplier(number)
+
+// 2. Is Even
+fun isEvenOrOdd(number: Int): String = if (number % 2 == 0) "even" else "odd"
+
+// 3. Max Of Two
+fun maxOfTwo(a: Int, b: Int): Int = if (a > b) a else b
+
+// 4. Concatenate Strings
+fun concatenateStrings(str1: String, str2: String, formatter: (String, String) -> String = { a, b -> a + b }): String = formatter(str1, str2)
+
+// 5. Capitalize
+fun capitalize(str: String, mode: String = "first"): String {
+    return when (mode) {
+        "last" -> str.split(" ").let { it.dropLast(1).joinToString(" ") + " " + it.last().capitalize() }
+        else -> str.capitalize()
+    }
 }

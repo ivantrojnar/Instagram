@@ -1,9 +1,6 @@
 package hr.itrojnar.instagram.view.auth
 
-import android.app.Activity
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,8 +45,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.FirebaseAuth
 import hr.itrojnar.instagram.R
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
