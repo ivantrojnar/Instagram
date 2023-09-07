@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.app.SettingItemContract
 import hr.itrojnar.instagram.designpatterns.DesignPatternItem
 import hr.itrojnar.instagram.designpatterns.adapter.OldSetting
 import hr.itrojnar.instagram.designpatterns.adapter.SettingAdapter
@@ -90,13 +91,15 @@ fun SettingsScreen() {
         val user = sharedPreferences.getUser()
 
         val selectedSubscription = remember { mutableStateOf(user.subscriptionId) }
-        val lastChangedDate = remember { mutableStateOf(sharedPreferences.getString("lastChangedDate", "")) }
+        val lastChangedDate =
+            remember { mutableStateOf(sharedPreferences.getString("lastChangedDate", "")) }
 
         val canChangeToday = LocalDate.now().toString() != lastChangedDate.value
         val hasChanged = remember { mutableStateOf(false) }
 
         val currentUploadedPhotos = firebaseUser.value!!.numOfPicsUploadedToday
-        val currentUploadedMegabytes = String.format(Locale.US,"%.2f", firebaseUser.value!!.mbUsedToday.toDouble()).toDouble()
+        val currentUploadedMegabytes =
+            String.format(Locale.US, "%.2f", firebaseUser.value!!.mbUsedToday.toDouble()).toDouble()
 
         // Retrieve the Subscription details using the selectedSubscription value
         val selectedSubDetails = Subscription.values().first { it.id == selectedSubscription.value }
@@ -145,9 +148,20 @@ fun SettingsScreen() {
             append(")")
         }
 
-        //FUNCTIONAL PROGRAMMING
-        // Integrate the functional utility functions.
-
+        // Liskov Substitution Principle
+        val settingsItems: List<SettingItemContract> = listOf(
+            hr.itrojnar.instagram.app.AdvancedSetting(
+                name = "Advanced Setting",
+                enabled = true,
+                summary = "This is an advanced setting",
+                icon = R.drawable.instagram_logo
+            ),
+            hr.itrojnar.instagram.app.BasicSetting(
+                name = "Basic Setting",
+                enabled = false,
+                summary = "This is a basic setting"
+            )
+        )
 
         //DESIGN PATTERNS
         // Singleton usage
@@ -197,7 +211,8 @@ fun SettingsScreen() {
         // Adapter pattern usage
         val oldNotificationSetting = OldSetting("Notification", "Enabled")
         val newNotificationSetting = SettingAdapter(oldNotificationSetting)
-        val adapterOutput = "${newNotificationSetting.name} is ${newNotificationSetting.adaptedValue}"
+        val adapterOutput =
+            "${newNotificationSetting.name} is ${newNotificationSetting.adaptedValue}"
 
 
         Column(
@@ -206,7 +221,7 @@ fun SettingsScreen() {
                 .fillMaxSize()
                 .background(backgroundColor)
         ) {
-            Text (
+            Text(
                 text = stringResource(R.string.your_subscription_settings),
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp),
@@ -273,7 +288,7 @@ fun SettingsScreen() {
                 }
             }
 
-            Text (
+            Text(
                 text = stringResource(R.string.your_usage_statistics),
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp),
@@ -302,24 +317,28 @@ fun SettingsScreen() {
             DesignPatternItem("Observer", observerOutput.toString())
             DesignPatternItem("Factory", "Created Setting: ${darkModeSetting.name}")
             DesignPatternItem("Strategy", strategyOutput.toString())
-            DesignPatternItem("Builder", "Setting: ${notificationSetting.name}, Enabled: ${notificationSetting.enabled}")
+            DesignPatternItem(
+                "Builder",
+                "Setting: ${notificationSetting.name}, Enabled: ${notificationSetting.enabled}"
+            )
             DesignPatternItem("Adapter", adapterOutput)
 
             Spacer(modifier = Modifier.height(30.dp))
 
             FunctionalUI()
 
+            Spacer(modifier = Modifier.height(30.dp))
+
+
+            // Liskov Substitution Principle
+            settingsItems.forEach { settingItem ->
+                DesignPatternItem(
+                    title = "Setting Item",
+                    description = "Name: ${settingItem.name}, Enabled: ${settingItem.enabled}, Description: ${settingItem.getDescription()}"
+                )
+            }
+
             Spacer(modifier = Modifier.height(65.dp))
         }
-    }
-}
-
-fun parseDoubleLocaleAware(input: String): Double? {
-    return try {
-        val numberFormat = NumberFormat.getInstance(Locale.getDefault())
-        val number = numberFormat.parse(input)
-        number?.toDouble()
-    } catch (e: ParseException) {
-        null
     }
 }
