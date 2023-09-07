@@ -1,5 +1,6 @@
 package hr.itrojnar.instagram
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import hr.itrojnar.instagram.app.DarkThemeColorsProvider
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.view.auth.AuthenticationScreen
 import hr.itrojnar.instagram.view.auth.LogInScreen
@@ -20,6 +22,8 @@ class AuthenticationScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    private val themeColorsProvider = DarkThemeColorsProvider()
+
     @Test
     fun logInScreen_buttonIsEnabled() {
         val dummyGoogleSignInState = GoogleSignInState()
@@ -32,8 +36,13 @@ class AuthenticationScreenTest {
         )
 
         composeTestRule.setContent {
+
+            val darkTheme = isSystemInDarkTheme()
+            val themeColors = themeColorsProvider.getThemeColors(darkTheme)
+
             LogInScreen(
                 logInState = dummyLogInState,
+                themeColors = themeColors,
                 onEmailChanged = {},
                 onPasswordChanged = {},
                 googleSignInState = dummyGoogleSignInState,
@@ -63,8 +72,13 @@ class AuthenticationScreenTest {
         )
 
         composeTestRule.setContent {
+
+            val darkTheme = isSystemInDarkTheme()
+            val themeColors = themeColorsProvider.getThemeColors(darkTheme)
+
             LogInScreen(
                 logInState = dummyLogInState,
+                themeColors = themeColors,
                 onEmailChanged = {},
                 onPasswordChanged = {},
                 googleSignInState = dummyGoogleSignInState,

@@ -47,14 +47,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hr.itrojnar.instagram.R
+import hr.itrojnar.instagram.app.DarkThemeColorsProvider
+import hr.itrojnar.instagram.app.ThemeColors
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.util.LogoImage
 import hr.itrojnar.instagram.util.StyledButton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogInScreen(
     logInState: LogInState,
+    themeColors: ThemeColors,
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     googleSignInState: GoogleSignInState,
@@ -65,9 +67,6 @@ fun LogInScreen(
     onForgotPasswordClick: () -> Unit,
     onLogin: () -> Unit
 ) {
-
-    val themeColors = getThemeColors(isSystemInDarkTheme())
-    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
     LaunchedEffect(key1 = googleSignInState.signInError) {
@@ -82,11 +81,7 @@ fun LogInScreen(
 
     val darkTheme = isSystemInDarkTheme()
     val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
-    val unfocusedLabelColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the hint text when not focused
-    val unfocusedBorderColor = if (darkTheme) Color.LightGray else Color.Gray // Color for the border when not focused
-    val focusedLabelColor = if (darkTheme) Color.White else Color.Black // Color for the hint text when focused
-    val focusedBorderColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
-    val textColor = if (darkTheme) Color.White else Color.Black // Color for the border when focused
+    val textColor = if (darkTheme) Color.White else Color.Black
 
     Box(
         modifier = Modifier
@@ -383,12 +378,3 @@ fun getThemeColors(darkTheme: Boolean): ThemeColors {
         )
     }
 }
-
-data class ThemeColors(
-    val backgroundColor: Color,
-    val unfocusedLabelColor: Color,
-    val unfocusedBorderColor: Color,
-    val focusedLabelColor: Color,
-    val focusedBorderColor: Color,
-    val textColor: Color
-)

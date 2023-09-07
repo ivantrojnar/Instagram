@@ -1,10 +1,12 @@
 package hr.itrojnar.instagram
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import hr.itrojnar.instagram.app.DarkThemeColorsProvider
 import hr.itrojnar.instagram.sign_in.GoogleSignInState
 import hr.itrojnar.instagram.view.auth.LogInScreen
 import hr.itrojnar.instagram.view.auth.LogInState
@@ -19,14 +21,21 @@ class InstagramUITests {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    private val themeColorsProvider = DarkThemeColorsProvider()
+
     @Test
     fun logInScreen_displaysGoogleSignInButton() {
         val dummyGoogleSignInState = GoogleSignInState()  // This might require more setup depending on its constructor and dependencies
         val dummyLogInState = LogInState()  // Similarly, this might require setup
 
         composeTestRule.setContent {
+
+            val darkTheme = isSystemInDarkTheme()
+            val themeColors = themeColorsProvider.getThemeColors(darkTheme)
+
             LogInScreen(
                 logInState = dummyLogInState,
+                themeColors = themeColors,
                 onEmailChanged = {},
                 onPasswordChanged = {},
                 googleSignInState = dummyGoogleSignInState,
@@ -47,8 +56,13 @@ class InstagramUITests {
         val dummyLogInState = LogInState()
 
         composeTestRule.setContent {
+
+            val darkTheme = isSystemInDarkTheme()
+            val themeColors = themeColorsProvider.getThemeColors(darkTheme)
+
             LogInScreen(
                 logInState = dummyLogInState,
+                themeColors = themeColors,
                 onEmailChanged = {},
                 onPasswordChanged = {},
                 googleSignInState = dummyGoogleSignInState,
@@ -69,8 +83,13 @@ class InstagramUITests {
         val dummyLogInState = LogInState()
 
         composeTestRule.setContent {
+
+            val darkTheme = isSystemInDarkTheme()
+            val themeColors = themeColorsProvider.getThemeColors(darkTheme)
+
             LogInScreen(
                 logInState = dummyLogInState,
+                themeColors = themeColors,
                 onEmailChanged = {},
                 onPasswordChanged = {},
                 googleSignInState = dummyGoogleSignInState,
