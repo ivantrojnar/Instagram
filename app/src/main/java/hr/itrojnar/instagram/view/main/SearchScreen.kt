@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -98,7 +99,7 @@ fun SearchScreen(searchPostsViewModel: SearchPostsViewModel) {
             }
     }
 
-    Column (modifier = Modifier.background(backgroundColor)) {
+    Column (modifier = Modifier.background(backgroundColor).fillMaxSize()) {
         AnimatedVisibility(
             visible = searchBarVisible,
             enter = slideInVertically(initialOffsetY = { -50 }) + fadeIn(),

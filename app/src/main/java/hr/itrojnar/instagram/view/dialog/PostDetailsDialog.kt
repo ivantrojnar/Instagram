@@ -2,6 +2,7 @@ package hr.itrojnar.instagram.view.dialog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,7 @@ import java.util.Date
 
 @Composable
 fun PostDetailDialog(post: Post, onDismiss: () -> Unit) {
+
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
@@ -64,6 +66,10 @@ fun PostDetailDialog(post: Post, onDismiss: () -> Unit) {
 
 @Composable
 fun PostDialogContent(post: Post) {
+
+    val darkTheme = isSystemInDarkTheme()
+    val backgroundColor = if (darkTheme) Color.Black else Color.Transparent
+
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val postDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.postDate) ?: Date()
     val formattedDate = formatDate(postDate, currentYear)
@@ -74,7 +80,7 @@ fun PostDialogContent(post: Post) {
     val randomLikedBy = remember { fakeUsernames.random() }
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().background(backgroundColor)
     ) {
         Row(
             modifier = Modifier
