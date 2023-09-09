@@ -238,7 +238,7 @@ fun SettingsScreen() {
                     gradient = when (subscription) {
                         Subscription.FREE -> listOf(Color.LightGray, Color.Gray)
                         Subscription.PRO -> listOf(Color.Blue, Color(0xFF00008B))
-                        Subscription.GOLD -> listOf(Color.Yellow, Color(0xFFFFD700))
+                        Subscription.GOLD -> listOf(Color(0xFFB8860B), Color(0xFF8B6508))
                     },
                     onClick = {
                         if (canChangeToday) {
